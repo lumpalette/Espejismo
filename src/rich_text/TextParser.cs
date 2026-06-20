@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Spectrum.RichText;
 
+/// <summary>
+///		Provides a mechanism for transforming rich-text strings into structured <see cref="ParsedText"/> representations.
+/// </summary>
 public class TextParser
 {
 	private readonly Document _document = new();
@@ -18,7 +21,7 @@ public class TextParser
 	private PropertyBuffer _properties;
 	
 	/// <summary>
-	///		Initializes a new instance of the <see cref="TextParser"/> with no tags registered.
+	///		Initializes a new instance of the <see cref="TextParser"/> class with no tags registered.
 	/// </summary>
 	public TextParser()
 	{
@@ -38,6 +41,10 @@ public class TextParser
 	/// <returns>
 	///		A <see cref="ParsedText"/> representing the parsed <paramref name="text"/>.
 	///	</returns>
+	///	<exception cref="ArgumentNullException">
+	///		Thrown if either <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/>
+	///		is <see langword="null"/>.
+	/// </exception>
 	public ParsedText Parse(string text, TextStyle style)
 	{
 		ArgumentNullException.ThrowIfNull(text, nameof(text));
@@ -68,6 +75,9 @@ public class TextParser
 	/// </param>
 	/// <exception cref="ArgumentException">
 	///		Thrown if a tag with the name of <paramref name="tag"/> is already registered.
+	/// </exception>
+	/// <exception cref="ArgumentNullException">
+	///		Thrown if <paramref name="tag"/> is <see langword="null"/>.
 	/// </exception>
 	public void RegisterTag(TextTag tag)
 	{
@@ -129,6 +139,7 @@ public class TextParser
 
 		if (!_tagSpanLookup.TryGetValue(tagName, out TextTag? tag))
 		{
+			Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
 			ProcessNode(index);
 			return;
 		}
@@ -139,6 +150,7 @@ public class TextParser
 
 		if (!HasRequiredProperties(tag, properties))
 		{
+			Godot.GD.PushWarning($"Text tag with name '{tagName}' is missing required properties.");
 			ProcessNode(index);
 			return;
 		}
