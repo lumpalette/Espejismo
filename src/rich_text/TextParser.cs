@@ -1,0 +1,213 @@
+using Spectrum.RichText.Parsing;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Text;
+
+namespace Spectrum.RichText;
+
+public class TextParser
+{
+	private readonly Document _document = new();
+	private readonly ParseContext _context = new();
+	private readonly StringBuilder _accumulatedText = new();
+	private readonly Dictionary<string, TextTag> _tags = [];
+	private readonly Dictionary<string, TextTag>.AlternateLookup<ReadOnlySpan<char>> _tagSpanLookup;
+	
+	private PropertyBuffer _properties;
+	
+	/// <summary>
+	///		Initializes a new instance of the <see cref="TextParser"/> with no tags registered.
+	/// </summary>
+	public TextParser()
+	{
+		_tagSpanLookup = _tags.GetAlternateLookup<ReadOnlySpan<char>>();
+	}
+
+	/// <summary>
+	///		Parses the specified rich-text formatted string into a <see cref="ParsedText"/> instance using the
+	///		specified <see cref="TextStyle"/>.
+	/// </summary>
+	/// <param name="text">
+	///		The rich-text string to parse.
+	/// </param>
+	/// <param name="style">
+	///		The base style template to use.
+	/// </param>
+	/// <returns>
+	///		A <see cref="ParsedText"/> representing the parsed <paramref name="text"/>.
+	///	</returns>
+	public ParsedText Parse(string text, TextStyle style)
+	{
+		ArgumentNullException.ThrowIfNull(text, nameof(text));
+		ArgumentNullException.ThrowIfNull(style, nameof(style));
+		ArgumentNullException.ThrowIfNull(style.Font, nameof(style));
+		
+		_document.Parse(text);
+		_context.Reset();
+		_accumulatedText.Clear();
+
+		_context.PushStyle(new TextRunStyle
+		{
+			Font = style.Font,
+			FontSize = style.FontSize,
+			Color = style.Color
+		});
+
+		ProcessNode(0);
+
+		return new ParsedText(_context);
+	}
+
+	/// <summary>
+	///		Adds the specified <see cref="TextTag"/> to the tag registry.
+	/// </summary>
+	/// <param name="tag">
+	///		The text tag to register.
+	/// </param>
+	/// <exception cref="ArgumentException">
+	///		Thrown if a tag with the name of <paramref name="tag"/> is already registered.
+	/// </exception>
+	public void RegisterTag(TextTag tag)
+	{
+		ArgumentNullException.ThrowIfNull(tag);
+
+		if (!_tags.TryAdd(tag.Name, tag))
+		{
+			throw new ArgumentException($"Tag with name '{tag.Name}' is already defined");
+		}
+	}
+
+	private void ProcessNode(int parent)
+	{
+		var nodes = _document.Nodes;
+		Span<char> charBuffer = stackalloc char[2];
+
+		for (int i = nodes[parent].FirstChild; i != -1; i = nodes[i].Sibling)
+		{
+			var childNode = nodes[i];
+
+			switch (childNode.Type)
+			{
+				case NodeType.Root:
+					throw new UnreachableException("how the fuck this happened");
+				
+				case NodeType.Element:
+					if (_accumulatedText.Length > 0)
+					{
+						_context.AppendText(_accumulatedText.ToString());
+						_accumulatedText.Clear();
+					}
+
+					ProcessElement(childNode, i);
+					break;
+				
+				case NodeType.Text:
+					_accumulatedText.Append(_document.Text, childNode.ValueStart, childNode.ValueLength);
+					break;
+
+				case NodeType.CharacterEntity:
+					if (childNode.CharacterEntity.TryEncodeToUtf16(charBuffer, out int charsWritten))
+					{
+						_accumulatedText.Append(charBuffer[..charsWritten]);
+					}
+					break;
+			}
+		}
+
+		if (_accumulatedText.Length > 0)
+		{
+			_context.AppendText(_accumulatedText.ToString());
+		}
+	}
+
+	private void ProcessElement(in Node node, int index)
+	{
+		// 1. Retrieve tag from the registry.
+		var tagName = _document.Text.AsSpan(node.ValueStart, node.ValueLength);
+
+		if (!_tagSpanLookup.TryGetValue(tagName, out TextTag? tag))
+		{
+			ProcessNode(index);
+			return;
+		}
+
+		// 2. Extract and validate tag properties.
+		var attributes = _document.Attributes.Slice(node.AttributeStart, node.AttributeCount);
+		var properties = AttributesToProperties(attributes);
+
+		if (!HasRequiredProperties(tag, properties))
+		{
+			ProcessNode(index);
+			return;
+		}
+
+		// 3. Initialize tag effects and process child nodes.
+		bool success = tag.Begin(_context, properties);
+		ProcessNode(index);
+
+		if (success)
+		{
+			tag.End(_context);
+		}
+	}
+
+	private ReadOnlySpan<TagProperty> AttributesToProperties(ReadOnlySpan<AttributeSpan> attributes)
+	{
+		if (attributes.Length == 0)
+		{
+			return [];
+		}
+
+		for (int i = 0; i < attributes.Length; i++)
+		{
+			var attribute = attributes[i];
+
+			_properties[i] = new TagProperty(
+				name:  _document.Text.Substring(attribute.NameStart, attribute.NameLength), 
+				value: _document.Text.Substring(attribute.ValueStart, attribute.ValueLength)
+			);
+		}
+
+		return _properties[..attributes.Length];
+	}
+
+	private static bool HasRequiredProperties(TextTag tag, ReadOnlySpan<TagProperty> properties)
+	{
+		int requiredPropertyCount = tag.RequiredPropertyNames.Count;
+
+		// It doesn't matter the length of properties because we can pass optional properties to any tag.
+		if (requiredPropertyCount == 0)
+		{
+			return true;
+		}
+
+		for (int i = 0; i < requiredPropertyCount; i++)
+		{
+			bool found = false;
+
+			for (int j = 0; j < properties.Length; j++)
+			{
+				if (tag.RequiredPropertyNames[i] == properties[j].Name)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	[InlineArray(Tokenizer.MaxAttributes)]
+	private struct PropertyBuffer
+	{
+		public TagProperty Element;
+	}
+}

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cxwo3nuadc6s3"]
+
+[ext_resource type="Script" uid="uid://cglavmlhb3jgk" path="res://src/Game.cs" id="1_yqjtg"]
+[ext_resource type="Script" uid="uid://brmqumtif6d2d" path="res://src/input/PlayerInputManager.cs" id="2_yqjtg"]
+
+[node name="Game" type="Node" unique_id=1831290893 node_paths=PackedStringArray("_input")]
+script = ExtResource("1_yqjtg")
+_input = NodePath("Input")
+
+[node name="Input" type="Node" parent="." unique_id=267432228]
+script = ExtResource("2_yqjtg")

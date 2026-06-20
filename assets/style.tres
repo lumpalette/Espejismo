@@ -1,0 +1,7 @@
+[gd_resource type="Resource" format=3 uid="uid://hrgoo1b7mggf"]
+
+[ext_resource type="Script" uid="uid://bpnq1uutidudj" path="res://src/rich_text/TextStyle.cs" id="1_yw1h3"]
+
+[resource]
+script = ExtResource("1_yw1h3")
+metadata/_custom_type_script = "uid://bpnq1uutidudj"
