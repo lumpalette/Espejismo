@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace Spectrum.RichText;
 
@@ -6,8 +7,25 @@ namespace Spectrum.RichText;
 ///		Represents the processed, read-only form of a <see cref="TextStyle"/> that is applied to multiple
 ///		<see cref="TextRun"/> instances during parsing.
 /// </summary>
-public readonly struct TextRunStyle()
+public readonly struct TextRunStyle
 {
+	/// <summary>
+	///		Initializes a new instance of the <see cref="TextRunStyle"/> struct by copying the data from the specified
+	///		<see cref="TextStyle"/>.
+	/// </summary>
+	/// <param name="style">
+	///		The style properties to copy.
+	/// </param>
+	public TextRunStyle(TextStyle style)
+	{
+		ArgumentNullException.ThrowIfNull(style, nameof(style));
+		ArgumentNullException.ThrowIfNull(style.Font, nameof(style.Font));
+
+		Font = style.Font;
+		FontSize = style.FontSize;
+		Color = style.Color;
+	}
+
 	/// <summary>
 	///		Gets the font resource for the text run.
 	/// </summary>
@@ -22,9 +40,4 @@ public readonly struct TextRunStyle()
 	///		Gets the color for the text run.
 	/// </summary>
 	public Color Color { get; init; }
-
-	/// <summary>
-	///		Gets a value indicating whether the instance was not properly initialized.
-	/// </summary>
-	public bool IsDefault { get; } = true;
 }
