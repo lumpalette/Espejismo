@@ -9,19 +9,18 @@ namespace Spectrum.RichText.Parsing;
 internal ref partial struct Tokenizer(string text)
 {
 	public const int MaxAttributes = 8;
-
 	private const int Eof = -1;
 
 	private readonly ReadOnlySpan<char> _inputText = text.AsSpan();
-	
+
 	private State _state = State.Data;
 	private int _position;
+	private AttributeBuffer _attributes;
+	private int _attributeCount;
 	private int _currentAttributeNameStart;
 	private int _currentAttributeNameLength;
 	private int _currentAttributeValueStart;
 	private int _currentAttributeValueLength;
-	private AttributeBuffer _attributes;
-	private int _attributeCount;
 	private char _attributeDelimiter;
 	
 	public TokenType TokenType { get; private set; }

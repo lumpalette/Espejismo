@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Spectrum.RichText;
 
 /// <summary>
-///		Provides a base class for describing the characteristics and behaviour of a text tag during parsing.
+///		Provides a base class for describing the characteristics and behaviour of a rich-text tag during parsing.
 /// </summary>
 public abstract class TextTag(string name, IReadOnlyList<string> requiredProperties)
 {
@@ -22,7 +22,7 @@ public abstract class TextTag(string name, IReadOnlyList<string> requiredPropert
 	public IReadOnlyList<string> RequiredPropertyNames { get; } = requiredProperties;
 
 	/// <summary>
-	///		Called after the parser finishes processing the tag elements.
+	///		Called before the parser begins processing the tag elements.
 	/// </summary>
 	/// <param name="context">
 	///		The current state of the parser.
@@ -31,7 +31,7 @@ public abstract class TextTag(string name, IReadOnlyList<string> requiredPropert
 	///		The properties associated with the tag.
 	///	</param>
 	/// <returns>
-	///		<see langword="true"/> if the method was successful; otherwise, <see langword="false"/>.
+	///		<see langword="true"/> if the tag effect was applied successfully; otherwise, <see langword="false"/>.
 	///	</returns>
 	public abstract bool Begin(ParseContext context, ReadOnlySpan<TagProperty> properties);
 
