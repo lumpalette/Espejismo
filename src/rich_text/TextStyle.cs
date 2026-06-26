@@ -57,4 +57,36 @@ public partial class TextStyle : Resource
 			}
 		}
 	} = Colors.White;
+
+	/// <summary>
+	///		Gets or sets the horizontal alignment of the text. The default is <see cref="HorizontalAlignment.Left"/>.
+	/// </summary>
+	public HorizontalAlignment HorizontalAlignment
+	{
+		get;
+		set
+		{
+			if (field != value)
+			{
+				field = value;
+				EmitChanged();
+			}
+		}
+	}
+
+	/// <summary>
+	///		Gets or sets the vertical alignment of the text. The default is <see cref="VerticalAlignment.Top"/>.
+	/// </summary>
+	public VerticalAlignment VerticalAlignment
+	{
+		get;
+		set
+		{
+			if (field != value)
+			{
+				field = value;
+				EmitChanged();
+			}
+		}
+	}
 }
