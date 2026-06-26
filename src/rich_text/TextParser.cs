@@ -8,16 +8,15 @@ using System.Text;
 namespace Spectrum.RichText;
 
 /// <summary>
-///		Provides a mechanism for transforming rich-text strings into structured <see cref="ParsedText"/> representations.
+///		Provides a mechanism for transforming rich-text strings into structured <see cref="ParsedText"/>
+///		representations.
 /// </summary>
 public class TextParser
 {
-	private readonly Document _document = new();
+	private readonly Document _currentDocument = new();
 	private readonly ParseContext _context = new();
 	private readonly StringBuilder _accumulatedText = new();
-	private readonly Dictionary<string, TextTag> _tags = [];
-	private readonly Dictionary<string, TextTag>.AlternateLookup<ReadOnlySpan<char>> _tagSpanLookup;
-	
+	private readonly Dictionary<string, TextTag>.AlternateLookup<ReadOnlySpan<char>> _tags;
 	private PropertyBuffer _properties;
 	
 	/// <summary>
@@ -25,7 +24,8 @@ public class TextParser
 	/// </summary>
 	public TextParser()
 	{
-		_tagSpanLookup = _tags.GetAlternateLookup<ReadOnlySpan<char>>();
+		var tagDict = new Dictionary<string, TextTag>();
+		_tags = tagDict.GetAlternateLookup<ReadOnlySpan<char>>();
 	}
 
 	/// <summary>
@@ -36,7 +36,7 @@ public class TextParser
 	///		The rich-text string to parse.
 	/// </param>
 	/// <param name="style">
-	///		The base style template to use.
+	///		The style properties to use as the base.
 	/// </param>
 	/// <returns>
 	///		A <see cref="ParsedText"/> representing the parsed <paramref name="text"/>.
@@ -49,12 +49,12 @@ public class TextParser
 	{
 		ArgumentNullException.ThrowIfNull(text, nameof(text));
 		ArgumentNullException.ThrowIfNull(style, nameof(style));
-		ArgumentNullException.ThrowIfNull(style.Font, nameof(style));
+		ArgumentNullException.ThrowIfNull(style.Font, nameof(style.Font));
 		
-		_document.Parse(text);
 		_context.Reset();
 		_accumulatedText.Clear();
-
+		
+		_currentDocument.Parse(text);
 		_context.PushStyle(new TextRunStyle
 		{
 			Font = style.Font,
@@ -81,9 +81,9 @@ public class TextParser
 	/// </exception>
 	public void RegisterTag(TextTag tag)
 	{
-		ArgumentNullException.ThrowIfNull(tag);
+		ArgumentNullException.ThrowIfNull(tag, nameof(tag));
 
-		if (!_tags.TryAdd(tag.Name, tag))
+		if (!_tags.Dictionary.TryAdd(tag.Name, tag))
 		{
 			throw new ArgumentException($"Tag with name '{tag.Name}' is already defined");
 		}
@@ -91,8 +91,8 @@ public class TextParser
 
 	private void ProcessNode(int parent)
 	{
-		var nodes = _document.Nodes;
-		Span<char> charBuffer = stackalloc char[2];
+		var nodes = _currentDocument.Nodes;
+		var entityBuffer = (stackalloc char[2]);
 
 		for (int i = nodes[parent].FirstChild; i != -1; i = nodes[i].Sibling)
 		{
@@ -114,13 +114,13 @@ public class TextParser
 					break;
 				
 				case NodeType.Text:
-					_accumulatedText.Append(_document.Text, childNode.ValueStart, childNode.ValueLength);
+					_accumulatedText.Append(_currentDocument.Text, childNode.ValueStart, childNode.ValueLength);
 					break;
 
 				case NodeType.CharacterEntity:
-					if (childNode.CharacterEntity.TryEncodeToUtf16(charBuffer, out int charsWritten))
+					if (childNode.CharacterEntity.TryEncodeToUtf16(entityBuffer, out int charsWritten))
 					{
-						_accumulatedText.Append(charBuffer[..charsWritten]);
+						_accumulatedText.Append(entityBuffer[..charsWritten]);
 					}
 					break;
 			}
@@ -135,9 +135,9 @@ public class TextParser
 	private void ProcessElement(in Node node, int index)
 	{
 		// 1. Retrieve tag from the registry.
-		var tagName = _document.Text.AsSpan(node.ValueStart, node.ValueLength);
+		var tagName = _currentDocument.Text.AsSpan(node.ValueStart, node.ValueLength);
 
-		if (!_tagSpanLookup.TryGetValue(tagName, out TextTag? tag))
+		if (!_tags.TryGetValue(tagName, out TextTag? tag))
 		{
 			Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
 			ProcessNode(index);
@@ -145,7 +145,7 @@ public class TextParser
 		}
 
 		// 2. Extract and validate tag properties.
-		var attributes = _document.Attributes.Slice(node.AttributeStart, node.AttributeCount);
+		var attributes = _currentDocument.Attributes.Slice(node.AttributeStart, node.AttributeCount);
 		var properties = AttributesToProperties(attributes);
 
 		if (!HasRequiredProperties(tag, properties))
@@ -177,8 +177,8 @@ public class TextParser
 			var attribute = attributes[i];
 
 			_properties[i] = new TagProperty(
-				name:  _document.Text.Substring(attribute.NameStart, attribute.NameLength), 
-				value: _document.Text.Substring(attribute.ValueStart, attribute.ValueLength)
+				name:  _currentDocument.Text.Substring(attribute.NameStart, attribute.NameLength), 
+				value: _currentDocument.Text.Substring(attribute.ValueStart, attribute.ValueLength)
 			);
 		}
 
@@ -222,4 +222,4 @@ public class TextParser
 	{
 		public TagProperty Element;
 	}
-}
+} 

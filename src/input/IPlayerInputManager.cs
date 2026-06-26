@@ -103,7 +103,7 @@ public interface IPlayerInputManager
 	bool TryGetPlayer(int playerIndex, [NotNullWhen(true)] out PlayerInput? player);
 
 	/// <summary>
-	///		Returns the player index that the specified PlayerInput is currently assigned to.
+	///		Returns the player index that the specified <see cref="PlayerInput"/> is currently assigned to.
 	/// </summary>
 	/// <param name="player">
 	///		The player to search. Can be <see langword="null"/>.
@@ -114,7 +114,7 @@ public interface IPlayerInputManager
 	int IndexOf(PlayerInput? player);
 
 	/// <summary>
-	///		Undefines the specified player index and removes its assigned player.
+	///		Undefines the specified player index, removing its assigned player.
 	/// </summary>
 	/// <returns>
 	///		<see langword="true"/> if the <paramref name="playerIndex"/> was successfully undefined; otherwise,

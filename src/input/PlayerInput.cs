@@ -223,6 +223,7 @@ public sealed class PlayerInput
 		return GetAction(actionName).State == InputActionState.WasReleased;
 	}
 
+	// Processes a godot event from the input queue and updates the state of the actions in the current map.
 	internal void HandleEvent(InputEvent e)
 	{
 		if (!CanHandleEvent(e))

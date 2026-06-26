@@ -3,7 +3,7 @@ using Spectrum.RichText.Parsing;
 
 namespace Spectrum.Tests;
 
-internal partial class DocumentTest : Godot.Node
+internal partial class RichDocumentTest : Godot.Node
 {
 	[Export(PropertyHint.MultilineText)]
 	private string _input = "<color value=black>La, la.<wait time=1s/>\nTime to wake\nup and <color value=red>smell</color>\nthe<wait time=1.33s/> pain.</color><next/>";
