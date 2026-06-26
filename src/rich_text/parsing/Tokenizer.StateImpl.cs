@@ -1,4 +1,3 @@
-using Godot;
 using System.Text;
 
 namespace Spectrum.RichText.Parsing;

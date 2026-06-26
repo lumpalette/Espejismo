@@ -4,17 +4,17 @@ using System;
 namespace Spectrum.RichText;
 
 /// <summary>
-///		Represents the processed, read-only form of a <see cref="TextStyle"/> that is applied to multiple
-///		<see cref="TextRun"/> instances during parsing.
+/// Represents the processed, read-only form of a <see cref="TextStyle"/> that is applied to multiple
+/// <see cref="TextRun"/> instances during parsing.
 /// </summary>
 public readonly struct TextRunStyle
 {
 	/// <summary>
-	///		Initializes a new instance of the <see cref="TextRunStyle"/> struct by copying the data from the specified
-	///		<see cref="TextStyle"/>.
+	/// Initializes a new instance of the <see cref="TextRunStyle"/> struct by copying the data from the specified
+	/// <see cref="TextStyle"/>.
 	/// </summary>
 	/// <param name="style">
-	///		The style properties to copy.
+	/// The style properties to copy.
 	/// </param>
 	public TextRunStyle(TextStyle style)
 	{
@@ -27,17 +27,17 @@ public readonly struct TextRunStyle
 	}
 
 	/// <summary>
-	///		Gets the font resource for the text run.
+	/// Gets the font resource for the text run.
 	/// </summary>
 	public Font Font { get; init; }
 
 	/// <summary>
-	///		Gets the text size for the text run, in pixels.
+	/// Gets the text size for the text run, in pixels.
 	/// </summary>
 	public uint FontSize { get; init; }
 
 	/// <summary>
-	///		Gets the color for the text run.
+	/// Gets the color for the text run.
 	/// </summary>
 	public Color Color { get; init; }
 }

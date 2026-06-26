@@ -8,8 +8,7 @@ using System.Text;
 namespace Spectrum.RichText;
 
 /// <summary>
-///		Provides a mechanism for transforming rich-text strings into structured <see cref="ParsedText"/>
-///		representations.
+/// Provides a mechanism for transforming rich-text strings into structured <see cref="ParsedText"/> representations.
 /// </summary>
 public class TextParser
 {
@@ -20,7 +19,7 @@ public class TextParser
 	private PropertyBuffer _properties;
 	
 	/// <summary>
-	///		Initializes a new instance of the <see cref="TextParser"/> class with no tags registered.
+	/// Initializes a new instance of the <see cref="TextParser"/> class with no tags registered.
 	/// </summary>
 	public TextParser()
 	{
@@ -29,21 +28,21 @@ public class TextParser
 	}
 
 	/// <summary>
-	///		Parses the specified rich-text formatted string into a <see cref="ParsedText"/> instance using the
-	///		specified <see cref="TextStyle"/>.
+	/// Parses the specified rich-text formatted string into a <see cref="ParsedText"/> instance using the specified
+	/// <see cref="TextStyle"/>.
 	/// </summary>
 	/// <param name="text">
-	///		The rich-text string to parse.
+	/// The rich-text string to parse.
 	/// </param>
 	/// <param name="style">
-	///		The style properties to use as the base.
+	/// The style properties to use as the base.
 	/// </param>
 	/// <returns>
-	///		A <see cref="ParsedText"/> representing the parsed <paramref name="text"/>.
-	///	</returns>
-	///	<exception cref="ArgumentNullException">
-	///		Thrown if either <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/>
-	///		is <see langword="null"/>.
+	/// A <see cref="ParsedText"/> representing the parsed <paramref name="text"/>.
+	/// </returns>
+	/// <exception cref="ArgumentNullException">
+	/// Thrown if either <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/> is
+	/// <see langword="null"/>.
 	/// </exception>
 	public ParsedText Parse(string text, TextStyle style)
 	{
@@ -68,16 +67,16 @@ public class TextParser
 	}
 
 	/// <summary>
-	///		Adds the specified <see cref="TextTag"/> to the tag registry.
+	/// Adds the specified <see cref="TextTag"/> to the tag registry.
 	/// </summary>
 	/// <param name="tag">
-	///		The text tag to register.
+	/// The text tag to register.
 	/// </param>
 	/// <exception cref="ArgumentException">
-	///		Thrown if a tag with the name of <paramref name="tag"/> is already registered.
+	/// Thrown if a tag with the name of <paramref name="tag"/> is already registered.
 	/// </exception>
 	/// <exception cref="ArgumentNullException">
-	///		Thrown if <paramref name="tag"/> is <see langword="null"/>.
+	/// Thrown if <paramref name="tag"/> is <see langword="null"/>.
 	/// </exception>
 	public void RegisterTag(TextTag tag)
 	{

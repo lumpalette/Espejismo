@@ -3,12 +3,12 @@ using Godot;
 namespace Spectrum.RichText;
 
 /// <summary>
-///		Represents a set of visual properties that describe how text is displayed.
+/// Represents a set of visual properties that describe how text is displayed.
 /// </summary>
 public partial class TextStyle : Resource
 {
 	/// <summary>
-	///		Gets the font resource used for the text.
+	/// Gets the font resource used for the text.
 	/// </summary>
 	[Export]
 	public Font? Font
@@ -25,7 +25,7 @@ public partial class TextStyle : Resource
 	}
 
 	/// <summary>
-	///		Gets the size of the text, in pixels (px). The default is 8px.
+	/// Gets the size of the text, in pixels (px). The default is 8px.
 	/// </summary>
 	[Export(PropertyHint.Range, $"0, 256, suffix:px")]
 	public uint FontSize
@@ -42,7 +42,7 @@ public partial class TextStyle : Resource
 	} = 8;
 
 	/// <summary>
-	///		Gets the color of the text. The default is white.
+	/// Gets the color of the text. The default is white.
 	/// </summary>
 	[Export]
 	public Color Color
@@ -59,8 +59,9 @@ public partial class TextStyle : Resource
 	} = Colors.White;
 
 	/// <summary>
-	///		Gets or sets the horizontal alignment of the text. The default is <see cref="HorizontalAlignment.Left"/>.
+	/// Gets or sets the horizontal alignment of the text. The default is <see cref="HorizontalAlignment.Left"/>.
 	/// </summary>
+	[Export]
 	public HorizontalAlignment HorizontalAlignment
 	{
 		get;
@@ -75,8 +76,9 @@ public partial class TextStyle : Resource
 	}
 
 	/// <summary>
-	///		Gets or sets the vertical alignment of the text. The default is <see cref="VerticalAlignment.Top"/>.
+	/// Gets or sets the vertical alignment of the text. The default is <see cref="VerticalAlignment.Top"/>.
 	/// </summary>
+	[Export]
 	public VerticalAlignment VerticalAlignment
 	{
 		get;

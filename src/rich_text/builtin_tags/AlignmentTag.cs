@@ -4,11 +4,11 @@ using System;
 namespace Spectrum.RichText.BuiltinTags;
 
 /// <summary>
-///		Represents a tag that changes the horizontal alignment of a text paragraph.
+/// Represents a tag that changes the horizontal alignment of a text paragraph.
 /// </summary>
 /// <remarks>
-///		Syntax:<br/>
-///			<c>&lt;align type="left|center|right|fill">...&lt;/align></c>
+/// Syntax:<br/>
+/// <c>&lt;align type="left|center|right|fill">...&lt;/align></c>
 /// </remarks>
 public class AlignmentTag() : TextTag("align", ["type"])
 {

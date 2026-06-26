@@ -4,15 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace Spectrum.Input;
 
 /// <summary>
-///		Represents a button from a mouse device.
+/// Represents a button from a mouse device.
 /// </summary>
 /// <param name="button">
-///		The mouse button to assign.
-///	</param>
+/// The mouse button to assign.
+/// </param>
 public class MouseButtonSource(MouseButton button) : InputSource<MouseButtonSource>
 {
 	/// <summary>
-	///		Gets the identifier of the assigned button.
+	/// Gets the identifier of the assigned button.
 	/// </summary>
 	public MouseButton Button { get; } = button;
 

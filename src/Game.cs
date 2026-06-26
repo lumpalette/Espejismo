@@ -5,7 +5,7 @@ using System;
 namespace Spectrum;
 
 /// <summary>
-///		Represents the core of the game. Provides global access to the main subsystems.
+/// Represents the core of the game: provides global access to the main subsystems.
 /// </summary>
 public partial class Game : Node
 {
@@ -17,7 +17,7 @@ public partial class Game : Node
 	private Game() { }
 
 	/// <summary>
-	///		Gets access to the input system interface.
+	/// Gets access to the input system interface.
 	/// </summary>
 	public static IPlayerInputManager Input
 	{
