@@ -93,7 +93,14 @@ internal ref partial struct Tokenizer(string text)
 
 	private int Consume()
 	{
-		return (_position < _inputText.Length) ? _inputText[_position++] : Eof;
+		if (_position < _inputText.Length)
+		{
+			return _inputText[_position++];
+		}
+
+		// We always advance the cursor even when we have reached the end for reconsumes.
+		_position++;
+		return Eof;
 	}
 
 	private void AppendCurrentAttribute()

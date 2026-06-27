@@ -23,7 +23,7 @@ partial struct Tokenizer
 		{
 			if (_position > StartIndex)
 			{
-				ReadValue = _inputText[StartIndex.._position];
+				ReadValue = _inputText[StartIndex..];
 				return TokenType.Text;
 			}
 
@@ -42,9 +42,15 @@ partial struct Tokenizer
 			return SwitchTo(State.EndTagOpen);
 		}
 
-		if (input is ' ' or Eof)
+		if (input == ' ')
 		{
 			ReadValue = _inputText[StartIndex.._position];
+			return SwitchTo(State.Data, TokenType.Text);
+		}
+
+		if (input == Eof)
+		{
+			ReadValue = _inputText[StartIndex..];
 			return SwitchTo(State.Data, TokenType.Text);
 		}
 
@@ -56,9 +62,15 @@ partial struct Tokenizer
 	{
 		int input = Consume();
 
-		if (input is ' ' or Eof)
+		if (input == ' ')
 		{
 			ReadValue = _inputText[StartIndex.._position];
+			return SwitchTo(State.Data, TokenType.Text);
+		}
+
+		if (input == Eof)
+		{
+			ReadValue = _inputText[StartIndex..];
 			return SwitchTo(State.Data, TokenType.Text);
 		}
 
@@ -113,6 +125,8 @@ partial struct Tokenizer
 
 		if (input == '=')
 		{
+			// Off-by-one stupid error. We also need to account for the '=', as it's part of the attribute name.
+			_currentAttributeNameLength = 1;
 			return SwitchTo(State.AttributeName);
 		}
 
@@ -223,6 +237,8 @@ partial struct Tokenizer
 	{
 		int input = Consume();
 
+		// The '/' cannot switch to the self-closing start tag state here according to the HTML specification, but
+		// we do it regardless because it's more convenient.
 		if (input is ' ' or '/' or '>')
 		{
 			AppendCurrentAttribute();
