@@ -1,3 +1,4 @@
+using Godot;
 using System;
 
 namespace Spectrum.RichText;
@@ -43,4 +44,14 @@ public class ParsedText
 	/// Gets the ranges of text runs that have a different alignment than the default.
 	/// </summary>
 	public ReadOnlySpan<AlignmentBlock> AlignmentOverrides => _alignmentBlocks;
+
+	/// <summary>
+	/// Gets the default horizontal alignment applied to all text runs.
+	/// </summary>
+	public HorizontalAlignment HorizontalAlignment { get; set; }
+
+	/// <summary>
+	/// Gets the vertical alignment for the entire text container.
+	/// </summary>
+	public VerticalAlignment VerticalAlignment { get; set; }
 }

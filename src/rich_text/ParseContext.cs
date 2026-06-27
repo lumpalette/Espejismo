@@ -142,14 +142,9 @@ public class ParseContext
 	/// </param>
 	public void BeginAlignment(HorizontalAlignment alignment)
 	{
-		if (_alignmentStack.TryPeek(out HorizontalAlignment current) && current == alignment)
-		{
-			return;
-		}
-
+		// Always push even when pushing the same alignment, as it would break the symmetry for end tags.
 		FlushCurrentAlignment();
 		_alignmentStack.Push(alignment);
-		
 	}
 
 	/// <summary>
