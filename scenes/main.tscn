@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b33c8l4fw10vj"]
 
-[ext_resource type="Script" uid="uid://dxcvlphc1o3v6" path="res://src/tests/DocumentTest.cs" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://c2julso4ua180" path="res://src/tests/TokenizerTest.cs" id="1_o5qli"]
 
 [node name="Main" type="Node" unique_id=213237798]
 script = ExtResource("1_o5qli")
+_text = "xd <"

@@ -6,7 +6,7 @@ namespace Spectrum.RichText;
 /// <summary>
 /// Provides a base class for describing the characteristics and behaviour of a rich-text tag during parsing.
 /// </summary>
-public abstract class TextTag(string name, IReadOnlyList<string> requiredProperties)
+public abstract class TagBehaviour(string name, IReadOnlyList<string> requiredProperties)
 {
 	/// <summary>
 	/// Gets the name of the tag, case-sensitive. Used to activate the tag's effects in-text.

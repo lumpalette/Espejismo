@@ -24,7 +24,7 @@ namespace Spectrum.RichText.BuiltinTags;
 /// <param name="requiredProperties">
 /// The names of the properties required by the command.
 /// </param>
-public sealed class CommandTag(string name, string[] requiredProperties) : TextTag(name, requiredProperties)
+public sealed class CommandTag(string name, string[] requiredProperties) : TagBehaviour(name, requiredProperties)
 {
 	public override bool Begin(ParseContext context, ReadOnlySpan<TagProperty> properties)
 	{

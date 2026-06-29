@@ -3,7 +3,7 @@ using Godot;
 namespace Spectrum.RichText;
  
 /// <summary>
-/// Represents a range of <see cref="TextRun"/> instances that share the same text alignment.
+/// Represents a range of text runs that share the same text alignment.
 /// </summary>
 /// <param name="start">
 /// The index of the starting run.
@@ -17,7 +17,7 @@ namespace Spectrum.RichText;
 public readonly struct AlignmentBlock(int start, int length, HorizontalAlignment alignment)
 {
 	/// <summary>
-	/// Gets the index of the first text run in the block, relative to <see cref="ParsedText.Runs"/>.
+	/// Gets the index within <see cref="Text.Runs"/> of the first text run in the block.
 	/// </summary>
 	public int Start { get; } = start;
  

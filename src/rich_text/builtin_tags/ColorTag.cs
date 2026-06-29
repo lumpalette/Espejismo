@@ -17,7 +17,7 @@ namespace Spectrum.RichText.BuiltinTags;
 /// * <c>html_code</c> is a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
 /// </para>
 /// </remarks>
-public sealed class ColorTag() : TextTag("color", ["value"])
+public sealed class ColorTag() : TagBehaviour("color", ["value"])
 {
 	public override bool Begin(ParseContext context, ReadOnlySpan<TagProperty> properties)
 	{

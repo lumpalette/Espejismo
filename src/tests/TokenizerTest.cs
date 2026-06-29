@@ -48,4 +48,3 @@ internal sealed partial class TokenizerTest : Godot.Node
 		}
 	}
 }
-

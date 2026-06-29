@@ -8,14 +8,14 @@ using System.Text;
 namespace Spectrum.RichText;
 
 /// <summary>
-/// Provides a mechanism for transforming rich-text strings into structured <see cref="ParsedText"/> representations.
+/// Provides a mechanism for transforming rich-text strings into structured <see cref="Text"/> representations.
 /// </summary>
 public class TextParser
 {
 	private readonly Document _currentDocument = new();
 	private readonly ParseContext _context = new();
 	private readonly StringBuilder _accumulatedText = new();
-	private readonly Dictionary<string, TextTag>.AlternateLookup<ReadOnlySpan<char>> _tags;
+	private readonly Dictionary<string, TagBehaviour>.AlternateLookup<ReadOnlySpan<char>> _tags;
 	private PropertyBuffer _properties;
 	
 	/// <summary>
@@ -23,12 +23,12 @@ public class TextParser
 	/// </summary>
 	public TextParser()
 	{
-		var tagDict = new Dictionary<string, TextTag>();
+		var tagDict = new Dictionary<string, TagBehaviour>();
 		_tags = tagDict.GetAlternateLookup<ReadOnlySpan<char>>();
 	}
 
 	/// <summary>
-	/// Parses the specified rich-text formatted string into a <see cref="ParsedText"/> instance using the specified
+	/// Parses the specified rich-text formatted string into a <see cref="Text"/> instance using the specified
 	/// <see cref="TextStyle"/>.
 	/// </summary>
 	/// <param name="text">
@@ -38,13 +38,13 @@ public class TextParser
 	/// The style properties to use as the base.
 	/// </param>
 	/// <returns>
-	/// A <see cref="ParsedText"/> representing the parsed <paramref name="text"/>.
+	/// A <see cref="Text"/> representing the parsed <paramref name="text"/>.
 	/// </returns>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown if either <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/> is
+	/// Thrown if <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/> is
 	/// <see langword="null"/>.
 	/// </exception>
-	public ParsedText Parse(string text, TextStyle style)
+	public Text Parse(string text, TextStyle style)
 	{
 		ArgumentNullException.ThrowIfNull(text, nameof(text));
 		ArgumentNullException.ThrowIfNull(style, nameof(style));
@@ -52,22 +52,15 @@ public class TextParser
 		
 		_context.Reset();
 		_accumulatedText.Clear();
-		
 		_currentDocument.Parse(text);
-		_context.PushStyle(new TextRunStyle
-		{
-			Font = style.Font,
-			FontSize = style.FontSize,
-			Color = style.Color
-		});
-
+		
 		ProcessNode(0);
 
-		return new ParsedText(_context);
+		return new Text(style, _context);
 	}
 
 	/// <summary>
-	/// Adds the specified <see cref="TextTag"/> to the tag registry.
+	/// Adds the specified <see cref="TagBehaviour"/> to the tag registry.
 	/// </summary>
 	/// <param name="tag">
 	/// The text tag to register.
@@ -78,7 +71,7 @@ public class TextParser
 	/// <exception cref="ArgumentNullException">
 	/// Thrown if <paramref name="tag"/> is <see langword="null"/>.
 	/// </exception>
-	public void RegisterTag(TextTag tag)
+	public void RegisterTag(TagBehaviour tag)
 	{
 		ArgumentNullException.ThrowIfNull(tag, nameof(tag));
 
@@ -103,13 +96,42 @@ public class TextParser
 					throw new UnreachableException("how the fuck this happened");
 				
 				case NodeType.Element:
+					// 1. FLush any pending text run.
 					if (_accumulatedText.Length > 0)
 					{
 						_context.AppendText(_accumulatedText.ToString());
 						_accumulatedText.Clear();
 					}
 
-					ProcessElement(childNode, i);
+					// 2. Retrieve tag from the registry.
+					var tagName = _currentDocument.Text.AsSpan(childNode.ValueStart, childNode.ValueLength);
+
+					if (!_tags.TryGetValue(tagName, out TagBehaviour? tag))
+					{
+						Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
+						ProcessNode(i);
+						continue;
+					}
+
+					// 3. Extract and validate tag properties.
+					var attributes = _currentDocument.Attributes.Slice(childNode.AttributeStart, childNode.AttributeCount);
+					var properties = AttributesToProperties(attributes);
+
+					if (!HasRequiredProperties(tag, properties))
+					{
+						Godot.GD.PushWarning($"Text tag with name '{tagName}' is missing required properties.");
+						ProcessNode(i);
+						continue;
+					}
+
+					// 4. Initialize tag effects and process child nodes.
+					bool success = tag.Begin(_context, properties);
+					ProcessNode(i);
+
+					if (success)
+					{
+						tag.End(_context);
+					}
 					break;
 				
 				case NodeType.Text:
@@ -128,39 +150,6 @@ public class TextParser
 		if (_accumulatedText.Length > 0)
 		{
 			_context.AppendText(_accumulatedText.ToString());
-		}
-	}
-
-	private void ProcessElement(in Node node, int index)
-	{
-		// 1. Retrieve tag from the registry.
-		var tagName = _currentDocument.Text.AsSpan(node.ValueStart, node.ValueLength);
-
-		if (!_tags.TryGetValue(tagName, out TextTag? tag))
-		{
-			Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
-			ProcessNode(index);
-			return;
-		}
-
-		// 2. Extract and validate tag properties.
-		var attributes = _currentDocument.Attributes.Slice(node.AttributeStart, node.AttributeCount);
-		var properties = AttributesToProperties(attributes);
-
-		if (!HasRequiredProperties(tag, properties))
-		{
-			Godot.GD.PushWarning($"Text tag with name '{tagName}' is missing required properties.");
-			ProcessNode(index);
-			return;
-		}
-
-		// 3. Initialize tag effects and process child nodes.
-		bool success = tag.Begin(_context, properties);
-		ProcessNode(index);
-
-		if (success)
-		{
-			tag.End(_context);
 		}
 	}
 
@@ -184,7 +173,7 @@ public class TextParser
 		return _properties[..attributes.Length];
 	}
 
-	private static bool HasRequiredProperties(TextTag tag, ReadOnlySpan<TagProperty> properties)
+	private static bool HasRequiredProperties(TagBehaviour tag, ReadOnlySpan<TagProperty> properties)
 	{
 		int requiredPropertyCount = tag.RequiredPropertyNames.Count;
 

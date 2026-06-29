@@ -14,7 +14,7 @@ namespace Spectrum.RichText;
 /// <param name="properties">
 /// The properties passed to the command.
 /// </param>
-public readonly struct TextCommand(string name, int position, TagProperty[] properties)
+public readonly struct InlineCommand(string name, int position, TagProperty[] properties)
 {
 	/// <summary>
 	/// Gets the name of the command.

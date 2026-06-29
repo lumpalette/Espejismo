@@ -10,7 +10,7 @@ namespace Spectrum.RichText.BuiltinTags;
 /// Syntax:<br/>
 /// <c>&lt;align type="left|center|right|fill">...&lt;/align></c>
 /// </remarks>
-public class AlignmentTag() : TextTag("align", ["type"])
+public class AlignmentTag() : TagBehaviour("align", ["type"])
 {
 	public override bool Begin(ParseContext context, ReadOnlySpan<TagProperty> properties)
 	{
