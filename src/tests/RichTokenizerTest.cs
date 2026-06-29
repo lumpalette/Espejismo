@@ -4,7 +4,7 @@ using Spectrum.RichText.Parsing;
 
 namespace Spectrum.Tests;
 
-internal sealed partial class TokenizerTest : Godot.Node
+internal sealed partial class RichTokenizerTest : Godot.Node
 {
 	[Export(PropertyHint.MultilineText)]
 	private string _text = "Etiquete <tag ";
@@ -18,7 +18,7 @@ internal sealed partial class TokenizerTest : Godot.Node
 		{
 			return;
 		}
-
+		
 		var tokenizer = new Tokenizer(_text);
 
 		while (tokenizer.Read())

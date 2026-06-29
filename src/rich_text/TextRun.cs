@@ -15,7 +15,7 @@ public readonly struct TextRun(string text, StyleOverride style)
 	/// Gets the string of characters in the text run.
 	/// </summary>
 	public string Text { get; } = text;
-
+	
 	/// <summary>
 	/// Gets the style properties overriden for this text run.
 	/// </summary>

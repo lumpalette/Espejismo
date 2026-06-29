@@ -12,10 +12,10 @@ namespace Spectrum.RichText.BuiltinTags;
 /// </para>
 /// <para>
 /// where:<br/>
-/// * <c>name</c> is the specified <paramref name="name"/> for the command.<br/>
-/// * <c>argn</c> is the name of the nth required property, specified in the <paramref name="requiredProperties"/>
+/// • <c>name</c> is the specified <paramref name="name"/> for the command.<br/>
+/// • <c>argn</c> is the name of the nth required property, specified in the <paramref name="requiredProperties"/>
 ///   array.<br/>
-/// * <c>valn</c> is the value of the nth of the nth required property, if applicable.
+/// • <c>valn</c> is the value of the nth of the nth required property, if applicable.
 /// </para>
 /// </remarks>
 /// <param name="name">

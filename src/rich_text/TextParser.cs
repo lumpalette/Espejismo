@@ -96,7 +96,7 @@ public class TextParser
 					throw new UnreachableException("how the fuck this happened");
 				
 				case NodeType.Element:
-					// 1. FLush any pending text run.
+					// 1. Flush any pending text run.
 					if (_accumulatedText.Length > 0)
 					{
 						_context.AppendText(_accumulatedText.ToString());

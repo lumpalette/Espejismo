@@ -59,7 +59,8 @@ public abstract class TagBehaviour(string name, IReadOnlyList<string> requiredPr
 	/// The name of the property to find, case-sensitive.
 	/// </param>
 	/// <returns>
-	/// The matching <see cref="TagProperty"/> if found; otherwise, the <see langword="default"/> value for the type.
+	/// The matching <see cref="TagProperty"/> if found; otherwise, the <see langword="default"/> value for
+	/// <see cref="TagProperty"/>.
 	/// </returns>
 	protected static TagProperty FindProperty(ReadOnlySpan<TagProperty> properties, string name)
 	{

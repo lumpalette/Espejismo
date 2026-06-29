@@ -13,8 +13,8 @@ namespace Spectrum.RichText.BuiltinTags;
 /// </para>
 /// <para>
 /// where:<br/>
-/// * <c>name</c> is the name of one of the colors in the <see cref="Colors"/> class, case-insensitive.<br/>
-/// * <c>html_code</c> is a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
+/// • <c>name</c> is the name of one of the colors in the <see cref="Colors"/> class, case-insensitive.<br/>
+/// • <c>html_code</c> is a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
 /// </para>
 /// </remarks>
 public sealed class ColorTag() : TagBehaviour("color", ["value"])
@@ -23,7 +23,7 @@ public sealed class ColorTag() : TagBehaviour("color", ["value"])
 	{
 		var value = FindProperty(properties, "value");
 
-		var color = Color.FromString(value.Value.ToString(), new Color(0f, 0f, 0f, -1f));
+		var color = Color.FromString(value.Value, new Color(0f, 0f, 0f, -1f));
 
 		if (color.A == -1f)
 		{

@@ -16,6 +16,7 @@ public class ParseContext
 {
 	private readonly Stack<StyleOverride> _styleStack = [];
 	private readonly List<TextRun> _runs = [];
+	private readonly List<InlineIcon> _icons = [];
 	private readonly List<InlineCommand> _commands = [];
 	private readonly Stack<HorizontalAlignment> _alignmentStack = [];
 	private readonly List<AlignmentBlock> _alignmentBlocks = [];
@@ -45,6 +46,14 @@ public class ParseContext
 	/// The returned span becomes invalid when a new run is added.
 	/// </remarks>
 	public ReadOnlySpan<TextRun> Runs => CollectionsMarshal.AsSpan(_runs);
+
+	/// <summary>
+	/// Gets the current <see cref="InlineIcon"/> instances appended so far, sorted by order of addition.
+	/// </summary>
+	/// <remarks>
+	/// The returned span becomes invalid when a new icon is added.
+	/// </remarks>
+	public ReadOnlySpan<InlineIcon> Icons => CollectionsMarshal.AsSpan(_icons);
 
 	/// <summary>
 	/// Gets the current <see cref="InlineCommand"/> instances appended so far, sorted by order of addition.

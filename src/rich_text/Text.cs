@@ -4,11 +4,12 @@ using System;
 namespace Spectrum.RichText;
 
 /// <summary>
-/// Represents an ordered sequence of glyphs and inline commands generated from a rich-text parsing operation.
+/// Represents shaped rich-text string produced by a <see cref="TextParser"/> operation.
 /// </summary>
 public class Text
 {
 	private readonly TextRun[] _runs;
+	private readonly InlineIcon[] _icons;
 	private readonly InlineCommand[] _commands;
 	private readonly AlignmentBlock[] _alignmentBlocks;
 
@@ -31,6 +32,7 @@ public class Text
 		ArgumentNullException.ThrowIfNull(context, nameof(context));
 		
 		_runs = context.Runs.ToArray();
+		_icons = context.Icons.ToArray();
 		_commands = context.Commands.ToArray();
 		_alignmentBlocks = context.AlignmentOverrides.ToArray();
 
