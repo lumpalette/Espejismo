@@ -8,18 +8,17 @@ using System.Text;
 namespace Spectrum.RichText;
 
 /// <summary>
-/// Provides a mechanism for transforming rich-text strings into structured <see cref="Text"/> representations.
+///   Provides a mechanism for transforming rich-text strings into structured <see cref="Text"/> representations.
 /// </summary>
 public class TextParser
 {
-	private readonly Document _currentDocument = new();
+	private readonly Dictionary<string, TagBehaviour>.AlternateLookup<ReadOnlySpan<char>> _tags;
 	private readonly ParseContext _context = new();
 	private readonly StringBuilder _accumulatedText = new();
-	private readonly Dictionary<string, TagBehaviour>.AlternateLookup<ReadOnlySpan<char>> _tags;
 	private PropertyBuffer _properties;
 	
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextParser"/> class with no tags registered.
+	///   Initializes a new instance of the <see cref="TextParser"/> class with no tags registered.
 	/// </summary>
 	public TextParser()
 	{
@@ -28,20 +27,20 @@ public class TextParser
 	}
 
 	/// <summary>
-	/// Parses the specified rich-text formatted string into a <see cref="Text"/> instance using the specified
-	/// <see cref="TextStyle"/>.
+	///   Parses the specified rich-text formatted string into a <see cref="Text"/> instance using the specified
+	///   <see cref="TextStyle"/>.
 	/// </summary>
 	/// <param name="text">
-	/// The rich-text string to parse.
+	///   The rich-text string to parse.
 	/// </param>
 	/// <param name="style">
-	/// The style properties to use as the base.
+	///   The style attributes to use.
 	/// </param>
 	/// <returns>
-	/// A <see cref="Text"/> representing the parsed <paramref name="text"/>.
+	///   A <see cref="Text"/> representing the parsed <paramref name="text"/>.
 	/// </returns>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown if <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/> is
+	///   Thrown if <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/> is
 	/// <see langword="null"/>.
 	/// </exception>
 	public Text Parse(string text, TextStyle style)
@@ -49,27 +48,27 @@ public class TextParser
 		ArgumentNullException.ThrowIfNull(text, nameof(text));
 		ArgumentNullException.ThrowIfNull(style, nameof(style));
 		ArgumentNullException.ThrowIfNull(style.Font, nameof(style.Font));
-		
+
 		_context.Reset();
 		_accumulatedText.Clear();
-		_currentDocument.Parse(text);
-		
-		ProcessNode(0);
+
+		// This allocates two lists per call, but I don't think it matters too much right now.
+		ProcessNode(0, Document.Parse(text));
 
 		return new Text(style, _context);
 	}
 
 	/// <summary>
-	/// Adds the specified <see cref="TagBehaviour"/> to the tag registry.
+	///   Adds the specified <see cref="TagBehaviour"/> to the tag registry.
 	/// </summary>
 	/// <param name="tag">
-	/// The text tag to register.
+	///   The text tag to register.
 	/// </param>
 	/// <exception cref="ArgumentException">
-	/// Thrown if a tag with the name of <paramref name="tag"/> is already registered.
+	///   Thrown if a tag with the name of <paramref name="tag"/> is already registered.
 	/// </exception>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown if <paramref name="tag"/> is <see langword="null"/>.
+	///   Thrown if <paramref name="tag"/> is <see langword="null"/>.
 	/// </exception>
 	public void RegisterTag(TagBehaviour tag)
 	{
@@ -81,22 +80,21 @@ public class TextParser
 		}
 	}
 
-	private void ProcessNode(int parent)
+	private void ProcessNode(int parent, in Document document)
 	{
-		var nodes = _currentDocument.Nodes;
 		var entityBuffer = (stackalloc char[2]);
-
-		for (int i = nodes[parent].FirstChild; i != -1; i = nodes[i].Sibling)
+		
+		for (int i = document.Nodes[parent].FirstChild; i != -1; i = document.Nodes[i].Sibling)
 		{
-			var childNode = nodes[i];
+			var childNode = document.Nodes[i];
 
 			switch (childNode.Type)
 			{
 				case NodeType.Root:
 					throw new UnreachableException("how the fuck this happened");
-				
+
 				case NodeType.Element:
-					// 1. Flush any pending text run.
+					// 1. Commit accumulated text into a single text run.
 					if (_accumulatedText.Length > 0)
 					{
 						_context.AppendText(_accumulatedText.ToString());
@@ -104,29 +102,29 @@ public class TextParser
 					}
 
 					// 2. Retrieve tag from the registry.
-					var tagName = _currentDocument.Text.AsSpan(childNode.ValueStart, childNode.ValueLength);
+					var tagName = document.Text.AsSpan(childNode.ValueStart, childNode.ValueLength);
 
 					if (!_tags.TryGetValue(tagName, out TagBehaviour? tag))
 					{
 						Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
-						ProcessNode(i);
+						ProcessNode(i, document);
 						continue;
 					}
 
 					// 3. Extract and validate tag properties.
-					var attributes = _currentDocument.Attributes.Slice(childNode.AttributeStart, childNode.AttributeCount);
-					var properties = AttributesToProperties(attributes);
+					var attributes = document.Attributes.Slice(childNode.AttributeStart, childNode.AttributeCount);
+					var properties = AttributesToProperties(attributes, document.Text);
 
 					if (!HasRequiredProperties(tag, properties))
 					{
 						Godot.GD.PushWarning($"Text tag with name '{tagName}' is missing required properties.");
-						ProcessNode(i);
+						ProcessNode(i, document);
 						continue;
 					}
 
 					// 4. Initialize tag effects and process child nodes.
 					bool success = tag.Begin(_context, properties);
-					ProcessNode(i);
+					ProcessNode(i, document);
 
 					if (success)
 					{
@@ -135,7 +133,7 @@ public class TextParser
 					break;
 				
 				case NodeType.Text:
-					_accumulatedText.Append(_currentDocument.Text, childNode.ValueStart, childNode.ValueLength);
+					_accumulatedText.Append(document.Text, childNode.ValueStart, childNode.ValueLength);
 					break;
 
 				case NodeType.CharacterEntity:
@@ -153,20 +151,18 @@ public class TextParser
 		}
 	}
 
-	private ReadOnlySpan<TagProperty> AttributesToProperties(ReadOnlySpan<AttributeSpan> attributes)
+	private ReadOnlySpan<TagProperty> AttributesToProperties(ReadOnlySpan<AttributeSpan> attributes, string text)
 	{
-		if (attributes.Length == 0)
-		{
-			return [];
-		}
-
 		for (int i = 0; i < attributes.Length; i++)
 		{
 			var attribute = attributes[i];
 
 			_properties[i] = new TagProperty(
-				name:  _currentDocument.Text.Substring(attribute.NameStart, attribute.NameLength), 
-				value: _currentDocument.Text.Substring(attribute.ValueStart, attribute.ValueLength)
+				text,
+				attribute.NameStart,
+				attribute.NameLength,
+				attribute.ValueStart,
+				attribute.ValueLength
 			);
 		}
 
