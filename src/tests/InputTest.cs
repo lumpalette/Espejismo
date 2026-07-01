@@ -12,18 +12,18 @@ internal sealed partial class InputTest : Node
 			ActionMap = new InputActionMap
 			{
 				{ "accept", new InputAction(
-					new KeySource(Key.Z, isVirtual: false),
-					new KeySource(Key.Enter, isVirtual: false),
+					new KeySource(Key.Z, @virtual: false),
+					new KeySource(Key.Enter, @virtual: false),
 					new JoypadButtonSource(JoyButton.B)
 				) },
 				{ "decline", new InputAction(
-					new KeySource(Key.X, isVirtual: false),
-					new KeySource(Key.Shift, isVirtual: false),
+					new KeySource(Key.X, @virtual: false),
+					new KeySource(Key.Shift, @virtual: false),
 					new JoypadButtonSource(JoyButton.A)
 				) },
 				{ "context", new InputAction(
-					new KeySource(Key.C, isVirtual: false),
-					new KeySource(Key.I, isVirtual: false),
+					new KeySource(Key.C, @virtual: false),
+					new KeySource(Key.I, @virtual: false),
 					new JoypadButtonSource(JoyButton.Start)
 				) }
 			}

@@ -4,15 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace Spectrum.Input;
 
 /// <summary>
-/// Represents a button from a joypad device.
+///   Represents a button from a joypad device.
 /// </summary>
 /// <param name="button">
-/// The joypad button to assign.
+///   The joypad button to assign.
 /// </param>
 public class JoypadButtonSource(JoyButton button) : InputSource<JoypadButtonSource>
 {
 	/// <summary>
-	/// Gets the button identifier.
+	///   Gets the button identifier.
 	/// </summary>
 	public JoyButton Button { get; } = button;
 

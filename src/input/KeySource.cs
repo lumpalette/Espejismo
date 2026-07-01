@@ -5,27 +5,27 @@ using System.Diagnostics.CodeAnalysis;
 namespace Spectrum.Input;
 
 /// <summary>
-/// Represents a key from a keyboard.
+///   Represents a key from a keyboard.
 /// </summary>
 /// <param name="key">
-/// The key to assign.
+///   The key to assign.
 /// </param>
-/// <param name="isVirtual">
-/// <see langword="true"/> whether to use the user's keyboard layout, <see langword="false"/> to use a US QWERTY
-/// keyboard.
+/// <param name="virtual">
+///   <see langword="true"/> whether to use the user's keyboard layout, <see langword="false"/> to use a US QWERTY
+///   keyboard.
 /// </param>
-public class KeySource(Key key, bool isVirtual) : InputSource<KeySource>
+public class KeySource(Key key, bool @virtual) : InputSource<KeySource>
 {
 	/// <summary>
-	/// Gets the key identifier.
+	///   Gets the key identifier.
 	/// </summary>
 	public Key Key { get; } = key;
 
 	/// <summary>
-	/// Gets a value indicating whether the key position is based on the user's current layout or based on a standard
-	/// US QWERTY layout.
+	///   Gets a value indicating whether the key position is based on the user's current layout or based on a standard
+	///   US QWERTY layout.
 	/// </summary>
-	public bool IsVirtual { get; } = isVirtual;
+	public bool IsVirtual { get; } = @virtual;
 
 	public override bool TryParseEvent(InputEvent? e, float deadzone, out float value)
 	{

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Spectrum.Input;
 
 /// <summary>
-/// Contains information and the frame-based state of a logical game action.
+///   Contains information and the frame-based state of a logical game action.
 /// </summary>
 public class InputAction
 {
@@ -24,7 +24,7 @@ public class InputAction
 	private ulong _releasedPhysicsFrame = ulong.MaxValue;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="InputAction"/> class that is empty.
+	///   Initializes a new instance of the <see cref="InputAction"/> class that is empty.
 	/// </summary>
 	public InputAction()
 	{
@@ -32,11 +32,11 @@ public class InputAction
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="InputAction"/> class by providing a collection of
-	/// <see cref="InputSource"/> instances to use as bindings.
+	///   Initializes a new instance of the <see cref="InputAction"/> class by providing a collection of
+	///   <see cref="InputSource"/> instances to use as bindings.
 	/// </summary>
 	/// <param name="sources">
-	/// The sources to bind to this action.
+	///   The sources to bind to this action.
 	/// </param>
 	public InputAction(params ReadOnlySpan<InputSource> sources)
 	{
@@ -47,15 +47,15 @@ public class InputAction
 	}
 
 	/// <summary>
-	/// Gets the current strength or intensity of the action.
+	///   Gets the current strength or intensity of the action.
 	/// </summary>
 	/// <value>
-	/// A floating-point number in the range [0,1].
+	///   A floating-point number in the range [0,1].
 	/// </value>
 	public float Strength => Math.Abs(_currentStrength);
 
 	/// <summary>
-	/// Gets the state of the action in the current frame.
+	///   Gets the state of the action in the current frame.
 	/// </summary>
 	public InputActionState State
 	{
@@ -89,22 +89,22 @@ public class InputAction
 	}
 
 	/// <summary>
-	/// Gets the <see cref="InputSource"/> instances that can trigger the action.
+	///   Gets a collection of <see cref="InputSource"/> instances that can trigger the action.
 	/// </summary>
 	public IReadOnlySet<InputSource> Sources => _sources;
 
 	/// <summary>
-	/// Binds the specified <see cref="InputSource"/> to the action.
+	///   Binds the specified <see cref="InputSource"/> to the action.
 	/// </summary>
 	/// <param name="source">
-	/// The source to bind.
+	///   The source to bind.
 	/// </param>
 	/// <returns>
-	/// <see langword="true"/> if <paramref name="source"/> was successfully bound; <see langword="false"/> if it was
-	/// already present.
+	///   <see langword="true"/> if <paramref name="source"/> was successfully bound; <see langword="false"/> if it was
+	///   already present.
 	/// </returns>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown if <paramref name="source"/> is <see langword="null"/>.
+	///   Thrown if <paramref name="source"/> is <see langword="null"/>.
 	/// </exception>
 	public bool Bind(InputSource source)
 	{
@@ -113,17 +113,17 @@ public class InputAction
 	}
 
 	/// <summary>
-	/// Unbinds the specified <see cref="InputSource"/> from the action.
+	///   Unbinds the specified <see cref="InputSource"/> from the action.
 	/// </summary>
 	/// <param name="source">
-	/// The source to unbind.
+	///   The source to unbind.
 	/// </param>
 	/// <returns>
-	/// <see langword="true"/> if the <paramref name="source"/> was successfully unbound; <see langword="false"/> if it
-	/// was not present.
+	///   <see langword="true"/> if the <paramref name="source"/> was successfully unbound; <see langword="false"/> if
+	///   it was not present.
 	/// </returns>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown if <paramref name="source"/> is <see langword="null"/>.
+	///   Thrown if <paramref name="source"/> is <see langword="null"/>.
 	/// </exception>
 	public bool Unbind(InputSource source)
 	{
@@ -148,7 +148,7 @@ public class InputAction
 	}
 
 	/// <summary>
-	/// Unbinds all <see cref="InputSource"/> instances associated with the action.
+	///   Unbinds all <see cref="InputSource"/> instances associated with the action.
 	/// </summary>
 	public void UnbindAll()
 	{
