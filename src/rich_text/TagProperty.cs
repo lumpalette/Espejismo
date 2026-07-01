@@ -1,28 +1,39 @@
+using System;
+
 namespace Spectrum.RichText;
 
 /// <summary>
-/// Represents a name-value string property associated to a rich-text tag or command.
+///   Represents a name-value string property associated to a rich-text tag or command.
 /// </summary>
-/// <param name="name">
-/// The name of the property.
+/// <param name="text">
+///   The rich-text string containing the tag.
 /// </param>
-/// <param name="value">
-/// The value of the property.
+/// <param name="nameStart">
+///   The position of the name in <paramref name="text"/>.
 /// </param>
-public readonly struct TagProperty(string name, string value)
+/// <param name="nameLength">
+///   The number of characters in the name.
+/// </param>
+/// <param name="valueStart">
+///   The position of the name in <paramref name="text"/>.
+/// </param>
+/// <param name="valueLength">
+///   The number of characters in the value.
+/// </param>
+public readonly struct TagProperty(string text, int nameStart, int nameLength, int valueStart, int valueLength)
 {
 	/// <summary>
-	/// Gets the name of the property.
+	///   Gets the name of the property.
 	/// </summary>
-	public string Name { get; } = name;
+	public ReadOnlySpan<char> Name => text.AsSpan(nameStart, nameLength);
 
 	/// <summary>
-	/// Gets the value of the property.
+	///   Gets the value of the property.
 	/// </summary>
-	public string Value { get; } = value;
+	public ReadOnlySpan<char> Value => text.AsSpan(valueStart, valueLength);
 
 	/// <summary>
-	/// Gets a value indicating whether the property was properly defined and initialized.
+	///   Gets a value indicating whether the property was properly defined and initialized.
 	/// </summary>
 	public bool IsDefined { get; } = true;
 }
