@@ -3,12 +3,12 @@ using Godot;
 namespace Spectrum.RichText;
 
 /// <summary>
-/// Represents a set of visual properties that describe how text is rendered.
+///   Represents a set of style attributes that describe how <see cref="Text"/> instances are rendered.
 /// </summary>
 public partial class TextStyle : Resource
 {
 	/// <summary>
-	/// Gets the font resource used for the text.
+	///   Gets or sets the font resource used for the text.
 	/// </summary>
 	[Export]
 	public Font? Font
@@ -25,7 +25,7 @@ public partial class TextStyle : Resource
 	}
 
 	/// <summary>
-	/// Gets the size of the text, in pixels (px). The default is 8px.
+	///   Gets or sets the size of the text, in pixels (px). The default is 8px.
 	/// </summary>
 	[Export(PropertyHint.Range, $"0, 256, suffix:px")]
 	public uint FontSize
@@ -42,7 +42,7 @@ public partial class TextStyle : Resource
 	} = 8;
 
 	/// <summary>
-	/// Gets the color of the text. The default is white.
+	///   Gets or sets the color of the text. The default is white.
 	/// </summary>
 	[Export]
 	public Color Color
@@ -57,4 +57,38 @@ public partial class TextStyle : Resource
 			}
 		}
 	} = Colors.White;
+
+	/// <summary>
+	///   Gets or sets additional space between characters, in pixels. Can be negative.
+	/// </summary>
+	[Export]
+	public int LetterSpacing
+	{
+		get;
+		set
+		{
+			if (field != value)
+			{
+				field = value;
+				EmitChanged();
+			}
+		}
+	}
+
+	/// <summary>
+	///   Gets or sets additional space between lines of text, in pixels. Can be negative.
+	/// </summary>
+	[Export]
+	public int LineSpacing
+	{
+		get;
+		set
+		{
+			if (field != value)
+			{
+				field = value;
+				EmitChanged();
+			}
+		}
+	}
 }
