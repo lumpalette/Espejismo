@@ -34,7 +34,7 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 	{
 		foreach (var player in Players)
 		{
-			player.HandleEvent(@event);
+			player.Process(@event);
 		}
 	}
 

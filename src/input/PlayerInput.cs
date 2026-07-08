@@ -222,7 +222,13 @@ public sealed class PlayerInput
 		return GetAction(actionName).State == InputActionState.WasReleased;
 	}
 
-	internal void HandleEvent(InputEvent e)
+	/// <summary>
+	///   Processes the specified <see cref="InputEvent"/> and updates the state of the action map accordingly.
+	/// </summary>
+	/// <param name="e">
+	///   The input event to process.
+	/// </param>
+	public void Process(InputEvent e)
 	{
 		if (!CanHandleEvent(e))
 		{
