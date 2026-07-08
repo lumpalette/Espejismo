@@ -60,6 +60,7 @@ partial struct Tokenizer
 
 	private TokenType ExecEndTagOpen()
 	{
+		// The specification purposely ignores the character sequence "</>". We emit it as regular text token instead.
 		var input = Consume();
 
 		if (char.IsAsciiLetter((char)input))
@@ -330,6 +331,29 @@ partial struct Tokenizer
 		if (input == Eof)
 		{
 			return TokenType.Eof;
+		}
+
+		// This is not part of the specification, but this avoids malformed entities consume the rest entire text.
+		var length = _position - StartIndex;
+		var validInput = false;
+
+		if (length == 2)
+		{
+			validInput = input == '#';
+		}
+		else if (length == 3)
+		{
+			validInput = _source[StartIndex + 1] == '#' && (input == 'x' || input == 'X');
+		}
+		else
+		{
+			validInput = char.IsAsciiLetter((char)input);
+		}
+
+		if (!validInput)
+		{
+			ReadValue = _source[StartIndex.._position];
+			return SwitchTo(State.Data, TokenType.Text);
 		}
 
 		return TokenType.None;
