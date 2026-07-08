@@ -337,17 +337,17 @@ partial struct Tokenizer
 		var length = _position - StartIndex;
 		var validInput = false;
 
-		if (length == 2)
+		if (length == 2 && input == '#')
 		{
-			validInput = input == '#';
+			validInput = true;
 		}
-		else if (length == 3)
+		else if (length == 3 && _source[StartIndex + 1] == '#' && (input == 'x' || input == 'X'))
 		{
-			validInput = _source[StartIndex + 1] == '#' && (input == 'x' || input == 'X');
+			validInput = true;
 		}
-		else
+		else if (char.IsAsciiLetterOrDigit((char)input))
 		{
-			validInput = char.IsAsciiLetter((char)input);
+			validInput = true;
 		}
 
 		if (!validInput)
