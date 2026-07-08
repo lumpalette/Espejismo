@@ -12,9 +12,11 @@ namespace Spectrum.RichText;
 /// </summary>
 public class TextParser
 {
-	private readonly Dictionary<string, TagBehaviour>.AlternateLookup<ReadOnlySpan<char>> _tags;
 	private readonly ParseContext _context = new();
 	private readonly StringBuilder _accumulatedText = new();
+	
+	private readonly Dictionary<string, TagBehaviour>.AlternateLookup<ReadOnlySpan<char>> _tags;
+
 	private PropertyBuffer _properties;
 	
 	/// <summary>
@@ -30,30 +32,28 @@ public class TextParser
 	///   Parses the specified rich-text formatted string into a <see cref="Text"/> instance using the specified
 	///   <see cref="TextStyle"/>.
 	/// </summary>
-	/// <param name="text">
+	/// <param name="richText">
 	///   The rich-text string to parse.
 	/// </param>
 	/// <param name="style">
 	///   The style attributes to use.
 	/// </param>
 	/// <returns>
-	///   A <see cref="Text"/> representing the parsed <paramref name="text"/>.
+	///   The resulting <see cref="Text"/> from parsing the <paramref name="richText"/> input.
 	/// </returns>
 	/// <exception cref="ArgumentNullException">
-	///   Thrown if <paramref name="text"/>, <paramref name="style"/> or the font of <paramref name="style"/> is
-	/// <see langword="null"/>.
+	///   Thrown if <paramref name="richText"/> or <paramref name="style"/> is <see langword="null"/>.
 	/// </exception>
-	public Text Parse(string text, TextStyle style)
+	public Text Parse(string richText, TextStyle style)
 	{
-		ArgumentNullException.ThrowIfNull(text, nameof(text));
+		ArgumentNullException.ThrowIfNull(richText, nameof(richText));
 		ArgumentNullException.ThrowIfNull(style, nameof(style));
-		ArgumentNullException.ThrowIfNull(style.Font, nameof(style.Font));
-
+		
 		_context.Reset();
 		_accumulatedText.Clear();
 
 		// This allocates two lists per call, but I don't think it matters too much right now.
-		ProcessNode(0, Document.Parse(text));
+		ProcessNode(0, Document.Parse(richText));
 
 		return new Text(style, _context);
 	}
@@ -80,80 +80,106 @@ public class TextParser
 		}
 	}
 
-	private void ProcessNode(int parent, in Document document)
+	private void ProcessNode(int parentIndex, in Document document)
 	{
-		var entityBuffer = (stackalloc char[2]);
-		
-		for (int i = document.Nodes[parent].FirstChild; i != -1; i = document.Nodes[i].Sibling)
+		for (var i = document.Nodes[parentIndex].FirstChildIndex; i != -1; i = document.Nodes[i].SiblingIndex)
 		{
-			var childNode = document.Nodes[i];
+			var child = document.Nodes[i];
 
-			switch (childNode.Type)
+			switch (child.Type)
 			{
 				case NodeType.Root:
 					throw new UnreachableException("how the fuck this happened");
-
 				case NodeType.Element:
-					// 1. Commit accumulated text into a single text run.
-					if (_accumulatedText.Length > 0)
-					{
-						_context.AppendText(_accumulatedText.ToString());
-						_accumulatedText.Clear();
-					}
-
-					// 2. Retrieve tag from the registry.
-					var tagName = document.Text.AsSpan(childNode.ValueStart, childNode.ValueLength);
-
-					if (!_tags.TryGetValue(tagName, out TagBehaviour? tag))
-					{
-						Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
-						ProcessNode(i, document);
-						continue;
-					}
-
-					// 3. Extract and validate tag properties.
-					var attributes = document.Attributes.Slice(childNode.AttributeStart, childNode.AttributeCount);
-					var properties = AttributesToProperties(attributes, document.Text);
-
-					if (!HasRequiredProperties(tag, properties))
-					{
-						Godot.GD.PushWarning($"Text tag with name '{tagName}' is missing required properties.");
-						ProcessNode(i, document);
-						continue;
-					}
-
-					// 4. Initialize tag effects and process child nodes.
-					bool success = tag.Begin(_context, properties);
-					ProcessNode(i, document);
-
-					if (success)
-					{
-						tag.End(_context);
-					}
+					ProcessElement(child, i, document);
 					break;
-				
 				case NodeType.Text:
-					_accumulatedText.Append(document.Text, childNode.ValueStart, childNode.ValueLength);
+					ProcessText(document.Text, child.ValueStart, child.ValueLength);
 					break;
-
 				case NodeType.CharacterEntity:
-					if (childNode.CharacterEntity.TryEncodeToUtf16(entityBuffer, out int charsWritten))
-					{
-						_accumulatedText.Append(entityBuffer[..charsWritten]);
-					}
+					ProcessCharacterEntity(child.CharacterEntity);
 					break;
 			}
 		}
 
 		if (_accumulatedText.Length > 0)
 		{
-			_context.AppendText(_accumulatedText.ToString());
+			FlushAccumulatedText();
+		}
+	}
+
+	private void ProcessElement(Node element, int elementIndex, in Document document)
+	{
+		// 1. Commit accumulated text into a single text run.
+		if (_accumulatedText.Length > 0)
+		{
+			FlushAccumulatedText();
+		}
+
+		// 2. Retrieve tag from the registry.
+		var tagName = document.Text.AsSpan(element.ValueStart, element.ValueLength);
+
+		if (!_tags.TryGetValue(tagName, out TagBehaviour? tag))
+		{
+			if (!Godot.Engine.IsEditorHint())
+			{
+				Godot.GD.PushWarning($"Unknown text tag with name '{tagName}'.");
+			}
+
+			ProcessNode(elementIndex, document);
+			return;
+		}
+
+		// 3. Extract and validate tag properties.
+		var attributes = document.Attributes.Slice(element.AttributeStart, element.AttributeCount);
+		var properties = AttributesToProperties(attributes, document.Text);
+
+		if (!HasRequiredProperties(tag, properties))
+		{
+			if (!Godot.Engine.IsEditorHint())
+			{
+				Godot.GD.PushWarning($"Text tag with name '{tagName}' is missing required properties.");
+			}
+
+			ProcessNode(elementIndex, document);
+			return;
+		}
+
+		// 4. Initialize tag effects and process child nodes.
+		var success = tag.Begin(_context, properties);
+		ProcessNode(elementIndex, document);
+
+		if (success)
+		{
+			tag.End(_context);
+		}
+	}
+
+	// I only added this method for consistency with the other Process*() methods xd
+	private void ProcessText(string str, int start, int length)
+	{
+		_accumulatedText.Append(str, start, length);
+	}
+
+	private void FlushAccumulatedText()
+	{
+		_context.AppendText(_accumulatedText.ToString());
+		_accumulatedText.Clear();
+	}
+
+	private void ProcessCharacterEntity(Rune entity)
+	{
+		var buffer = (stackalloc char[2]);
+
+		if (entity.TryEncodeToUtf16(buffer, out int charsWritten))
+		{
+			_accumulatedText.Append(buffer[..charsWritten]);
 		}
 	}
 
 	private ReadOnlySpan<TagProperty> AttributesToProperties(ReadOnlySpan<AttributeSpan> attributes, string text)
 	{
-		for (int i = 0; i < attributes.Length; i++)
+		for (var i = 0; i < attributes.Length; i++)
 		{
 			var attribute = attributes[i];
 
@@ -171,7 +197,7 @@ public class TextParser
 
 	private static bool HasRequiredProperties(TagBehaviour tag, ReadOnlySpan<TagProperty> properties)
 	{
-		int requiredPropertyCount = tag.RequiredPropertyNames.Count;
+		var requiredPropertyCount = tag.RequiredPropertyNames.Count;
 
 		// It doesn't matter the length of properties because we can pass optional properties to any tag.
 		if (requiredPropertyCount == 0)
@@ -179,13 +205,13 @@ public class TextParser
 			return true;
 		}
 
-		for (int i = 0; i < requiredPropertyCount; i++)
+		for (var i = 0; i < requiredPropertyCount; i++)
 		{
-			bool found = false;
+			var found = false;
 
-			for (int j = 0; j < properties.Length; j++)
+			for (var j = 0; j < properties.Length; j++)
 			{
-				if (tag.RequiredPropertyNames[i] == properties[j].Name)
+				if (properties[j].Name.SequenceEqual(tag.RequiredPropertyNames[i]))
 				{
 					found = true;
 					break;
@@ -200,7 +226,7 @@ public class TextParser
 
 		return true;
 	}
-
+	
 	[InlineArray(Tokenizer.MaxAttributes)]
 	private struct PropertyBuffer
 	{

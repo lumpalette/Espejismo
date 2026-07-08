@@ -1,9 +1,8 @@
 using Godot;
-using Spectrum.Input;
 
-namespace Spectrum.Tests;
+namespace Spectrum.Input.Tests;
 
-internal sealed partial class InputTest : Node
+internal sealed partial class SystemTest : Node
 {
 	public override void _Ready()
 	{

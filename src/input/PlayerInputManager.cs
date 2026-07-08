@@ -32,7 +32,7 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 
 	public override void _Input(InputEvent @event)
 	{
-		foreach (PlayerInput player in Players)
+		foreach (var player in Players)
 		{
 			player.HandleEvent(@event);
 		}
@@ -71,7 +71,7 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 			return -1;
 		}
 
-		foreach (KeyValuePair<int, PlayerInput> entry in _players)
+		foreach (var entry in _players)
 		{
 			if (entry.Value == player)
 			{

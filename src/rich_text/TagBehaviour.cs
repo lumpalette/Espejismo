@@ -70,7 +70,7 @@ public abstract class TagBehaviour(string name, IReadOnlyList<string> requiredPr
 	/// </returns>
 	protected static TagProperty FindProperty(ReadOnlySpan<TagProperty> properties, string name)
 	{
-		foreach (TagProperty property in properties)
+		foreach (var property in properties)
 		{
 			if (property.Name.SequenceEqual(name))
 			{

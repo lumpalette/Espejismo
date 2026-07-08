@@ -6,14 +6,15 @@ using System.Text;
 
 namespace Spectrum.RichText.Parsing;
 
-internal ref partial struct Tokenizer(string text)
+internal ref partial struct Tokenizer(string source)
 {
 	public const int MaxAttributes = 8;
+
 	private const int Eof = -1;
 
-	private readonly ReadOnlySpan<char> _inputText = text.AsSpan();
+	private readonly ReadOnlySpan<char> _source = source.AsSpan();
 
-	private State _state = State.Data;
+	private State _state;
 	private int _position;
 	private AttributeBuffer _attributes;
 	private int _attributeCount;
@@ -28,7 +29,7 @@ internal ref partial struct Tokenizer(string text)
 	// Depends on the token type:
 	// * For text tokens, returns the text content
 	// * For tag tokens, returns the tag name
-	// * For anything else, the value is invalid and returns an empty string
+	// * For anything else, the returned value is invalid
 	public ReadOnlySpan<char> ReadValue { get; private set; }
 
 	// Marks the beginning of ReadValue.
@@ -79,6 +80,18 @@ internal ref partial struct Tokenizer(string text)
 		return TokenType != TokenType.Eof;
 	}
 
+	private int Consume()
+	{
+		if (_position < _source.Length)
+		{
+			return _source[_position++];
+		}
+
+		// We always advance the cursor even when we have reached the end for reconsumes.
+		_position++;
+		return Eof;
+	}
+
 	private TokenType SwitchTo(State state, TokenType returnToken = TokenType.None)
 	{
 		_state = state;
@@ -91,22 +104,8 @@ internal ref partial struct Tokenizer(string text)
 		return SwitchTo(state);
 	}
 
-	private int Consume()
-	{
-		if (_position < _inputText.Length)
-		{
-			return _inputText[_position++];
-		}
-
-		// We always advance the cursor even when we have reached the end for reconsumes.
-		_position++;
-		return Eof;
-	}
-
 	private void AppendCurrentAttribute()
 	{
-		Debug.Assert(_attributeCount < MaxAttributes);
-
 		if (_currentAttributeNameLength == 0 || _attributeCount >= MaxAttributes)
 		{
 			return;
@@ -127,7 +126,7 @@ internal ref partial struct Tokenizer(string text)
 
 	private void ResetToken()
 	{
-		TokenType = (_position < _inputText.Length) ? TokenType.None : TokenType.Eof;
+		TokenType = (_position < _source.Length) ? TokenType.None : TokenType.Eof;
 		ReadValue = [];
 		StartIndex = _position;
 		IsSelfClosing = false;

@@ -3,8 +3,9 @@ using Godot;
 namespace Spectrum.RichText;
 
 /// <summary>
-///   Represents a set of style attributes that describe how <see cref="Text"/> instances are rendered.
+///   Represents a set of style attributes that describe how text is rendered.
 /// </summary>
+[GlobalClass, Tool]
 public partial class TextStyle : Resource
 {
 	/// <summary>
@@ -28,7 +29,7 @@ public partial class TextStyle : Resource
 	///   Gets or sets the size of the text, in pixels (px). The default is 8px.
 	/// </summary>
 	[Export(PropertyHint.Range, $"0, 256, suffix:px")]
-	public uint FontSize
+	public int FontSize
 	{
 		get;
 		set

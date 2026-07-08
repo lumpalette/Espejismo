@@ -34,8 +34,8 @@ public class JoypadAxisSource(JoyAxis axis, bool positive) : InputSource<JoypadA
 			return false;
 		}
 
-		float raw = jmotion.AxisValue;
-		float abs = Mathf.Abs(raw);
+		var raw = jmotion.AxisValue;
+		var abs = Math.Abs(raw);
 
 		if (abs < 0.001f || IsPositive != raw > 0f)
 		{

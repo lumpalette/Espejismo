@@ -8,24 +8,21 @@ namespace Spectrum.RichText;
 /// <summary>
 ///   Provides an interface to query and mutate the state of a rich-text parsing operation.
 /// </summary>
-/// <remarks>
-///   The class mantains three lists for the text runs, icons and commands, along with a stack of style overrides that
-///   affects the rendering properties of subsequent text runs.
-/// </remarks>
 public class ParseContext
 {
 	private readonly Stack<StyleOverride> _styleStack = [];
 	private readonly List<TextRun> _currentRuns = [];
 	private readonly List<InlineIcon> _currentIcons = [];
 	private readonly List<InlineCommand> _currentCommands = [];
-	private readonly List<AlignmentBlock> _currentBlocks = [];
+	private readonly List<AlignmentRange> _currentAlignments = [];
 	private readonly Stack<HorizontalAlignment> _alignmentStack = [];
 
 	private int _textPosition;
-	private int _blockStart;
+	private int _sequenceIndex;
+	private int _alignStart;
 
 	/// <summary>
-	///   Gets the style override currently at the top of the style stack.
+	///   Gets the style currently at the top of the style stack.
 	/// </summary>
 	/// <remarks>
 	///   If the style stack is empty, the <see langword="default"/> value for <see cref="StyleOverride"/> is returned.
@@ -64,18 +61,18 @@ public class ParseContext
 	public ReadOnlySpan<InlineCommand> Commands => CollectionsMarshal.AsSpan(_currentCommands);
 
 	/// <summary>
-	///   Gets the <see cref="AlignmentBlock"/> instances appended so far.
+	///   Gets the <see cref="AlignmentRange"/> instances appended so far.
 	/// </summary>
 	/// <remarks>
-	///   The returned span becomes invalid when a new block begins.
+	///   The returned span becomes invalid when a new range begins.
 	/// </remarks>
-	public ReadOnlySpan<AlignmentBlock> AlignmentOverrides => CollectionsMarshal.AsSpan(_currentBlocks);
+	public ReadOnlySpan<AlignmentRange> AlignmentRanges => CollectionsMarshal.AsSpan(_currentAlignments);
 
 	/// <summary>
 	///   Adds a <see cref="StyleOverride"/> at the top of the stack.
 	/// </summary>
 	/// <param name="style">
-	///   The style override to push onto the stack.
+	///   The style to push onto the stack.
 	/// </param>
 	public void PushStyle(StyleOverride style)
 	{
@@ -83,7 +80,7 @@ public class ParseContext
 	}
 
 	/// <summary>
-	///   Removes the style override at the top of the style stack.
+	///   Removes the style at the top of the style stack.
 	/// </summary>
 	/// <exception cref="InvalidOperationException">
 	///   Thrown if the style stack is empty.
@@ -103,7 +100,7 @@ public class ParseContext
 	///   <see cref="TopStyle"/>.
 	/// </summary>
 	/// <param name="text">
-	///   The characters in the text run.
+	///   The characters in the run.
 	/// </param>
 	/// <exception cref="ArgumentNullException">
 	///   Thrown if <paramref name="text"/> is <see langword="null"/>.
@@ -112,8 +109,10 @@ public class ParseContext
 	{
 		ArgumentNullException.ThrowIfNull(text, nameof(text));
 
-		_currentRuns.Add(new TextRun(text, TopStyle));
+		_currentRuns.Add(new TextRun(_sequenceIndex, text, TopStyle));
+		
 		_textPosition += text.Length;
+		_sequenceIndex++;
 	}
 
 	/// <summary>
@@ -133,28 +132,29 @@ public class ParseContext
 	{
 		ArgumentNullException.ThrowIfNull(name, nameof(name));
 
-		// Commands generally outlive the document tree, so we have to store its properties in the heap.
-		_currentCommands.Add(new InlineCommand(name, _textPosition, properties.ToArray()));
+		// Commands are consumed after the text is shaped, which outlives the source document (ref struct),
+		// so we need to store the properties in the heap.
+		_currentCommands.Add(new InlineCommand(name, properties.ToArray(), _textPosition));
 	}
 
 	/// <summary>
-	///   Opens a new alignment block, applying the specified alignment to every subsequent <see cref="TextRun"/>.
+	///   Begins a new <see cref="AlignmentRange"/> at the current text position.
 	/// </summary>
 	/// <param name="alignment">
 	///   The alignment to apply.
 	/// </param>
 	public void BeginAlignment(HorizontalAlignment alignment)
 	{
-		// Always push even when pushing the same alignment, as it would break the symmetry for end tags.
+		// Always push even when the previous alignment is the same, because it would break end tags otherwise.
 		FlushCurrentAlignment();
 		_alignmentStack.Push(alignment);
 	}
 
 	/// <summary>
-	///   Closes the current alignment block and restores the previous alignment, if any.
+	///   Ends the current <see cref="AlignmentRange"/> and restores the previous alignment, if any.
 	/// </summary>
 	/// <remarks>
-	///   If there is no pending alignment block, the method call is ignored.
+	///   If there is no <see cref="AlignmentRange"/> to end, the method call is ignored.
 	/// </remarks>
 	public void EndAlignment()
 	{
@@ -172,23 +172,26 @@ public class ParseContext
 	public void Reset()
 	{
 		_styleStack.Clear();
+		
 		_currentRuns.Clear();
+		_currentIcons.Clear();
 		_currentCommands.Clear();
+		_currentAlignments.Clear();
+
 		_alignmentStack.Clear();
-		_currentBlocks.Clear();
+
 		_textPosition = 0;
-		_blockStart = 0;
+		_sequenceIndex = 0;
+		_alignStart = 0;
 	}
 
 	private void FlushCurrentAlignment()
 	{
-		int length = _currentRuns.Count - _blockStart;
-
-		if (length > 0 && _alignmentStack.TryPeek(out HorizontalAlignment current))
+		if (_sequenceIndex > _alignStart && _alignmentStack.TryPeek(out HorizontalAlignment current))
 		{
-			_currentBlocks.Add(new AlignmentBlock(_blockStart, length, current));
+			_currentAlignments.Add(new AlignmentRange(_alignStart, _sequenceIndex, current));
 		}
 
-		_blockStart = _currentRuns.Count;
+		_alignStart = _sequenceIndex;
 	}
 }

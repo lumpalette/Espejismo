@@ -23,12 +23,8 @@ public sealed class ColorTag() : TagBehaviour("color", ["value"])
 	{
 		var value = FindProperty(properties, "value");
 
-		var fallback = new Color(-1f, -2f, -3f, -4f);
-		var color = Color.FromString(value.Value.ToString(), fallback);
-
-		if (color == fallback)
+		if (!TryParseColor(value.Value.ToString(), out Color color))
 		{
-			GD.PushWarning($"Unknown color value ({value.Value}).");
 			return false;
 		}
 
@@ -39,5 +35,23 @@ public sealed class ColorTag() : TagBehaviour("color", ["value"])
 	public override void End(ParseContext context)
 	{
 		context.PopStyle();
+	}
+
+	private static bool TryParseColor(string value, out Color color)
+	{
+		var fallback = new Color(-1f, -2f, -3f, -4f);
+		color = Color.FromString(value, fallback);
+
+		if (color == fallback)
+		{
+			if (!Engine.IsEditorHint())
+			{
+				GD.PushWarning($"Unknown color value ({value}).");
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 }

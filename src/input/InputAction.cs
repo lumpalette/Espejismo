@@ -14,14 +14,14 @@ public class InputAction
 	private readonly HashSet<InputSource> _sources = [];
 	private readonly Dictionary<InputSource, float> _strengths = [];
 
-	private float _currentStrength;
-
 	// we set those to MaxValue because otherwise an action release would be detected in the first frame of the game,
 	// which is probably more common than waiting 9.74 * 10^9 years (a lot).
 	private ulong _pressedProcessFrame = ulong.MaxValue;
 	private ulong _pressedPhysicsFrame = ulong.MaxValue;
 	private ulong _releasedProcessFrame = ulong.MaxValue;
 	private ulong _releasedPhysicsFrame = ulong.MaxValue;
+
+	private float _currentStrength;
 
 	/// <summary>
 	///   Initializes a new instance of the <see cref="InputAction"/> class that is empty.
@@ -40,7 +40,7 @@ public class InputAction
 	/// </param>
 	public InputAction(params ReadOnlySpan<InputSource> sources)
 	{
-		foreach (InputSource source in sources)
+		foreach (var source in sources)
 		{
 			Bind(source);
 		}
@@ -129,8 +129,8 @@ public class InputAction
 	{
 		ArgumentNullException.ThrowIfNull(source, nameof(source));
 
-		bool sourceRemoved = _sources.Remove(source);
-		bool strengthRemoved = sourceRemoved && _strengths.Remove(source);
+		var sourceRemoved = _sources.Remove(source);
+		var strengthRemoved = sourceRemoved && _strengths.Remove(source);
 
 		if (strengthRemoved)
 		{
@@ -160,7 +160,7 @@ public class InputAction
 	// value because it doesn't make too much sense for actions to store independent deadzones from each other.
 	internal void HandleEvent(InputEvent e, float deadzone)
 	{
-		foreach (InputSource source in _sources)
+		foreach (var source in _sources)
 		{
 			if (!source.TryParseEvent(e, deadzone, out float strength))
 			{
@@ -178,11 +178,11 @@ public class InputAction
 				_strengths.Remove(source);
 			}
 
-			bool wasActive = _currentStrength != 0f;
-			
-			_currentStrength = GetCurrentMaxStrength();
+			var wasActive = _currentStrength != 0f;
 
-			bool nowActive = _currentStrength != 0f;
+			_currentStrength = GetCurrentMaxStrength();
+			
+			var nowActive = _currentStrength != 0f;
 
 			// We offset the physics timestamps by +1 because the frame counter increases just before entering that
 			// loop, after all input events have been emitted.
@@ -211,9 +211,9 @@ public class InputAction
 
 	private float GetCurrentMaxStrength()
 	{
-		float strength = 0f;
+		var strength = 0f;
 
-		foreach (float s in _strengths.Values)
+		foreach (var s in _strengths.Values)
 		{
 			if (Math.Abs(s) > Math.Abs(strength))
 			{

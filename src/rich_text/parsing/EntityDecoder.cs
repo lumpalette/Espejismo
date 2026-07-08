@@ -145,9 +145,9 @@ internal static class EntityDecoder
 
 	private static Rune DecodeDecimalEntity(ReadOnlySpan<char> entity)
 	{
-		int code = 0;
+		var code = 0;
 		
-		for (int i = 1; i < entity.Length - 1; i++)
+		for (var i = 1; i < entity.Length - 1; i++)
 		{
 			if (!char.IsAsciiDigit(entity[i]))
 			{
@@ -167,11 +167,11 @@ internal static class EntityDecoder
 
 	private static Rune DecodeHexadecimalEntity(ReadOnlySpan<char> entity)
 	{
-		int code = 0;
+		var code = 0;
 
-		for (int i = 2; i < entity.Length - 1; i++)
+		for (var i = 2; i < entity.Length - 1; i++)
 		{
-			int offset = entity[i] switch
+			var offset = entity[i] switch
 			{
 				>= '0' and <= '9' => 0x30,
 				>= 'A' and <= 'F' => 0x37,

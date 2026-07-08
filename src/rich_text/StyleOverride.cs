@@ -10,8 +10,7 @@ namespace Spectrum.RichText;
 ///   Every property from this struct is nullable. At glyph generation, the text shaper reads every
 ///   <see cref="TextRun"/> produced by the parser, and priorizes the style overrides assigned to the text runs over
 ///   the <see cref="TextStyle"/> assigned to the corresponding <see cref="Text"/> instance. A <see langword="null"/>
-///   value for a property informs to the text shaper that it should use the corresponding property from the base
-///   style.
+///   value for a property informs to the shaper that it should use the corresponding property from the base style.
 /// </remarks>
 public readonly struct StyleOverride
 {
@@ -23,7 +22,7 @@ public readonly struct StyleOverride
 	/// <summary>
 	///   Gets the font size for the text run, in pixels.
 	/// </summary>
-	public uint? FontSize { get; init; }
+	public int? FontSize { get; init; }
 
 	/// <summary>
 	///   Gets the color for the text run.

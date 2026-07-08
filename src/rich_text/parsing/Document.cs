@@ -6,20 +6,23 @@ using System.Text;
 namespace Spectrum.RichText.Parsing;
 
 // Immutable, flattened rich-text AST. Node and attributes are stored in plain spans.
-internal readonly ref struct Document
+internal readonly struct Document
 {
+	private readonly List<Node> _nodes;
+	private readonly List<AttributeSpan> _attributes;
+
 	private Document(string text, List<Node> nodes, List<AttributeSpan> attributes)
 	{
 		Text = text;
-		Nodes = CollectionsMarshal.AsSpan(nodes);
-		Attributes = CollectionsMarshal.AsSpan(attributes);
+		_nodes = nodes;
+		_attributes = attributes;
 	}
 
 	public string Text { get; }
 
-	public ReadOnlySpan<Node> Nodes { get; }
+	public ReadOnlySpan<Node> Nodes => CollectionsMarshal.AsSpan(_nodes);
 
-	public ReadOnlySpan<AttributeSpan> Attributes { get; }
+	public ReadOnlySpan<AttributeSpan> Attributes => CollectionsMarshal.AsSpan(_attributes);
 
 	public override string ToString()
 	{
@@ -36,38 +39,38 @@ internal readonly ref struct Document
 
 	private void PrintChildren(int parent, StringBuilder sb, string preffix)
 	{
-		int child = Nodes[parent].FirstChild;
+		var childIndex = Nodes[parent].FirstChildIndex;
 
 		// mientras el node tenga ñiñes:
-		while (child != -1)
+		while (childIndex != -1)
 		{
-			var childNode = Nodes[child];
-			bool isLast = childNode.Sibling == -1;
+			var child = Nodes[childIndex];
+			var isLast = child.SiblingIndex == -1;
 
 			sb.Append('\n');
 			sb.Append(preffix);
 			sb.Append(isLast ? "└── " : "├── ");
 			
-			if (childNode.Type == NodeType.Element)
+			if (child.Type == NodeType.Element)
 			{
 				sb.Append("Element(");
-				sb.Append(Text, childNode.ValueStart, childNode.ValueLength);
+				sb.Append(Text, child.ValueStart, child.ValueLength);
 				sb.Append(")\n");
 
 				sb.Append(preffix);
 				sb.Append(isLast ? "    " : "│   ");
 				sb.Append("├── Attributes:");
 
-				if (childNode.AttributeCount > 0)
+				if (child.AttributeCount > 0)
 				{
-					for (int i = 0; i < childNode.AttributeCount; i++)
+					for (var i = 0; i < child.AttributeCount; i++)
 					{
-						var attribute = Attributes[i + childNode.AttributeStart];
+						var attribute = Attributes[i + child.AttributeStart];
 
 						sb.Append('\n');
 						sb.Append(preffix);
 						sb.Append(isLast ? "    " : "│   ");
-						sb.Append(i + 1 < childNode.AttributeCount ? "│   ├── " : "│   └── ");
+						sb.Append(i + 1 < child.AttributeCount ? "│   ├── " : "│   └── ");
 
 						sb.Append('"');
 						sb.Append(Text, attribute.NameStart, attribute.NameLength);
@@ -95,10 +98,10 @@ internal readonly ref struct Document
 				sb.Append(isLast ? "    " : "│   ");
 				sb.Append("└── Children:");
 
-				if (childNode.FirstChild != -1)
+				if (child.FirstChildIndex != -1)
 				{
-					string newPreffix = preffix + (isLast ? "        " : "│       ");
-					PrintChildren(child, sb, newPreffix);
+					var newPreffix = preffix + (isLast ? "        " : "│       ");
+					PrintChildren(childIndex, sb, newPreffix);
 				}
 				else
 				{
@@ -112,9 +115,9 @@ internal readonly ref struct Document
 			{
 				sb.Append("Text(\"");
 				
-				for (int i = 0; i < childNode.ValueLength; i++)
+				for (var i = 0; i < child.ValueLength; i++)
 				{
-					char c = Text[childNode.ValueStart + i];
+					var c = Text[child.ValueStart + i];
 
 					// Line feeds break everything so we must append them as plain text.
 					if (c == '\n')
@@ -130,20 +133,20 @@ internal readonly ref struct Document
 				sb.Append("\")");
 			}
 
-			child = childNode.Sibling;
+			childIndex = child.SiblingIndex;
 		}
 	}
 
-	public static Document Parse(string text)
+	public static Document Parse(string source)
 	{
 		var nodes = new List<Node>();
 		var attributes = new List<AttributeSpan>();
 
 		AddNode(new Node(NodeType.Root), nodes);
 
-		int currentParent = 0;
-		var tokenizer = new Tokenizer(text);
-
+		var parentIndex = 0;
+		var tokenizer = new Tokenizer(source);
+		
 		while (tokenizer.Read())
 		{
 			switch (tokenizer.TokenType)
@@ -153,7 +156,7 @@ internal readonly ref struct Document
 					{
 						ValueStart = tokenizer.StartIndex,
 						ValueLength = tokenizer.ReadValue.Length,
-						Parent = currentParent,
+						ParentIndex = parentIndex
 					}, nodes);
 					break;
 				case TokenType.StartTag:
@@ -162,64 +165,83 @@ internal readonly ref struct Document
 
 					attributes.AddRange(tokenizer.Attributes);
 
-					int newParent = AddNode(new Node(NodeType.Element)
+					var newParentIndex = AddNode(new Node(NodeType.Element)
 					{
 						ValueStart = tokenizer.StartIndex,
 						ValueLength = tokenizer.ReadValue.Length,
-						Parent = currentParent,
+						ParentIndex = parentIndex,
 						AttributeStart = attributeStart,
 						AttributeCount = attributeCount
 					}, nodes);
 					
 					if (!tokenizer.IsSelfClosing)
 					{
-						currentParent = newParent;
+						parentIndex = newParentIndex;
 					}
 					break;
 				case TokenType.EndTag:
-					int target = currentParent;
+					var index = parentIndex;
 
-					while (target != 0)
+					while (index != 0)
 					{
-						var node = nodes[target];
-						var name = text.AsSpan(node.ValueStart, node.ValueLength);
+						var current = nodes[index];
+						var name = source.AsSpan(current.ValueStart, current.ValueLength);
 
 						if (name.SequenceEqual(tokenizer.ReadValue))
 						{
-							currentParent = node.Parent;
+							parentIndex = current.ParentIndex;
 							break;
 						}
 
-						target = node.Parent;
+						index = current.ParentIndex;
 					}
+					break;
+				case TokenType.CharacterEntity:
+					AddNode(new Node(NodeType.CharacterEntity)
+					{
+						CharacterEntity = tokenizer.CharacterEntity,
+						ParentIndex = parentIndex
+					}, nodes);
 					break;
 			}
 		}
 
-		return new Document(text, nodes, attributes);
+		return new Document(source, nodes, attributes);
 	}
 
 	private static int AddNode(Node node, List<Node> nodes)
 	{
-		int newParent = nodes.Count;
+		var newParentIndex = nodes.Count;
 		nodes.Add(node);
 
-		if (node.Parent == -1)
+		if (node.ParentIndex == -1)
 		{
-			return newParent;
+			return newParentIndex;
 		}
 
-		var parentNode = nodes[node.Parent];
+		var parent = nodes[node.ParentIndex];
 
-		if (parentNode.FirstChild == -1)
+		if (parent.FirstChildIndex == -1)
 		{
-			nodes[node.Parent] = parentNode with { FirstChild = newParent, LastChild = newParent };
-			return newParent;
+			nodes[node.ParentIndex] = parent with
+			{
+				FirstChildIndex = newParentIndex,
+				LastChildIndex = newParentIndex
+			};
+
+			return newParentIndex;
 		}
 
-		nodes[parentNode.LastChild] = nodes[parentNode.LastChild] with { Sibling = newParent };
-		nodes[node.Parent] = parentNode with { LastChild = newParent };
+		nodes[parent.LastChildIndex] = nodes[parent.LastChildIndex] with
+		{
+			SiblingIndex = newParentIndex
+		};
 
-		return newParent;
+		nodes[node.ParentIndex] = parent with
+		{
+			LastChildIndex = newParentIndex
+		};
+
+		return newParentIndex;
 	}
 }

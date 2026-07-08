@@ -6,13 +6,13 @@ partial struct Tokenizer
 {
 	private TokenType ExecData()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input is '&' or '<')
 		{
 			if (_position - 1 > StartIndex)
 			{
-				ReadValue = _inputText[StartIndex..--_position];
+				ReadValue = _source[StartIndex..--_position];
 				return TokenType.Text;
 			}
 
@@ -23,7 +23,7 @@ partial struct Tokenizer
 		{
 			if (_position > StartIndex)
 			{
-				ReadValue = _inputText[StartIndex..];
+				ReadValue = _source[StartIndex..];
 				return TokenType.Text;
 			}
 
@@ -35,56 +35,56 @@ partial struct Tokenizer
 
 	private TokenType ExecTagOpen()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == '/')
 		{
 			return SwitchTo(State.EndTagOpen);
 		}
 
-		if (input == ' ')
+		if (char.IsAsciiLetter((char)input))
 		{
-			ReadValue = _inputText[StartIndex.._position];
-			return SwitchTo(State.Data, TokenType.Text);
+			StartIndex = _position - 1;
+			return ReconsumeIn(State.TagName);
 		}
 
 		if (input == Eof)
 		{
-			ReadValue = _inputText[StartIndex..];
+			ReadValue = _source[StartIndex..];
 			return SwitchTo(State.Data, TokenType.Text);
 		}
 
-		StartIndex = _position - 1;
-		return ReconsumeIn(State.TagName);
+		ReadValue = _source[StartIndex.._position];
+		return SwitchTo(State.Data, TokenType.Text);
 	}
 
 	private TokenType ExecEndTagOpen()
 	{
-		int input = Consume();
+		var input = Consume();
 
-		if (input == ' ')
+		if (char.IsAsciiLetter((char)input))
 		{
-			ReadValue = _inputText[StartIndex.._position];
-			return SwitchTo(State.Data, TokenType.Text);
+			StartIndex = _position - 1;
+			return ReconsumeIn(State.TagName);
 		}
 
 		if (input == Eof)
 		{
-			ReadValue = _inputText[StartIndex..];
+			ReadValue = _source[StartIndex..];
 			return SwitchTo(State.Data, TokenType.Text);
 		}
 
-		StartIndex = _position - 1;
-		return ReconsumeIn(State.TagName);
+		ReadValue = _source[StartIndex.._position];
+		return SwitchTo(State.Data, TokenType.Text);
 	}
 
 	private TokenType ExecTagName()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input is ' ' or '/' or '>')
 		{
-			ReadValue = _inputText[StartIndex..(_position - 1)];
+			ReadValue = _source[StartIndex..(_position - 1)];
 
 			if (input == ' ')
 			{
@@ -96,7 +96,7 @@ partial struct Tokenizer
 				return SwitchTo(State.SelfClosingStartTag);
 			}
 
-			return SwitchTo(State.Data, (_inputText[StartIndex - 1] != '/') ? TokenType.StartTag : TokenType.EndTag);
+			return SwitchTo(State.Data, (_source[StartIndex - 1] != '/') ? TokenType.StartTag : TokenType.EndTag);
 		}
 
 		if (input == Eof)
@@ -109,7 +109,7 @@ partial struct Tokenizer
 
 	private TokenType ExecBeforeAttributeName()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == ' ')
 		{
@@ -135,7 +135,7 @@ partial struct Tokenizer
 
 	private TokenType ExecAttributeName()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input is ' ' or '/' or '>' or '=' or Eof)
 		{
@@ -153,7 +153,7 @@ partial struct Tokenizer
 
 	private TokenType ExecAfterAttributeName()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == ' ')
 		{
@@ -190,7 +190,7 @@ partial struct Tokenizer
 
 	private TokenType ExecBeforeAttributeValue()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == ' ')
 		{
@@ -216,7 +216,7 @@ partial struct Tokenizer
 
 	private TokenType ExecAttributeValueQuoted()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == _attributeDelimiter)
 		{
@@ -235,7 +235,7 @@ partial struct Tokenizer
 
 	private TokenType ExecAttributeValueUnquoted()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		// The '/' cannot switch to the self-closing start tag state here according to the HTML specification, but
 		// we do it regardless because it's more convenient.
@@ -267,7 +267,7 @@ partial struct Tokenizer
 
 	private TokenType ExecAfterAttributeValueQuoted()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == ' ')
 		{
@@ -294,7 +294,7 @@ partial struct Tokenizer
 
 	private TokenType ExecSelfClosingStartTag()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == '>')
 		{
@@ -312,11 +312,11 @@ partial struct Tokenizer
 
 	private TokenType ExecCharacterReference()
 	{
-		int input = Consume();
+		var input = Consume();
 
 		if (input == ';')
 		{
-			ReadValue = _inputText[StartIndex.._position];
+			ReadValue = _source[StartIndex.._position];
 
 			if (EntityDecoder.TryDecode(ReadValue[1..], out Rune decoded))
 			{

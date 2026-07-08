@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="TextStyle" format=3 uid="uid://hrgoo1b7mggf"]
+
+[ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://assets/fonts/pc_senior.ttf" id="1_tbf4e"]
+[ext_resource type="Script" uid="uid://bpnq1uutidudj" path="res://src/rich_text/TextStyle.cs" id="2_d26kf"]
+
+[resource]
+script = ExtResource("2_d26kf")
+Font = ExtResource("1_tbf4e")
+metadata/_custom_type_script = "uid://bpnq1uutidudj"

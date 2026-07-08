@@ -229,7 +229,7 @@ public sealed class PlayerInput
 			return;
 		}
 
-		foreach (InputAction action in ActionMap!.Actions)
+		foreach (var action in ActionMap!.Actions)
 		{
 			action.HandleEvent(e, Deadzone);
 		}
@@ -252,7 +252,7 @@ public sealed class PlayerInput
 			return;
 		}
 
-		foreach (InputAction action in ActionMap.Actions)
+		foreach (var action in ActionMap.Actions)
 		{
 			action.ResetState();
 		}
@@ -260,9 +260,6 @@ public sealed class PlayerInput
 
 	private bool CanHandleEvent(InputEvent e)
 	{
-		return IsEnabled
-			&& ActionMap is not null
-			&& _devices.Contains(e.Device)
-			&& !e.IsEcho();
+		return IsEnabled && ActionMap is not null && _devices.Contains(e.Device) && !e.IsEcho();
 	}
 }

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 
 namespace Spectrum.RichText.BuiltinTags;
 
@@ -7,36 +8,22 @@ namespace Spectrum.RichText.BuiltinTags;
 ///   Represents a tag that changes the horizontal alignment of a text paragraph.
 /// </summary>
 /// <remarks>
-///   Syntax:<br/>
-///   <c>&lt;align type="left|center|right|fill">...&lt;/align></c>
+///   <para>
+///     Syntax:<br/>
+///     <c>&lt;alignment>...&lt;/alignment></c>
+///   </para>
+///   <para>
+///     where:<br/>
+///     • <c>alignment</c> refers the name of the <paramref name="alignment"/> identifier, in lowercase.
+///   </para>
 /// </remarks>
-public class AlignmentTag() : TagBehaviour("align", ["type"])
+/// <param name="alignment">
+///   The alignment associated to the tag.
+/// </param>
+public class AlignmentTag(HorizontalAlignment alignment) : TagBehaviour(GetAlignmentName(alignment), [])
 {
 	public override bool Begin(ParseContext context, ReadOnlySpan<TagProperty> properties)
 	{
-		var type = FindProperty(properties, "type");
-		
-		HorizontalAlignment alignment;
-
-		switch (type.Value)
-		{
-			case "left":
-				alignment = HorizontalAlignment.Left;
-				break;
-			case "center":
-				alignment = HorizontalAlignment.Center;
-				break;
-			case "right":
-				alignment = HorizontalAlignment.Right;
-				break;
-			case "fill":
-				alignment = HorizontalAlignment.Fill;
-				break;
-			default:
-				GD.PushWarning($"Unknown horizontal alignment flag ({type.Value})");
-				return false;
-		}
-
 		context.BeginAlignment(alignment);
 		return true;
 	}
@@ -44,5 +31,17 @@ public class AlignmentTag() : TagBehaviour("align", ["type"])
 	public override void End(ParseContext context)
 	{
 		context.EndAlignment();
+	}
+
+	private static string GetAlignmentName(HorizontalAlignment alignment)
+	{
+		return alignment switch
+		{
+			HorizontalAlignment.Left => "left",
+			HorizontalAlignment.Center => "center",
+			HorizontalAlignment.Right => "right",
+			HorizontalAlignment.Fill => "fill",
+			_ => throw new UnreachableException("how the fukc")
+		};
 	}
 }
