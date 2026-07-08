@@ -12,7 +12,7 @@ public class InputAction
 	// for small sources this is actually slower than a list, but the performance difference is so negligible that it
 	// actually doesn't matter.
 	private readonly HashSet<InputSource> _sources = [];
-	private readonly Dictionary<InputSource, float> _strengths = [];
+	private readonly Dictionary<InputSource, float> _sourceStrengths = [];
 
 	// we set those to MaxValue because otherwise an action release would be detected in the first frame of the game,
 	// which is probably more common than waiting 9.74 * 10^9 years (a lot).
@@ -130,7 +130,7 @@ public class InputAction
 		ArgumentNullException.ThrowIfNull(source, nameof(source));
 
 		var sourceRemoved = _sources.Remove(source);
-		var strengthRemoved = sourceRemoved && _strengths.Remove(source);
+		var strengthRemoved = sourceRemoved && _sourceStrengths.Remove(source);
 
 		if (strengthRemoved)
 		{
@@ -171,11 +171,11 @@ public class InputAction
 			// then one is deactivated, this ensures the action strength matches the other source's strength.
 			if (strength != 0)
 			{
-				_strengths[source] = strength;
+				_sourceStrengths[source] = strength;
 			}
 			else
 			{
-				_strengths.Remove(source);
+				_sourceStrengths.Remove(source);
 			}
 
 			var wasActive = _currentStrength != 0f;
@@ -204,7 +204,7 @@ public class InputAction
 	internal void ResetState()
 	{
 		_currentStrength = 0f;
-		_strengths.Clear();
+		_sourceStrengths.Clear();
 		_releasedProcessFrame = ulong.MaxValue;
 		_releasedPhysicsFrame = ulong.MaxValue;
 	}
@@ -213,7 +213,7 @@ public class InputAction
 	{
 		var strength = 0f;
 
-		foreach (var s in _strengths.Values)
+		foreach (var s in _sourceStrengths.Values)
 		{
 			if (Math.Abs(s) > Math.Abs(strength))
 			{
