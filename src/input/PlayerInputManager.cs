@@ -21,7 +21,7 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 		{
 			ArgumentOutOfRangeException.ThrowIfNegative(playerIndex, nameof(playerIndex));
 
-			if (!TryGetPlayer(playerIndex, out PlayerInput? player))
+			if (!TryGetPlayer(playerIndex, out var player))
 			{
 				throw new KeyNotFoundException($"Player index ({playerIndex}) is undefined");
 			}

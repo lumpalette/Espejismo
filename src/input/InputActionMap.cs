@@ -51,9 +51,9 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 		{
 			ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(name));
 			
-			if (!_actions.TryGetValue(name, out InputAction? action))
+			if (!_actions.TryGetValue(name, out var action))
 			{
-				throw new KeyNotFoundException($"Action with name '{name}' is not defined");
+				throw new KeyNotFoundException($"Action with name '{name}' is undefined");
 			}
 
 			return action;
@@ -83,7 +83,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 
 		if (!_actions.TryAdd(name, action))
 		{
-			throw new ArgumentException($"Action with name '{name}' is already defined");
+			throw new ArgumentException($"Action with name '{name}' is already defined", nameof(name));
 		}
 	}
 

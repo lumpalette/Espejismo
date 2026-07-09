@@ -158,11 +158,21 @@ public class InputAction
 
 	// Processes the specified Godot's input event and updates the state of the action. We also need to pass a deadzone
 	// value because it doesn't make too much sense for actions to store independent deadzones from each other.
-	internal void HandleEvent(InputEvent e, float deadzone)
+
+	/// <summary>
+	///   Processes the specified <see cref="InputEvent"/> to update the state of the action.
+	/// </summary>
+	/// <param name="e">
+	///   The input event to process.
+	/// </param>
+	/// <param name="deadzone">
+	///   The deadzone value used for analog events.
+	/// </param>
+	public void Process(InputEvent e, float deadzone)
 	{
 		foreach (var source in _sources)
 		{
-			if (!source.TryParseEvent(e, deadzone, out float strength))
+			if (!source.TryParseEvent(e, deadzone, out var strength))
 			{
 				continue;
 			}

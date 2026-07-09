@@ -119,6 +119,25 @@ public sealed class PlayerInput
 	}
 
 	/// <summary>
+	///   Processes the specified <see cref="InputEvent"/> and updates the state of the action map accordingly.
+	/// </summary>
+	/// <param name="e">
+	///   The input event to process.
+	/// </param>
+	public void Process(InputEvent e)
+	{
+		if (!CanHandleEvent(e))
+		{
+			return;
+		}
+
+		foreach (var action in ActionMap!.Actions)
+		{
+			action.Process(e, Deadzone);
+		}
+	}
+
+	/// <summary>
 	///   Gets the current strength or intensity of the specified action.
 	/// </summary>
 	/// <param name="actionName">
@@ -220,25 +239,6 @@ public sealed class PlayerInput
 	public bool WasReleased(string actionName)
 	{
 		return GetAction(actionName).State == InputActionState.WasReleased;
-	}
-
-	/// <summary>
-	///   Processes the specified <see cref="InputEvent"/> and updates the state of the action map accordingly.
-	/// </summary>
-	/// <param name="e">
-	///   The input event to process.
-	/// </param>
-	public void Process(InputEvent e)
-	{
-		if (!CanHandleEvent(e))
-		{
-			return;
-		}
-
-		foreach (var action in ActionMap!.Actions)
-		{
-			action.HandleEvent(e, Deadzone);
-		}
 	}
 
 	private InputAction GetAction(string actionName)
