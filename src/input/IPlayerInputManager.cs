@@ -92,8 +92,8 @@ public interface IPlayerInputManager
 	///   The zero-based player index to get.
 	/// </param>
 	/// <param name="player">
-	///   When this method returns, contains the player assigned to the specified player index, if the player index is
-	///   defined; otherwise, <see langword="null"/>.
+	///   When this method returns, contains the player assigned to the specified player index, if defined; otherwise,
+	///   <see langword="null"/>.
 	/// </param>
 	/// <returns>
 	///   <see langword="true"/> if a player is assigned to <paramref name="playerIndex"/>; otherwise,

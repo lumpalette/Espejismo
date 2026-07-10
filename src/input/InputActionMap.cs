@@ -94,8 +94,8 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 	///   The name of the action to get, case-insensitive.
 	/// </param>
 	/// <param name="action">
-	///   When this method returns, contains the <see cref="InputAction"/> associated with <paramref name="name"/>,
-	///   if found; otherwise, <see langword="null"/>.
+	///   When this method returns, contains the action associated with <paramref name="name"/>, if defined; otherwise,
+	///   <see langword="null"/>.
 	/// </param>
 	/// <returns>
 	///   <see langword="true"/> if an action with the name <paramref name="name"/> is defined; otherwise,
