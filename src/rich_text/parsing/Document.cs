@@ -11,131 +11,18 @@ internal readonly struct Document
 	private readonly List<Node> _nodes;
 	private readonly List<AttributeSpan> _attributes;
 
-	private Document(string text, List<Node> nodes, List<AttributeSpan> attributes)
+	private Document(string source, List<Node> nodes, List<AttributeSpan> attributes)
 	{
-		Text = text;
+		Source = source;
 		_nodes = nodes;
 		_attributes = attributes;
 	}
 
-	public string Text { get; }
+	public string Source { get; }
 
 	public ReadOnlySpan<Node> Nodes => CollectionsMarshal.AsSpan(_nodes);
 
 	public ReadOnlySpan<AttributeSpan> Attributes => CollectionsMarshal.AsSpan(_attributes);
-
-	public override string ToString()
-	{
-		if (Nodes.Length == 0)
-		{
-			return "Document\n└── (empty)";
-		}
-
-		var sb = new StringBuilder("Document");
-		PrintChildren(0, sb, "");
-
-		return sb.ToString();
-	}
-
-	private void PrintChildren(int parent, StringBuilder sb, string preffix)
-	{
-		var childIndex = Nodes[parent].FirstChildIndex;
-
-		// mientras el node tenga ñiñes:
-		while (childIndex != -1)
-		{
-			var child = Nodes[childIndex];
-			var isLast = child.SiblingIndex == -1;
-
-			sb.Append('\n');
-			sb.Append(preffix);
-			sb.Append(isLast ? "└── " : "├── ");
-			
-			if (child.Type == NodeType.Element)
-			{
-				sb.Append("Element(");
-				sb.Append(Text, child.ValueStart, child.ValueLength);
-				sb.Append(")\n");
-
-				sb.Append(preffix);
-				sb.Append(isLast ? "    " : "│   ");
-				sb.Append("├── Attributes:");
-
-				if (child.AttributeCount > 0)
-				{
-					for (var i = 0; i < child.AttributeCount; i++)
-					{
-						var attribute = Attributes[i + child.AttributeStart];
-
-						sb.Append('\n');
-						sb.Append(preffix);
-						sb.Append(isLast ? "    " : "│   ");
-						sb.Append(i + 1 < child.AttributeCount ? "│   ├── " : "│   └── ");
-
-						sb.Append('"');
-						sb.Append(Text, attribute.NameStart, attribute.NameLength);
-						
-						if (attribute.ValueLength > 0)
-						{
-							sb.Append("\" = \"");
-							sb.Append(Text, attribute.ValueStart, attribute.ValueLength);
-						}
-
-						sb.Append('"');
-					}
-
-					sb.Append('\n');
-				}
-				else
-				{
-					sb.Append('\n');
-					sb.Append(preffix);
-					sb.Append(isLast ? "    " : "│   ");
-					sb.Append("│   └── (empty)\n");
-				}
-
-				sb.Append(preffix);
-				sb.Append(isLast ? "    " : "│   ");
-				sb.Append("└── Children:");
-
-				if (child.FirstChildIndex != -1)
-				{
-					var newPreffix = preffix + (isLast ? "        " : "│       ");
-					PrintChildren(childIndex, sb, newPreffix);
-				}
-				else
-				{
-					sb.Append('\n');
-					sb.Append(preffix);
-					sb.Append(isLast ? "    " : "│   ");
-					sb.Append("    └── (empty)");
-				}
-			}
-			else
-			{
-				sb.Append("Text(\"");
-				
-				for (var i = 0; i < child.ValueLength; i++)
-				{
-					var c = Text[child.ValueStart + i];
-
-					// Line feeds break everything so we must append them as plain text.
-					if (c == '\n')
-					{
-						sb.Append("\\n");
-					}
-					else
-					{
-						sb.Append(c);
-					}
-				}
-
-				sb.Append("\")");
-			}
-
-			childIndex = child.SiblingIndex;
-		}
-	}
 
 	public static Document Parse(string source)
 	{
@@ -146,7 +33,7 @@ internal readonly struct Document
 
 		var parentIndex = 0;
 		var tokenizer = new Tokenizer(source);
-		
+
 		while (tokenizer.Read())
 		{
 			switch (tokenizer.TokenType)
@@ -173,7 +60,7 @@ internal readonly struct Document
 						AttributeStart = attributeStart,
 						AttributeCount = attributeCount
 					}, nodes);
-					
+
 					if (!tokenizer.IsSelfClosing)
 					{
 						parentIndex = newParentIndex;
@@ -214,6 +101,7 @@ internal readonly struct Document
 		var newParentIndex = nodes.Count;
 		nodes.Add(node);
 
+		// Root node.
 		if (node.ParentIndex == -1)
 		{
 			return newParentIndex;
@@ -221,6 +109,7 @@ internal readonly struct Document
 
 		var parent = nodes[node.ParentIndex];
 
+		// Add child to node with no children.
 		if (parent.FirstChildIndex == -1)
 		{
 			nodes[node.ParentIndex] = parent with
@@ -232,6 +121,7 @@ internal readonly struct Document
 			return newParentIndex;
 		}
 
+		// Add sibling to last child and update the parent.
 		nodes[parent.LastChildIndex] = nodes[parent.LastChildIndex] with
 		{
 			SiblingIndex = newParentIndex
@@ -243,5 +133,118 @@ internal readonly struct Document
 		};
 
 		return newParentIndex;
+	}
+
+	public override string ToString()
+	{
+		if (Nodes.Length == 0)
+		{
+			return "Document\n└── (empty)";
+		}
+
+		var sb = new StringBuilder("Document");
+		PrintChildren(0, sb, string.Empty);
+
+		return sb.ToString();
+	}
+
+	private void PrintChildren(int parent, StringBuilder sb, string preffix)
+	{
+		var childIndex = Nodes[parent].FirstChildIndex;
+
+		// mientras el node tenga ñiñes:
+		while (childIndex != -1)
+		{
+			var child = Nodes[childIndex];
+			var isLast = child.SiblingIndex == -1;
+
+			sb.Append('\n');
+			sb.Append(preffix);
+			sb.Append(isLast ? "└── " : "├── ");
+
+			if (child.Type == NodeType.Element)
+			{
+				sb.Append("Element(");
+				sb.Append(Source, child.ValueStart, child.ValueLength);
+				sb.Append(")\n");
+
+				sb.Append(preffix);
+				sb.Append(isLast ? "    " : "│   ");
+				sb.Append("├── Attributes:");
+
+				if (child.AttributeCount > 0)
+				{
+					for (var i = 0; i < child.AttributeCount; i++)
+					{
+						var attribute = Attributes[i + child.AttributeStart];
+
+						sb.Append('\n');
+						sb.Append(preffix);
+						sb.Append(isLast ? "    " : "│   ");
+						sb.Append(i + 1 < child.AttributeCount ? "│   ├── " : "│   └── ");
+
+						sb.Append('"');
+						sb.Append(Source, attribute.NameStart, attribute.NameLength);
+
+						if (attribute.ValueLength > 0)
+						{
+							sb.Append("\" = \"");
+							sb.Append(Source, attribute.ValueStart, attribute.ValueLength);
+						}
+
+						sb.Append('"');
+					}
+
+					sb.Append('\n');
+				}
+				else
+				{
+					sb.Append('\n');
+					sb.Append(preffix);
+					sb.Append(isLast ? "    " : "│   ");
+					sb.Append("│   └── (empty)\n");
+				}
+
+				sb.Append(preffix);
+				sb.Append(isLast ? "    " : "│   ");
+				sb.Append("└── Children:");
+
+				if (child.FirstChildIndex != -1)
+				{
+					var newPreffix = preffix + (isLast ? "        " : "│       ");
+					PrintChildren(childIndex, sb, newPreffix);
+				}
+				else
+				{
+					sb.Append('\n');
+					sb.Append(preffix);
+					sb.Append(isLast ? "    " : "│   ");
+					sb.Append("    └── (empty)");
+				}
+			}
+			else
+			{
+				sb.Append("Text(\"");
+
+				for (var i = 0; i < child.ValueLength; i++)
+				{
+					var c = Source[child.ValueStart + i];
+
+					// Line feeds break everything so we must append them as plain text.
+					if (c == '\n')
+					{
+						sb.Append("\\n");
+					}
+					else
+					{
+						sb.Append(c);
+					}
+				}
+
+				sb.Append("\")");
+			}
+
+			childIndex = child.SiblingIndex;
+		}
 	}
 }

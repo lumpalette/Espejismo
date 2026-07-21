@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Spectrum.RichText.Parsing;
 
+// The heart of this whole system. Reads and splits an HTML-like string into a sequence of tokens.
 internal ref partial struct Tokenizer(string source)
 {
 	public const int MaxAttributes = 8;
@@ -16,7 +17,7 @@ internal ref partial struct Tokenizer(string source)
 
 	private State _state;
 	private int _position;
-	private AttributeBuffer _attributes;
+	private AttributeArray _attributes;
 	private int _attributeCount;
 	private int _currentAttributeNameStart;
 	private int _currentAttributeNameLength;
@@ -35,15 +36,8 @@ internal ref partial struct Tokenizer(string source)
 	// Marks the beginning of ReadValue.
 	public int StartIndex { get; private set; }
 
-	public readonly ReadOnlySpan<AttributeSpan> Attributes
-	{
-		[UnscopedRef]
-		get
-		{
-			var attributes = (ReadOnlySpan<AttributeSpan>)_attributes;
-			return attributes[.._attributeCount];
-		}
-	}
+	[UnscopedRef]
+	public readonly ReadOnlySpan<AttributeSpan> Attributes => _attributes[.._attributeCount];
 
 	public bool IsSelfClosing { get; private set; }
 
@@ -135,7 +129,7 @@ internal ref partial struct Tokenizer(string source)
 	}
 
 	[InlineArray(MaxAttributes)]
-	private struct AttributeBuffer
+	private struct AttributeArray
 	{
 		public AttributeSpan Element;
 	}

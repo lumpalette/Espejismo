@@ -2,6 +2,7 @@ using System.Text;
 
 namespace Spectrum.RichText.Parsing;
 
+// The implementation of the tokenizer, based on the HTML tokenizer specification.
 partial struct Tokenizer
 {
 	private TokenType ExecData()
@@ -16,7 +17,7 @@ partial struct Tokenizer
 				return TokenType.Text;
 			}
 
-			return SwitchTo(input == '&' ? State.CharacterReference : State.TagOpen);
+			return SwitchTo((input == '&') ? State.CharacterReference : State.TagOpen);
 		}
 
 		if (input == Eof)

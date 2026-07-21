@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Spectrum.RichText.Parsing;
 
+// A decoder for HTML character entities. Entity identifiers don't contain the leading ampersand.
 internal static class EntityDecoder
 {
 	public static bool TryDecode(ReadOnlySpan<char> entity, out Rune decoded)
