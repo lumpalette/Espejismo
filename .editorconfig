@@ -15,14 +15,8 @@ indent_style = tab
 
 #### Code Analysis ####
 
-# Nested types should not be visible
-dotnet_diagnostic.CA1034.severity = none
-
 # Validate arguments of public methods
 dotnet_diagnostic.CA1062.severity = none
-
-# Identifiers should not match keywords
-dotnet_diagnostic.CA1716.severity = none
 
 # Type names should not match namespaces
 dotnet_diagnostic.CA1724.severity = none

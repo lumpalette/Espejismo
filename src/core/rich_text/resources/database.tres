@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ResourceDB" format=3 uid="uid://dtspp3yqqtwtg"]
+
+[ext_resource type="Resource" uid="uid://25uqi2nmy2rl" path="res://src/core/rich_text/resources/default_style.tres" id="1_b0dk3"]
+[ext_resource type="Script" uid="uid://voqj0ov3ox3q" path="res://src/core/rich_text/ResourceDB.cs" id="1_gnpa1"]
+
+[resource]
+script = ExtResource("1_gnpa1")
+_defaultStyle = ExtResource("1_b0dk3")
+RegistryFonts = null
+RegistryTextures = null
+RegistryStyles = null
+RegistryTags = null
+metadata/_custom_type_script = "uid://voqj0ov3ox3q"

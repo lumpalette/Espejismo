@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Spectrum"
+config/name="Espejismo"
 run/main_scene="uid://b33c8l4fw10vj"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 run/max_fps=60
@@ -31,7 +31,7 @@ window/vsync/vsync_mode=0
 
 [dotnet]
 
-project/assembly_name="Spectrum"
+project/assembly_name="Espejismo"
 
 [editor_plugins]
 

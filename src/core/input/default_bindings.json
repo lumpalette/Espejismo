@@ -1,0 +1,114 @@
+{
+	"accept": [
+		{
+			"source": "key",
+			"key": "Z",
+			"is_virtual": false
+		},
+		{
+			"source": "key",
+			"key": "Enter",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_button",
+			"button": "B"
+		}
+	],
+	"decline": [
+		{
+			"source": "key",
+			"key": "X",
+			"is_virtual": false
+		},
+		{
+			"source": "key",
+			"key": "Shift",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_button",
+			"button": "Y"
+		}
+	],
+	"menu": [
+		{
+			"source": "key",
+			"key": "C",
+			"is_virtual": false
+		},
+		{
+			"source": "key",
+			"key": "Ctrl",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_button",
+			"button": "Start"
+		}
+	],
+	"up": [
+		{
+			"source": "key",
+			"key": "Up",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_axis",
+			"axis": "left_y",
+			"is_positive": false
+		},
+		{
+			"source": "joypad_button",
+			"button": "DpadUp"
+		}
+	],
+	"left": [
+		{
+			"source": "key",
+			"key": "Left",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_axis",
+			"axis": "left_x",
+			"is_positive": false
+		},
+		{
+			"source": "joypad_button",
+			"button": "DpadLeft"
+		}
+	],
+	"down": [
+		{
+			"source": "key",
+			"key": "Down",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_axis",
+			"axis": "left_y",
+			"is_positive": true
+		},
+		{
+			"source": "joypad_button",
+			"button": "DpadDown"
+		}
+	],
+	"right": [
+		{
+			"source": "key",
+			"key": "Right",
+			"is_virtual": false
+		},
+		{
+			"source": "joypad_axis",
+			"axis": "left_x",
+			"is_positive": true
+		},
+		{
+			"source": "joypad_button",
+			"button": "DpadRight"
+		}
+	]
+}

@@ -1,37 +1,41 @@
+using Espejismo.Core.Input;
+using Espejismo.Core.RichText;
 using Godot;
-using Spectrum.Input;
 using System;
 
-namespace Spectrum;
+namespace Espejismo;
 
 /// <summary>
-///   Represents the core of the game: provides global access to the main subsystems.
+/// Represents the core of the game: provides global access to the main subsystems.
 /// </summary>
 public partial class Game : Node
 {
+	private static Game? s_instance;
+
 	[Export]
 	private PlayerInputManager? _input;
 
-	private static Game? s_instance;
-
-	private Game() { }
+	private Game()
+	{
+	}
 
 	/// <summary>
-	///   Gets access to the input system interface.
+	/// Gets access to the input system interface.
 	/// </summary>
 	public static IPlayerInputManager Input
 	{
 		get
 		{
-			if (s_instance is null || s_instance._input is null)
+			if (s_instance?._input is null)
 			{
-				throw new InvalidOperationException($"Trying to access Game.Input before the Game autoload was initialized");
+				throw new InvalidOperationException($"Trying to access Game.Input before the autoload is initialized");
 			}
 
 			return s_instance._input;
 		}
 	}
 
+	/// <inheritdoc/>
 	public override void _EnterTree()
 	{
 		if (s_instance is not null)
@@ -43,14 +47,16 @@ public partial class Game : Node
 		s_instance = this;
 	}
 
+	/// <inheritdoc/>
 	public override void _Ready()
 	{
 		if (_input is null)
 		{
-			throw new InvalidOperationException($"Input node is null");
+			throw new InvalidOperationException($"ShapeInput node is null");
 		}
 	}
 
+	/// <inheritdoc/>
 	public override void _ExitTree()
 	{
 		if (s_instance == this)
