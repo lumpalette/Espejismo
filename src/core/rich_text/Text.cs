@@ -21,6 +21,10 @@ public partial class Text
 
 	private readonly ShapeItem[] _items;
 	
+	private Font? _fallbackFont;
+	private ushort _fallbackFontSize;
+	private int _fallbackLeading;
+
 	internal Text(ShapeItem[] items, TextStyle style)
 	{
 		_items = items;
@@ -194,7 +198,7 @@ public partial class Text
 		_lines.Clear();
 		_markers.Clear();
 		_paragraphs.Clear();
-		
+
 		// Now it looks nicer, cool I guess.
 		var shaper = new Shaper
 		{
@@ -216,8 +220,9 @@ public partial class Text
 			Paragraphs = _paragraphs,
 
 			// Fallback values.
-			DefaultFont     = ResourceDB.DefaultStyle.Font,
-			DefaultFontSize = ResourceDB.DefaultStyle.FontSize
+			FallbackFont     = _fallbackFont!,
+			FallbackFontSize = _fallbackFontSize,
+			FallbackLeading  = _fallbackLeading
 		};
 		
 		shaper.Shape();
@@ -232,6 +237,12 @@ public partial class Text
 	{
 		_styleMap.Clear();
 
+		var baseStyle = ResourceDB.DefaultStyle.CreateFrom(Style);
+
+		_fallbackFont = baseStyle.Font!;
+		_fallbackFontSize = baseStyle.FontSize!.Value;
+		_fallbackLeading = baseStyle.LineSpacing!.Value;
+
 		foreach (var item in _items)
 		{
 			if (item.Type is not (ShapeItemType.Run or ShapeItemType.Texture) || _styleMap.ContainsKey(item.Style))
@@ -240,12 +251,11 @@ public partial class Text
 			}
 
 			// when eres un fokin nerd y el orden de los parámetros importa.
-			var merged = item.Style.MergedWith(Style);
-			var resolved = ResourceDB.DefaultStyle.CreateFrom(merged);
-
-			var font = resolved.Font!;
-			var spcX = resolved.LetterSpacing!.Value;
-			var spcY = resolved.LineSpacing!.Value;
+			var mergedStyle = item.Style.MergedWith(baseStyle);
+			
+			var font = mergedStyle.Font!;
+			var spcX = mergedStyle.LetterSpacing!.Value;
+			var spcY = mergedStyle.LineSpacing!.Value;
 
 			if (spcX != 0 || spcY != 0)
 			{
@@ -260,16 +270,17 @@ public partial class Text
 			_styleMap[item.Style] = new ResolvedStyle
 			{
 				Font = font,
-				FontSize = resolved.FontSize!.Value,
+				FontSize = mergedStyle.FontSize!.Value,
+				LineSpacing = spcY,
 				Style = new GlyphStyle
 				{
-					Color = resolved.Color!.Value,
-					Effect = resolved.Effect,
-					ShadowSize = resolved.ShadowSize!.Value,
-					ShadowColor = resolved.ShadowColor!.Value,
-					ShadowOffset = resolved.ShadowOffset!.Value,
-					OutlineSize = resolved.OutlineSize!.Value,
-					OutlineColor = resolved.OutlineColor!.Value
+					Color = mergedStyle.Color!.Value,
+					Effect = mergedStyle.Effect,
+					ShadowSize = mergedStyle.ShadowSize!.Value,
+					ShadowColor = mergedStyle.ShadowColor!.Value,
+					ShadowOffset = mergedStyle.ShadowOffset!.Value,
+					OutlineSize = mergedStyle.OutlineSize!.Value,
+					OutlineColor = mergedStyle.OutlineColor!.Value
 				}
 			};
 		}

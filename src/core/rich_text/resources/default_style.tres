@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StyleTemplate" format=3 uid="uid://25uqi2nmy2rl"]
+[gd_resource type="Resource" script_class="StyleTemplate" format=3 uid="uid://dpdeqhfvvle2f"]
 
 [ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="1_4pppu"]
 [ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="1_utlth"]
@@ -6,5 +6,4 @@
 [resource]
 script = ExtResource("1_utlth")
 Font = ExtResource("1_4pppu")
-OutlineSize = 4
 metadata/_custom_type_script = "uid://dqv8xe0vejoqk"

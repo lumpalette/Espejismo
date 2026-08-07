@@ -16,7 +16,7 @@ public partial class StyleTemplate : Resource
 	[ExportGroup("Typography")]
 	[Export, NotNull]
 	public Font? Font { get; private set; }
-	
+
 	/// <summary>
 	/// Gets the size of the text, in pixels. Defaults to 8px.
 	/// </summary>
@@ -44,10 +44,10 @@ public partial class StyleTemplate : Resource
 	public int LetterSpacing { get; private set; }
 
 	/// <summary>
-	/// Gets the additional spacing added between lines of text.
+	/// Gets the additional spacing added between lines of text. Defaults to 8px.
 	/// </summary>
 	[Export]
-	public int LineSpacing { get; private set; }
+	public int LineSpacing { get; private set; } = 8;
 
 	/// <summary>
 	/// Gets the size for the shadow effect, in pixels.
@@ -69,11 +69,11 @@ public partial class StyleTemplate : Resource
 	public Vector2 ShadowOffset { get; private set; } = Vector2.One;
 
 	/// <summary>
-	/// Gets the size for the text outline, in pixels.
+	/// Gets the size for the text outline, in pixels. Defaults to 4px.
 	/// </summary>
 	[ExportGroup("Outline", "Outline")]
 	[Export]
-	public ushort OutlineSize { get; private set; }
+	public ushort OutlineSize { get; private set; } = 4;
 
 	/// <summary>
 	/// Gets the color for the text outline. Defaults to black.

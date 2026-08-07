@@ -44,6 +44,35 @@ public partial class RichLabel : Control
 		}
 	}
 
+	[ExportGroup("Alignment")]
+	[Export]
+	public HorizontalAlignment HorizontalAlignment
+	{
+		get;
+		set
+		{
+			field = value;
+
+			if (_text is not null)
+			{
+				_text.Alignment = value;
+			}
+
+			QueueRedraw();
+		}
+	}
+
+	[Export]
+	public VerticalAlignment VerticalAlignment
+	{
+		get;
+		set
+		{
+			field = value;
+			QueueRedraw();
+		}
+	}
+
 	public override void _Ready()
 	{
 		RebuildText();
@@ -86,7 +115,8 @@ public partial class RichLabel : Control
 
 		_text = Text.Parse(Content, style);
 		_text.Width = Size.X;
-
+		_text.Alignment = HorizontalAlignment;
+		
 		QueueRedraw();
 	}
 
@@ -109,6 +139,42 @@ public partial class RichLabel : Control
 		return new Vector2(width, height);
 	}
 
+	private float GetContentHeight()
+	{
+		if (_text is null || _text.Lines.Length == 0)
+		{
+			return 0f;
+		}
+
+		var totalHeight = 0f;
+
+		foreach (var line in _text.Lines)
+		{
+			totalHeight += line.Height;
+		}
+
+		totalHeight -= _text.Lines[^1].Leading;
+
+		return totalHeight;
+	}
+
+	private float GetStartY()
+	{
+		if (VerticalAlignment == VerticalAlignment.Top || _text is null)
+		{
+			return 0f;
+		}
+
+		var totalHeight = GetContentHeight();
+
+		return VerticalAlignment switch
+		{
+			VerticalAlignment.Center => (Size.Y - totalHeight) * 0.5f,
+			VerticalAlignment.Bottom => Size.Y - totalHeight,
+			_ => 0f
+		};
+	}
+
 	public override void _Draw()
 	{
 		if (_text is null)
@@ -118,9 +184,31 @@ public partial class RichLabel : Control
 
 		var canvas = GetCanvasItem();
 		var y = 0f;
+		var lineGap = 0f;
+		var isFirstLine = true;
+
+		if (VerticalAlignment == VerticalAlignment.Fill)
+		{
+			var lineCount = _text.Lines.Length;
+
+			if (lineCount > 1)
+			{
+				lineGap = (Size.Y - GetContentHeight()) / (lineCount - 1);
+			}
+		}
+		else
+		{
+			y = GetStartY();
+		}
 
 		foreach (var line in _text.Lines)
 		{
+			if (!isFirstLine)
+			{
+				y += lineGap;
+			}
+
+			isFirstLine = false;
 			y += line.Ascent;
 
 			var x = line.Alignment switch
@@ -147,7 +235,7 @@ public partial class RichLabel : Control
 
 					if (glyph.Style.ShadowSize > 0)
 					{
-						_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos + glyph.Style.ShadowOffset, glyph.Index, glyph.Style.ShadowColor);
+						_TS.FontDrawGlyph(glyph.Font, canvas, glyph.Style.ShadowSize, pos + glyph.Style.ShadowOffset, glyph.Index, glyph.Style.ShadowColor);
 					}
 
 					_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos, glyph.Index, glyph.Style.Color);
@@ -156,7 +244,7 @@ public partial class RichLabel : Control
 				x += glyph.Advance;
 			}
 
-			y += line.Descent;
+			y += line.Descent + line.Leading;
 		}
 	}
 }

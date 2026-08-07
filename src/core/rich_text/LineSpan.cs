@@ -11,63 +11,50 @@ namespace Espejismo.Core.RichText;
 /// </summary>
 public readonly struct LineSpan : IEnumerable<Glyph>
 {
-	private readonly List<Glyph> _glyphs;
-
-	internal LineSpan(
-		List<Glyph> glyphs,
-		int start,
-		int length,
-		float width,
-		float ascent,
-		float descent,
-		HorizontalAlignment alignment)
-	{
-		_glyphs = glyphs;
-
-		Start = start;
-		Length = length;
-
-		Width = width;
-		Ascent = ascent;
-		Descent = descent;
-
-		Alignment = alignment;
-	}
-
 	/// <summary>
 	/// Gets the index of the first glyph on the line within the source <see cref="Text"/>.
 	/// </summary>
-	public int Start { get; }
+	public int Start { get; internal init; }
 
 	/// <summary>
 	/// Gets the number of glyphs in the line.
 	/// </summary>
-	public int Length { get; }
+	public int Length { get; internal init; }
 
 	/// <summary>
 	/// Gets the total extent of the line, in pixels.
 	/// </summary>
-	public float Width { get; }
+	public float Width { get; internal init; }
 
 	/// <summary>
 	/// Gets the distance from the baseline to the top of the line, in pixels.
 	/// </summary>
-	public float Ascent { get; }
+	public float Ascent { get; internal init; }
 
 	/// <summary>
 	/// Gets the distance from the baseline to the bottom of the line, in pixels.
 	/// </summary>
-	public float Descent { get; }
+	public float Descent { get; internal init; }
 
 	/// <summary>
-	/// Gets the total height of the line, in pixels.
+	/// Gets the extra vertical added between lines of text, from the bottom of the line.
 	/// </summary>
-	public float Height => Ascent + Descent;
+	public float Leading { get; internal init; }
+
+	/// <summary>
+	/// Gets the total height of the line, including the line gap, in pixels.
+	/// </summary>
+	/// <value>
+	/// The result of <see cref="Ascent"/> + <see cref="Descent"/> + <see cref="Leading"/>.
+	/// </value>
+	public float Height => Ascent + Descent + Leading;
 
 	/// <summary>
 	/// Gets the horizontal alignment applied to the line.
 	/// </summary>
-	public HorizontalAlignment Alignment { get; }
+	public HorizontalAlignment Alignment { get; internal init; }
+
+	internal List<Glyph> Glyphs { get; init; }
 
 	/// <summary>
 	/// Gets the <see cref="Glyph"/> at the specified index.
@@ -88,7 +75,7 @@ public readonly struct LineSpan : IEnumerable<Glyph>
 			ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
 			ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Length, nameof(index));
 
-			return _glyphs[Start + index];
+			return Glyphs[Start + index];
 		}
 	}
 
@@ -127,7 +114,7 @@ public readonly struct LineSpan : IEnumerable<Glyph>
 
 		internal Enumerator(LineSpan line)
 		{
-			_list = line._glyphs;
+			_list = line.Glyphs;
 			_start = line.Start;
 			_length = line.Length;
 		}

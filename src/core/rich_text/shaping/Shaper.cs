@@ -35,8 +35,9 @@ internal readonly struct Shaper()
 	public required List<Paragraph> Paragraphs { get; init; }
 
 	// Fallback values.
-	public required Font DefaultFont { get; init; }
-	public required long DefaultFontSize { get; init; }
+	public required Font FallbackFont { get; init; }
+	public required ushort FallbackFontSize { get; init; }
+	public required int FallbackLeading { get; init; }
 
 	public void Shape()
 	{
@@ -138,36 +139,30 @@ internal readonly struct Shaper()
 				{
 					var lineShaped = SplitParagraph(paragraph, breaks[j], breaks[j + 1] - breaks[j]);
 					var initialGlyphCount = Glyphs.Count;
+					var maxLeading = float.MinValue;
 
 					foreach (var g in TS.ShapedTextGetGlyphs(lineShaped))
 					{
-						ProcessRawGlyph(g, lineShaped);
-					}
-					
-					// Vertical spacing shouldn't be added to the last line of the text.
-					var descent = (float)TS.ShapedTextGetDescent(lineShaped);
-					var lastLine = i + 1 >= Paragraphs.Count && j + 2 >= breaks.Length;
+						var leading = ProcessRawGlyph(g, lineShaped);
 
-					if (lastLine)
-					{
-						var spcY = (float)TS.ShapedTextGetSpacing(lineShaped, TextServer.SpacingType.Bottom);
-
-						if (spcY > 0f)
+						if (leading > maxLeading)
 						{
-							descent -= spcY;
+							maxLeading = leading;
 						}
 					}
 
-					// Generate the final line.
-					Lines.Add(new LineSpan(
-						glyphs:    Glyphs,
-						start:     initialGlyphCount,
-						length:    Glyphs.Count - initialGlyphCount,
-						width:     (float)TS.ShapedTextGetWidth(lineShaped),
-						ascent:    (float)TS.ShapedTextGetAscent(lineShaped),
-						descent:   descent,
-						alignment: paragraph.Alignment));
-
+					Lines.Add(new LineSpan
+					{
+						Glyphs = Glyphs,
+						Start = initialGlyphCount,
+						Length = Glyphs.Count - initialGlyphCount,
+						Width = (float)TS.ShapedTextGetWidth(lineShaped),
+						Ascent = (float)TS.ShapedTextGetAscent(lineShaped),
+						Descent = (float)TS.ShapedTextGetDescent(lineShaped) - maxLeading,
+						Leading = maxLeading,
+						Alignment = paragraph.Alignment
+					});
+					
 					TS.FreeRid(lineShaped);
 				}
 			}
@@ -182,15 +177,16 @@ internal readonly struct Shaper()
 
 	private void InsertEmptyLine(HorizontalAlignment alignment)
 	{
-		float ascent, descent;
+		float ascent, descent, leading;
 		
 		if (Lines.Count == 0)
 		{
 			// No previous line, so we have to make some bullshit metrics by ourselves.
-			var font = DefaultFont.GetRids()[0];
+			var font = FallbackFont.GetRids()[0];
 
-			ascent = (float)TS.FontGetAscent(font, DefaultFontSize);
-			descent = (float)TS.FontGetDescent(font, DefaultFontSize);
+			ascent = (float)TS.FontGetAscent(font, FallbackFontSize);
+			descent = (float)TS.FontGetDescent(font, FallbackFontSize);
+			leading = FallbackLeading;
 		}
 		else
 		{
@@ -199,10 +195,20 @@ internal readonly struct Shaper()
 
 			ascent = previousLine.Ascent;
 			descent = previousLine.Descent;
+			leading = previousLine.Leading;
 		}
 
-		var emptyLine = new LineSpan(Glyphs, Glyphs.Count, 0, 0f, ascent, descent, alignment);
-		Lines.Add(emptyLine);
+		Lines.Add(new LineSpan
+		{
+			Glyphs = Glyphs,
+			Start = Glyphs.Count,
+			Length = 0,
+			Width = 0f,
+			Ascent = ascent,
+			Descent = descent,
+			Leading = leading,
+			Alignment = alignment
+		});
 	}
 
 	private int[] CalculateLineBreaks(Rid shaped)
@@ -229,32 +235,36 @@ internal readonly struct Shaper()
 		return lineShaped;
 	}
 
-	private void ProcessRawGlyph(Godot.Collections.Dictionary g, Rid lineShaped)
+	// Returns the leading associated to the specified glyph.
+	private float ProcessRawGlyph(Godot.Collections.Dictionary g, Rid lineShaped)
 	{
 		var flags = (TextServer.GraphemeFlag)(long)g["flags"];
 		var spanIndex = (int)g["span_index"];
 
-		if (flags.HasFlag(TextServer.GraphemeFlag.EmbeddedObject))
-		{
-			var key = (int)TS.ShapedGetSpanObject(lineShaped, spanIndex);
-			var item = Items[key];
+		var itemIndex = (int)(flags.HasFlag(TextServer.GraphemeFlag.EmbeddedObject)
+			? TS.ShapedGetSpanObject(lineShaped, spanIndex)
+			: TS.ShapedGetSpanMeta(lineShaped, spanIndex));
 
-			if (item.Type == ShapeItemType.Texture)
+		var item = Items[itemIndex];
+
+		if (item.Type is ShapeItemType.Run or ShapeItemType.Texture)
+		{
+			var resolved = StyleMap[item.Style];
+				
+			if (item.Type == ShapeItemType.Run)
 			{
-				AddIconGlyph(g, StyleMap[item.Style].Style, item.Texture);
+				AddCharGlyph(g, resolved.Style);
 			}
 			else
 			{
-				Markers.Add(new TextMarker(item.Text, item.Attributes, Glyphs.Count));
+				AddIconGlyph(g, resolved.Style, item.Texture);
 			}
-		}
-		else
-		{
-			var itemIndex = (int)TS.ShapedGetSpanMeta(lineShaped, spanIndex);
-			var item = Items[itemIndex];
 
-			AddCharGlyph(g, StyleMap[item.Style].Style);
+			return resolved.LineSpacing;
 		}
+
+		Markers.Add(new TextMarker(item.Text, item.Attributes, Glyphs.Count));
+		return 0f;
 	}
 
 	private void AddCharGlyph(Godot.Collections.Dictionary g, GlyphStyle style)

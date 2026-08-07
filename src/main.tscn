@@ -10,5 +10,6 @@ anchors_preset = 0
 offset_right = 149.0
 offset_bottom = 59.0
 script = ExtResource("1_eewff")
-Content = "How does text outline looks so good bro what the fuckkkk"
+Content = "A
+B"
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"
