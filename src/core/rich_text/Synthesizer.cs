@@ -22,7 +22,7 @@ internal struct Synthesizer(Document document, TextBuilder builder)
 	private void WalkBranch(int rootIndex)
 	{
 		var entityBuffer = (stackalloc char[2]);
-		var childIndex = document.Nodes[rootIndex].FirstChildIndex;
+		var childIndex = document.Nodes[rootIndex].ChildIndex;
 
 		while (childIndex != -1)
 		{

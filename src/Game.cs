@@ -1,5 +1,4 @@
 using Espejismo.Core.Input;
-using Espejismo.Core.RichText;
 using Godot;
 using System;
 

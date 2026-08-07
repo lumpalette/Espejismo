@@ -5,7 +5,6 @@ namespace Espejismo.Core.RichText.Nodes;
 /// <summary>
 /// Minimal Label-like Control used to smoke-test the rich-text pipeline. Not feature-complete.
 /// </summary>
-[Tool]
 [GlobalClass]
 public partial class RichLabel : Control
 {
@@ -83,7 +82,7 @@ public partial class RichLabel : Control
 			return;
 		}
 
-		var style = (BaseStyle is not null) ? new TextStyle(BaseStyle) : new TextStyle();
+		var style = (BaseStyle is not null) ? BaseStyle.Create() : new TextStyle();
 
 		_text = Text.Parse(Content, style);
 		_text.Width = Size.X;
@@ -137,21 +136,21 @@ public partial class RichLabel : Control
 
 				if (glyph.IconTexture is not null)
 				{
-					DrawTexture(glyph.IconTexture, pos, glyph.Color);
+					DrawTexture(glyph.IconTexture, pos, glyph.Style.Color);
 				}
 				else if (glyph.Font.IsValid)
 				{
-					if (glyph.OutlineSize > 0)
+					if (glyph.Style.OutlineSize > 0)
 					{
-						_TS.FontDrawGlyphOutline(glyph.Font, canvas, glyph.FontSize, glyph.OutlineSize, pos, glyph.Index, glyph.OutlineColor);
+						_TS.FontDrawGlyphOutline(glyph.Font, canvas, glyph.FontSize, glyph.Style.OutlineSize, pos, glyph.Index, glyph.Style.OutlineColor);
 					}
 
-					if (glyph.ShadowSize > 0)
+					if (glyph.Style.ShadowSize > 0)
 					{
-						_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos + glyph.ShadowOffset, glyph.Index, glyph.ShadowColor);
+						_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos + glyph.Style.ShadowOffset, glyph.Index, glyph.Style.ShadowColor);
 					}
 
-					_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos, glyph.Index, glyph.Color);
+					_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos, glyph.Index, glyph.Style.Color);
 				}
 
 				x += glyph.Advance;

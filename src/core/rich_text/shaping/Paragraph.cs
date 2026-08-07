@@ -3,11 +3,12 @@ using Godot;
 namespace Espejismo.Core.RichText.Shaping;
 
 // A container of shaped text that shares the same alignment.
-internal readonly struct Paragraph(Rid shaped, HorizontalAlignment alignment, bool isVisible)
+internal readonly struct Paragraph(TextServer TS, TextServer.Direction direction, TextServer.Orientation orientation)
 {
-	public Rid Shaped { get; } = shaped;
+	public Rid Shaped { get; init; } = TS.CreateShapedText(direction, orientation);
 
-	public HorizontalAlignment Alignment { get; } = alignment;
+	public HorizontalAlignment Alignment { get; init; }
 
-	public bool HasContent { get; } = isVisible;
+	// Whether the shaped buffer has any content (runs, icons or markers).
+	public bool HasContent { get; init; }
 }

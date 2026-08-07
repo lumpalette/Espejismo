@@ -124,7 +124,7 @@ public sealed class PlayerInput
 	/// </param>
 	public void Process(InputEvent e)
 	{
-		if (!CanHandleEvent(e))
+		if (!CanProcessEvent(e))
 		{
 			return;
 		}
@@ -250,7 +250,7 @@ public sealed class PlayerInput
 		}
 	}
 
-	private bool CanHandleEvent(InputEvent e)
+	private bool CanProcessEvent(InputEvent e)
 	{
 		return IsEnabled && ActionMap is not null && _devices.Contains(e.Device) && !e.IsEcho();
 	}

@@ -7,7 +7,7 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 /// Provides static, read-only access to the rich-text resources used for the game.
 /// </summary>
-[GlobalClass, Tool]
+[GlobalClass]
 public partial class ResourceDB : Resource
 {
 	/// <summary>

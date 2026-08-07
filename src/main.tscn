@@ -1,16 +1,14 @@
 [gd_scene format=3 uid="uid://b33c8l4fw10vj"]
 
 [ext_resource type="Script" uid="uid://bjpdr6mrvvpw2" path="res://src/core/RichLabel.cs" id="1_eewff"]
-[ext_resource type="Resource" uid="uid://25uqi2nmy2rl" path="res://src/core/rich_text/resources/default_style.tres" id="2_gh0ne"]
 
 [node name="Main" type="Node" unique_id=213237798]
 
-[node name="RichLabel" type="Control" parent="." unique_id=403856167]
+[node name="RichLabel" type="Control" parent="." unique_id=1311058610]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 222.0
-offset_bottom = 40.0
+offset_right = 149.0
+offset_bottom = 59.0
 script = ExtResource("1_eewff")
-Content = "XD"
-BaseStyle = ExtResource("2_gh0ne")
+Content = "How does text outline looks so good bro what the fuckkkk"
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"

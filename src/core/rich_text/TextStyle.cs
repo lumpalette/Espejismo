@@ -7,41 +7,15 @@ namespace Espejismo.Core.RichText;
 /// </summary>
 /// <remarks>
 /// All properties in this struct are nullable. A <see langword="null"/> property indicates that the property must be
-/// resolved elsewhere. How a property is resolved depends on the context in which the style is used. See
-/// <see cref="Text.Style"/> and <see cref="ResourceDB.DefaultStyle"/> for more details.
+/// resolved elsewhere. How a property is resolved depends on the context in which the style is used.
 /// </remarks>
 public readonly record struct TextStyle
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextStyle"/> struct.
+	/// Initializes a new instance of the <see cref="TextStyle"/> struct fully unset.
 	/// </summary>
 	public TextStyle()
 	{
-	}
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="TextStyle"/> struct based on the specified
-	/// <see cref="StyleTemplate"/>.
-	/// </summary>
-	/// <param name="template">
-	/// The style template to copy.
-	/// </param>
-	public TextStyle(StyleTemplate template)
-	{
-		Font = template.Font;
-		FontSize = template.FontSize;
-		Color = template.Color;
-		Effect = template.Effect;
-		
-		LetterSpacing = template.LetterSpacing;
-		LineSpacing = template.LineSpacing;
-		
-		ShadowSize = template.ShadowSize;
-		ShadowColor = template.ShadowColor;
-		ShadowOffset = template.ShadowOffset;
-		
-		OutlineSize = template.OutlineSize;
-		OutlineColor = template.OutlineColor;
 	}
 
 	/// <summary>
@@ -52,7 +26,7 @@ public readonly record struct TextStyle
 	/// <summary>
 	/// Gets the size of the text, in pixels.
 	/// </summary>
-	public int? FontSize { get; init; }
+	public ushort? FontSize { get; init; }
 
 	/// <summary>
 	/// Gets the color tint of the text.
@@ -77,7 +51,7 @@ public readonly record struct TextStyle
 	/// <summary>
 	/// Gets the size of the shadow effect, in pixels.
 	/// </summary>
-	public int? ShadowSize { get; init; }
+	public ushort? ShadowSize { get; init; }
 
 	/// <summary>
 	/// Gets the color for the shadow effect.
@@ -92,10 +66,37 @@ public readonly record struct TextStyle
 	/// <summary>
 	/// Gets the size for the text outline, in pixels.
 	/// </summary>
-	public int? OutlineSize { get; init; }
+	public ushort? OutlineSize { get; init; }
 
 	/// <summary>
 	/// Gets the color for the text outline.
 	/// </summary>
 	public Color? OutlineColor { get; init; }
+
+	/// <summary>
+	/// Creates a new <see cref="TextStyle"/> by combining the properties of this style with another.
+	/// </summary>
+	/// <param name="other">
+	/// The fallback style to merge with when the properties of this style are unset.
+	/// </param>
+	/// <returns>
+	/// The merged <see cref="TextStyle"/>.
+	/// </returns>
+	public TextStyle MergedWith(in TextStyle other)
+	{
+		return new TextStyle
+		{
+			Font = Font ?? other.Font,
+			FontSize = FontSize ?? other.FontSize,
+			Color = Color ?? other.Color,
+			Effect = Effect ?? other.Effect,
+			LetterSpacing = LetterSpacing ?? other.LetterSpacing,
+			LineSpacing = LineSpacing ?? other.LineSpacing,
+			ShadowSize = ShadowSize ?? other.ShadowSize,
+			ShadowColor = ShadowColor ?? other.ShadowColor,
+			ShadowOffset = ShadowOffset ?? other.ShadowOffset,
+			OutlineSize = OutlineSize ?? other.OutlineSize,
+			OutlineColor = OutlineColor ?? other.OutlineColor
+		};
+	}
 }

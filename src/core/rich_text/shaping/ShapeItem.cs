@@ -44,4 +44,9 @@ internal readonly struct ShapeItem
 	public TagAttribute[] Attributes { get; private init; }
 
 	public HorizontalAlignment? Alignment { get; private init; }
+
+	public ShapeItem WithStyle(in TextStyle style)
+	{
+		return this with { Style = style };
+	}
 }

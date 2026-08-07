@@ -13,17 +13,26 @@ namespace Espejismo.Core.RichText;
 public partial class Text
 {
 	private readonly TextServer _TS = TextServerManager.GetPrimaryInterface();
+	private readonly Dictionary<TextStyle, ResolvedStyle> _styleMap = [];
 	private readonly List<Glyph> _glyphs = [];
 	private readonly List<LineSpan> _lines = [];
-	private readonly List<Paragraph> _paragraphs = [];
 	private readonly List<TextMarker> _markers = [];
+	private readonly List<Paragraph> _paragraphs = [];
 
 	private readonly ShapeItem[] _items;
-
+	
 	internal Text(ShapeItem[] items, TextStyle style)
 	{
 		_items = items;
-		Style = style;
+		
+		if (style == default)
+		{
+			GenerateStyleMap();
+		}
+		else
+		{
+			Style = style;
+		}
 	}
 
 	/// <summary>
@@ -77,23 +86,11 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets the total number of <see cref="LineSpan"/> instances in the text.
+	/// Gets the <see cref="TextMarker"/> instances embedded into the shaped text.
 	/// </summary>
 	/// <remarks>
 	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
 	/// </remarks>
-	public int LineCount
-	{
-		get
-		{
-			Shape();
-			return _lines.Count;
-		}
-	}
-
-	/// <summary>
-	/// Gets the <see cref="TextMarker"/> instances embedded into the shaped text.
-	/// </summary>
 	public ReadOnlySpan<TextMarker> Markers
 	{
 		get
@@ -106,9 +103,6 @@ public partial class Text
 	/// <summary>
 	/// Gets or sets the base style applied to all the text.
 	/// </summary>
-	/// <remarks>
-	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
-	/// </remarks>
 	public TextStyle Style
 	{
 		get;
@@ -118,6 +112,7 @@ public partial class Text
 			{
 				field = value;
 				Invalidate();
+				GenerateStyleMap();
 			}
 		}
 	}
@@ -194,32 +189,89 @@ public partial class Text
 
 		IsDirty = false;
 
-		// This looks way cursed that the thing I did with Synthesizer, but I don't care I'm done.
-		new Shaper(
-			TS: _TS,
-			text: new TextData
-			{
-				Items = _items,
-				BaseStyle = Style,
-			},
-			layout: new LayoutOptions
-			{
-				MaxWidth = Width,
-				BaseAlignment = Alignment,
-				Direction = TextServer.Direction.Auto,
-				Orientation = TextServer.Orientation.Horizontal
-			},
-			output: new OutputBuffers
-			{
-				Glyphs = _glyphs,
-				Lines = _lines,
-				Paragraphs = _paragraphs,
-				Markers = _markers
-			}).Shape();
+		// The shaper doesn't automatically clear the output.
+		_glyphs.Clear();
+		_lines.Clear();
+		_markers.Clear();
+		_paragraphs.Clear();
+		
+		// Now it looks nicer, cool I guess.
+		var shaper = new Shaper
+		{
+			// Input.
+			TS        = _TS,
+			Items     = _items,
+			StyleMap = _styleMap,
+			
+			// Layout options.
+			MaxWidth      = Width,
+			BaseAlignment = Alignment,
+			Direction     = TextServer.Direction.Auto,
+			Orientation   = TextServer.Orientation.Horizontal, // for now, only horizontal scripts are supported.
+
+			// Output.
+			Glyphs     = _glyphs,
+			Lines      = _lines,
+			Markers    = _markers,
+			Paragraphs = _paragraphs,
+
+			// Fallback values.
+			DefaultFont     = ResourceDB.DefaultStyle.Font,
+			DefaultFontSize = ResourceDB.DefaultStyle.FontSize
+		};
+		
+		shaper.Shape();
 	}
 
 	private void Invalidate()
 	{
 		IsDirty = true;
+	}
+
+	private void GenerateStyleMap()
+	{
+		_styleMap.Clear();
+
+		foreach (var item in _items)
+		{
+			if (item.Type is not (ShapeItemType.Run or ShapeItemType.Texture) || _styleMap.ContainsKey(item.Style))
+			{
+				continue;
+			}
+
+			// when eres un fokin nerd y el orden de los parámetros importa.
+			var merged = item.Style.MergedWith(Style);
+			var resolved = ResourceDB.DefaultStyle.CreateFrom(merged);
+
+			var font = resolved.Font!;
+			var spcX = resolved.LetterSpacing!.Value;
+			var spcY = resolved.LineSpacing!.Value;
+
+			if (spcX != 0 || spcY != 0)
+			{
+				font = new FontVariation
+				{
+					BaseFont = font,
+					SpacingGlyph = spcX,
+					SpacingBottom = spcY
+				};
+			}
+
+			_styleMap[item.Style] = new ResolvedStyle
+			{
+				Font = font,
+				FontSize = resolved.FontSize!.Value,
+				Style = new GlyphStyle
+				{
+					Color = resolved.Color!.Value,
+					Effect = resolved.Effect,
+					ShadowSize = resolved.ShadowSize!.Value,
+					ShadowColor = resolved.ShadowColor!.Value,
+					ShadowOffset = resolved.ShadowOffset!.Value,
+					OutlineSize = resolved.OutlineSize!.Value,
+					OutlineColor = resolved.OutlineColor!.Value
+				}
+			};
+		}
 	}
 }

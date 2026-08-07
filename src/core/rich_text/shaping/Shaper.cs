@@ -1,9 +1,10 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace Espejismo.Core.RichText.Shaping;
 
 // One-shot shaping engine that reads a sequence of shaped items and produces renderable glyphs.
-internal readonly struct Shaper(TextServer TS, TextData text, LayoutOptions layout, OutputBuffers output)
+internal readonly struct Shaper()
 {
 	/* Nunca suelo escribir acerca de mis experiencias diseñando un sistema cuando programo, y mucho menos hacerlo
 	 * dentro del código fuente, pero la sensación que tuve al escribir esto se puede resumir con la frase aquella
@@ -16,208 +17,197 @@ internal readonly struct Shaper(TextServer TS, TextData text, LayoutOptions layo
 	 * no puedo martha
 	 */
 
+	// Input.
+	public required TextServer TS { get; init; }
+	public required ShapeItem[] Items { get; init; }
+	public required Dictionary<TextStyle, ResolvedStyle> StyleMap { get; init; }
+
+	// Layout options.
+	public required float MaxWidth { get; init; }
+	public required HorizontalAlignment BaseAlignment { get; init; }
+	public required TextServer.Direction Direction { get; init; }
+	public required TextServer.Orientation Orientation { get; init; }
+
+	// Output, the lists must be cleared by caller.
+	public required List<Glyph> Glyphs { get; init; }
+	public required List<LineSpan> Lines { get; init; }
+	public required List<TextMarker> Markers { get; init; }
+	public required List<Paragraph> Paragraphs { get; init; }
+
+	// Fallback values.
+	public required Font DefaultFont { get; init; }
+	public required long DefaultFontSize { get; init; }
+
 	public void Shape()
 	{
-		output.Glyphs.Clear();
-		output.Lines.Clear();
-		output.Paragraphs.Clear();
-		
 		WriteParagraphs();
 
-		if (output.Paragraphs.Count > 0)
+		if (Paragraphs.Count > 0)
 		{
-			GenerateGlyphs();
+			WriteLines();
 		}
 	}
 
 	private void WriteParagraphs()
 	{
-		if (text.Items.Length == 0)
+		if (Items.Length == 0)
 		{
 			return;
 		}
 
-		var shaped = CreateParagraphRid();
-		var alignment = layout.BaseAlignment;
-		var hasContent = false;
-		var isIndependent = true;
-
-		for (var i = 0; i < text.Items.Length; i++)
+		var paragraph = new Paragraph(TS, Direction, Orientation) { Alignment = BaseAlignment };
+		var independent = true;
+		
+		for (var i = 0; i < Items.Length; i++)
 		{
-			var item = text.Items[i];
+			var item = Items[i];
 
 			switch (item.Type)
 			{
 				case ShapeItemType.Run:
-					var font = ResolveFont(item.Style, out var fontSize);
-					TS.ShapedTextAddString(shaped, item.Text, font.GetRids(), fontSize, meta: i);
-					hasContent = true;
-					isIndependent = true;
+					var resolved = StyleMap[item.Style];
+					var fonts = resolved.Font.GetRids();
+					var fontSize = resolved.FontSize;
+
+					TS.ShapedTextAddString(paragraph.Shaped, item.Text, fonts, fontSize, meta: i);
 					break;
 
 				case ShapeItemType.Texture:
-					TS.ShapedTextAddObject(shaped, i, item.Texture.GetSize(), item.TextureAlignment);
-					hasContent = true;
-					isIndependent = true;
+					TS.ShapedTextAddObject(paragraph.Shaped, i, item.Texture.GetSize(), item.TextureAlignment);
 					break;
 
 				case ShapeItemType.Marker:
-					TS.ShapedTextAddObject(shaped, i, Vector2.Zero);
-					hasContent = true;
-					isIndependent = true;
+					TS.ShapedTextAddObject(paragraph.Shaped, i, Vector2.Zero);
 					break;
 
 				case ShapeItemType.Break:
-					if (isIndependent)
+					if (independent)
 					{
-						FlushParagraph(shaped, alignment, hasContent);
-						shaped = CreateParagraphRid();
-						hasContent = false;
+						Paragraphs.Add(paragraph);
+						paragraph = new Paragraph(TS, Direction, Orientation) { Alignment = paragraph.Alignment };
 					}
 
-					isIndependent = true;
+					independent = true;
 					break;
 
 				case ShapeItemType.Align:
-					if (hasContent)
+					var alignment = item.Alignment ?? BaseAlignment;
+
+					if (paragraph.HasContent)
 					{
-						FlushParagraph(shaped, alignment, hasContent);
-						shaped = CreateParagraphRid();
-						hasContent = false;
-						isIndependent = false;
+						Paragraphs.Add(paragraph);
+						paragraph = new Paragraph(TS, Direction, Orientation) { Alignment = alignment };
+					}
+					else
+					{
+						paragraph = paragraph with { Alignment = alignment };
 					}
 
-					alignment = item.Alignment ?? layout.BaseAlignment;
+					independent = false; // stupid
 					break;
+			}
+
+			if (item.Type is ShapeItemType.Run or ShapeItemType.Texture or ShapeItemType.Marker)
+			{
+				paragraph = paragraph with { HasContent = true };
+				independent = true;
 			}
 		}
 
-		if (isIndependent)
+		if (independent)
 		{
-			FlushParagraph(shaped, alignment, hasContent);
+			Paragraphs.Add(paragraph);
 		}
 		else
 		{
-			TS.FreeRid(shaped);
+			TS.FreeRid(paragraph.Shaped);
 		}
 	}
 
-	private Rid CreateParagraphRid()
+	private void WriteLines()
 	{
-		return TS.CreateShapedText(layout.Direction, layout.Orientation);
-	}
-
-	private void FlushParagraph(Rid shaped, HorizontalAlignment alignment, bool hasContent)
-	{
-		output.Paragraphs.Add(new Paragraph(shaped, alignment, hasContent));
-	}
-
-	private Font ResolveFont(in TextStyle current, out int size)
-	{
-		var @base = text.BaseStyle;
-		var @default = ResourceDB.DefaultStyle;
-
-		var font = current.Font ?? @base.Font ?? @default.Font;
-		var spcX = current.LetterSpacing ?? @base.LetterSpacing ?? @default.LetterSpacing;
-		var spcY = current.LineSpacing ?? @base.LineSpacing ?? @default.LineSpacing;
-
-		if (spcX != 0 || spcY != 0)
+		for (var i = 0; i < Paragraphs.Count; i++)
 		{
-			font = new FontVariation
+			var paragraph = Paragraphs[i];
+
+			if (paragraph.HasContent)
 			{
-				BaseFont = font,
-				SpacingGlyph = spcX,
-				SpacingBottom = spcY
-			};
-		}
+				var breaks = CalculateLineBreaks(paragraph.Shaped);
 
-		size = current.FontSize ?? @base.FontSize ?? @default.FontSize;
-		return font;
-	}
-
-	private void GenerateGlyphs()
-	{
-		LineSpan line = default;
-
-		foreach (var paragraph in output.Paragraphs)
-		{
-			if (!paragraph.HasContent)
-			{
-				float ascent, descent;
-
-				if (line.Height > 0f)
+				for (var j = 0; j < breaks.Length; j += 2)
 				{
-					ascent = line.Ascent;
-					descent = line.Descent;
+					var lineShaped = SplitParagraph(paragraph, breaks[j], breaks[j + 1] - breaks[j]);
+					var initialGlyphCount = Glyphs.Count;
+
+					foreach (var g in TS.ShapedTextGetGlyphs(lineShaped))
+					{
+						ProcessRawGlyph(g, lineShaped);
+					}
+					
+					// Vertical spacing shouldn't be added to the last line of the text.
+					var descent = (float)TS.ShapedTextGetDescent(lineShaped);
+					var lastLine = i + 1 >= Paragraphs.Count && j + 2 >= breaks.Length;
+
+					if (lastLine)
+					{
+						var spcY = (float)TS.ShapedTextGetSpacing(lineShaped, TextServer.SpacingType.Bottom);
+
+						if (spcY > 0f)
+						{
+							descent -= spcY;
+						}
+					}
+
+					// Generate the final line.
+					Lines.Add(new LineSpan(
+						glyphs:    Glyphs,
+						start:     initialGlyphCount,
+						length:    Glyphs.Count - initialGlyphCount,
+						width:     (float)TS.ShapedTextGetWidth(lineShaped),
+						ascent:    (float)TS.ShapedTextGetAscent(lineShaped),
+						descent:   descent,
+						alignment: paragraph.Alignment));
+
+					TS.FreeRid(lineShaped);
 				}
-				else
-				{
-					// This unnecessary allocates a FontVariation, but I guess it doesn't matter too much...
-					var font = ResolveFont(text.BaseStyle, out var fontSize).GetRids()[0];
-					ascent  = (float)TS.FontGetAscent(font, fontSize);
-					descent = (float)TS.FontGetDescent(font, fontSize);
-				}
-
-				var empty = new LineSpan(
-					glyphs:    output.Glyphs,
-					start:     output.Glyphs.Count,
-					length:    0,
-					width:     0f,
-					ascent:    ascent,
-					descent:   descent,
-					alignment: paragraph.Alignment);
-
-				output.Lines.Add(empty);
-
-				TS.FreeRid(paragraph.Shaped);
-				continue;
 			}
-
-			// Extract the glyphs from every line range.
-			var breaks = CalculateLineBreaks(paragraph.Shaped);
-
-			for (var i = 0; i < breaks.Length; i += 2)
+			else
 			{
-				var shaped = TS.ShapedTextSubstr(paragraph.Shaped, breaks[i], breaks[i + 1] - breaks[i]);
-				
-				if (paragraph.Alignment == HorizontalAlignment.Fill && layout.MaxWidth > 0)
-				{
-					TS.ShapedTextFitToWidth(shaped, layout.MaxWidth);
-				}
-
-				var glyphCount = output.Glyphs.Count;
-
-				foreach (var g in TS.ShapedTextGetGlyphs(shaped))
-				{
-					ProcessRawGlyph(g, shaped);
-				}
-
-				line = new LineSpan(
-					glyphs:    output.Glyphs,
-					start:     glyphCount,
-					length:    output.Glyphs.Count - glyphCount,
-					width:     (float)TS.ShapedTextGetWidth(shaped),
-					ascent:    (float)TS.ShapedTextGetAscent(shaped),
-					descent:   (float)TS.ShapedTextGetDescent(shaped),
-					alignment: paragraph.Alignment);
-
-				output.Lines.Add(line);
-
-				TS.FreeRid(shaped);
+				InsertEmptyLine(paragraph.Alignment);
 			}
 
 			TS.FreeRid(paragraph.Shaped);
 		}
 	}
 
+	private void InsertEmptyLine(HorizontalAlignment alignment)
+	{
+		float ascent, descent;
+		
+		if (Lines.Count == 0)
+		{
+			// No previous line, so we have to make some bullshit metrics by ourselves.
+			var font = DefaultFont.GetRids()[0];
+
+			ascent = (float)TS.FontGetAscent(font, DefaultFontSize);
+			descent = (float)TS.FontGetDescent(font, DefaultFontSize);
+		}
+		else
+		{
+			// Just copy the previous line bro it doesn't matter.
+			var previousLine = Lines[^1];
+
+			ascent = previousLine.Ascent;
+			descent = previousLine.Descent;
+		}
+
+		var emptyLine = new LineSpan(Glyphs, Glyphs.Count, 0, 0f, ascent, descent, alignment);
+		Lines.Add(emptyLine);
+	}
+
 	private int[] CalculateLineBreaks(Rid shaped)
 	{
-		var width = layout.MaxWidth;
-
-		if (width <= 0)
-		{
-			width = float.MaxValue;
-		}
+		var width = (MaxWidth > 0) ? MaxWidth : float.MaxValue; 
 
 		var breakFlags = TextServer.LineBreakFlag.WordBound
 			| TextServer.LineBreakFlag.Adaptive
@@ -227,68 +217,77 @@ internal readonly struct Shaper(TextServer TS, TextData text, LayoutOptions layo
 		return TS.ShapedTextGetLineBreaks(shaped, width, start: 0, breakFlags);
 	}
 
-	private void ProcessRawGlyph(Godot.Collections.Dictionary g, Rid shaped)
+	private Rid SplitParagraph(Paragraph paragraph, int start, int length)
 	{
-		var @base = text.BaseStyle;
-		var @default = ResourceDB.DefaultStyle;
+		var lineShaped = TS.ShapedTextSubstr(paragraph.Shaped, start, length);
 
-		var start = (int)g["start"];
-		var end = (int)g["end"];
+		if (paragraph.Alignment == HorizontalAlignment.Fill && MaxWidth > 0)
+		{
+			TS.ShapedTextFitToWidth(lineShaped, MaxWidth);
+		}
+
+		return lineShaped;
+	}
+
+	private void ProcessRawGlyph(Godot.Collections.Dictionary g, Rid lineShaped)
+	{
 		var flags = (TextServer.GraphemeFlag)(long)g["flags"];
-		var advance = (float)g["advance"];
 		var spanIndex = (int)g["span_index"];
 
 		if (flags.HasFlag(TextServer.GraphemeFlag.EmbeddedObject))
 		{
-			var key = (int)TS.ShapedGetSpanObject(shaped, spanIndex);
-			var item = text.Items[key];
+			var key = (int)TS.ShapedGetSpanObject(lineShaped, spanIndex);
+			var item = Items[key];
 
 			if (item.Type == ShapeItemType.Texture)
 			{
-				output.Glyphs.Add(new Glyph
-				{
-					Start = start,
-					End = end,
-					Count = 1,
-					Repeat = 1,
-					Flags = flags,
-					Advance = advance,
-					IconTexture = item.Texture,
-					Color = item.Style.Color ?? @base.Color ?? @default.Color,
-					Effect = item.Style.Effect ?? @base.Effect ?? @default.Effect
-				});
+				AddIconGlyph(g, StyleMap[item.Style].Style, item.Texture);
 			}
 			else
 			{
-				output.Markers.Add(new TextMarker(item.Text, item.Attributes, output.Glyphs.Count));
+				Markers.Add(new TextMarker(item.Text, item.Attributes, Glyphs.Count));
 			}
 		}
 		else
 		{
-			var runIndex = (int)TS.ShapedGetSpanMeta(shaped, spanIndex);
-			var runStyle = text.Items[runIndex].Style;
+			var itemIndex = (int)TS.ShapedGetSpanMeta(lineShaped, spanIndex);
+			var item = Items[itemIndex];
 
-			// Oh my god bruh.
-			output.Glyphs.Add(new Glyph
-			{
-				Start = start,
-				End = end,
-				Count = (byte)g["count"],
-				Repeat = (byte)g["repeat"],
-				Flags = flags,
-				Offset = (Vector2)g["offset"],
-				Advance = advance,
-				Index = (int)g["index"],
-				Font = (Rid)g["font_rid"],
-				FontSize = (int)g["font_size"],
-				Color = runStyle.Color ?? @base.Color ?? @default.Color,
-				Effect = runStyle.Effect ?? @base.Effect ?? @default.Effect,
-				ShadowSize = runStyle.ShadowSize ?? @base.ShadowSize ?? @default.ShadowSize,
-				ShadowColor = runStyle.ShadowColor ?? @base.ShadowColor ?? @default.ShadowColor,
-				ShadowOffset = runStyle.ShadowOffset ?? @base.ShadowOffset ?? @default.ShadowOffset,
-				OutlineSize = runStyle.OutlineSize ?? @base.OutlineSize ?? @default.OutlineSize,
-				OutlineColor = runStyle.OutlineColor ?? @base.OutlineColor ?? @default.OutlineColor,
-			});
+			AddCharGlyph(g, StyleMap[item.Style].Style);
 		}
+	}
+
+	private void AddCharGlyph(Godot.Collections.Dictionary g, GlyphStyle style)
+	{
+		Glyphs.Add(new Glyph
+		{
+			Start = (int)g["start"],
+			End = (int)g["end"],
+			Index = (ushort)g["index"],
+			Font = (Rid)g["font_rid"],
+			FontSize = (ushort)g["font_size"],
+			Style = style,
+			Advance = (float)g["advance"],
+			Offset = (Vector2)g["offset"],
+			Count = (byte)g["count"],
+			Repeat = (byte)g["repeat"],
+			Flags = (ushort)g["flags"]
+		});
+	}
+
+	private void AddIconGlyph(Godot.Collections.Dictionary g, GlyphStyle style, Texture2D tex)
+	{
+		Glyphs.Add(new Glyph
+		{
+			Start = (int)g["start"],
+			End = (int)g["end"],
+			IconTexture = tex,
+			Style = style,
+			Advance = (float)g["advance"],
+			Offset = (Vector2)g["offset"],
+			Count = (byte)g["count"],
+			Repeat = (byte)g["repeat"],
+			Flags = (ushort)g["flags"]
+		});
 	}
 }

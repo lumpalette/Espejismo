@@ -108,27 +108,28 @@ internal readonly struct Document
 		var parent = _nodes[node.ParentIndex];
 
 		// Add child to node with no children.
-		if (parent.FirstChildIndex == -1)
+		if (parent.ChildIndex == -1)
 		{
-			_nodes[node.ParentIndex] = parent with
-			{
-				FirstChildIndex = newNodeIndex,
-				LastChildIndex = newNodeIndex
-			};
-
+			_nodes[node.ParentIndex] = parent with { ChildIndex = newNodeIndex };
 			return newNodeIndex;
 		}
 
-		// Add sibling to last child and update the parent.
-		_nodes[parent.LastChildIndex] = _nodes[parent.LastChildIndex] with
+		// Add sibling to the last child of the parent.
+		var lastChildIndex = parent.ChildIndex;
+		
+		while (lastChildIndex != -1)
 		{
-			SiblingIndex = newNodeIndex
-		};
+			var siblingIndex = _nodes[lastChildIndex].SiblingIndex;
 
-		_nodes[node.ParentIndex] = parent with
-		{
-			LastChildIndex = newNodeIndex
-		};
+			if (siblingIndex == -1)
+			{
+				break;
+			}
+			
+			lastChildIndex = siblingIndex;
+		}
+
+		_nodes[lastChildIndex] = _nodes[lastChildIndex] with { SiblingIndex = newNodeIndex };
 
 		return newNodeIndex;
 	}
@@ -149,7 +150,7 @@ internal readonly struct Document
 
 	private void PrintChildren(int parent, StringBuilder sb, string preffix)
 	{
-		var childIndex = _nodes[parent].FirstChildIndex;
+		var childIndex = _nodes[parent].ChildIndex;
 
 		// mientras el node tenga ñiñes:
 		while (childIndex != -1)
@@ -208,7 +209,7 @@ internal readonly struct Document
 				sb.Append(isLast ? "    " : "│   ");
 				sb.Append("└── Children:");
 
-				if (child.FirstChildIndex != -1)
+				if (child.ChildIndex != -1)
 				{
 					var newPreffix = preffix + (isLast ? "        " : "│       ");
 					PrintChildren(childIndex, sb, newPreffix);

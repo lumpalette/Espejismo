@@ -19,9 +19,7 @@ internal readonly struct Node(NodeType type)
 
 	public int ParentIndex { get; init; } = -1;
 
-	public int FirstChildIndex { get; init; } = -1;
-
-	public int LastChildIndex { get; init; } = -1;
+	public int ChildIndex { get; init; } = -1;
 
 	public int SiblingIndex { get; init; } = -1;
 
