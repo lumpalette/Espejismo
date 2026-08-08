@@ -1,15 +1,26 @@
 [gd_scene format=3 uid="uid://b33c8l4fw10vj"]
 
 [ext_resource type="Script" uid="uid://bjpdr6mrvvpw2" path="res://src/core/RichLabel.cs" id="1_eewff"]
+[ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="2_5q4o7"]
+[ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="2_gh0ne"]
+
+[sub_resource type="Resource" id="Resource_3cfgd"]
+script = ExtResource("2_gh0ne")
+Font = ExtResource("2_5q4o7")
+LetterSpacing = 4
+LineSpacing = 0
+metadata/_custom_type_script = "uid://dqv8xe0vejoqk"
 
 [node name="Main" type="Node" unique_id=213237798]
 
 [node name="RichLabel" type="Control" parent="." unique_id=1311058610]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 149.0
-offset_bottom = 59.0
+offset_right = 211.0
+offset_bottom = 134.0
 script = ExtResource("1_eewff")
-Content = "A
-B"
+Content = "Mira una cara <color value=\"red\"><icon name=\"test\" align=\"top\"/></color>"
+BaseStyle = SubResource("Resource_3cfgd")
+HorizontalAlignment = 3
+VerticalAlignment = 1
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"

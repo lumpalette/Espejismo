@@ -167,12 +167,12 @@ public partial class RichLabel : Control
 
 		var totalHeight = GetContentHeight();
 
-		return VerticalAlignment switch
+		return Mathf.Round(VerticalAlignment switch
 		{
 			VerticalAlignment.Center => (Size.Y - totalHeight) * 0.5f,
 			VerticalAlignment.Bottom => Size.Y - totalHeight,
 			_ => 0f
-		};
+		});
 	}
 
 	public override void _Draw()
@@ -211,20 +211,20 @@ public partial class RichLabel : Control
 			isFirstLine = false;
 			y += line.Ascent;
 
-			var x = line.Alignment switch
+			var x = Mathf.Round(line.Alignment switch
 			{
 				HorizontalAlignment.Center => (Size.X - line.Width) * 0.5f,
 				HorizontalAlignment.Right => Size.X - line.Width,
 				_ => 0f
-			};
+			});
 
 			foreach (var glyph in line)
 			{
 				var pos = new Vector2(x, y) + glyph.Offset;
-
+				
 				if (glyph.IconTexture is not null)
 				{
-					DrawTexture(glyph.IconTexture, pos, glyph.Style.Color);
+					DrawTextureRect(glyph.IconTexture, new(pos, glyph.IconSize), false, glyph.Style.Color);
 				}
 				else if (glyph.Font.IsValid)
 				{

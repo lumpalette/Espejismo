@@ -146,15 +146,17 @@ public class TextBuilder
 	/// The texture associated to the icon.
 	/// </param>
 	/// <param name="alignment">
-	/// The vertical alignment of the icon relative to the surrounding text. If omitted, defaults to
-	/// <see cref="InlineAlignment.Center"/>.
+	/// The vertical alignment of the icon relative to the surrounding text.
+	/// </param>
+	/// <param name="size">
+	/// The size of the texture rect, in pixels.
 	/// </param>
 	/// <returns>
 	/// The same <see cref="TextBuilder"/> instance.
 	/// </returns>
-	public TextBuilder AppendIcon(Texture2D texture, InlineAlignment alignment = InlineAlignment.Center)
+	public TextBuilder AppendIcon(Texture2D texture, InlineAlignment alignment, Vector2 size)
 	{
-		_items.Add(ShapeItem.CreateTexture(texture, alignment, TopStyle));
+		_items.Add(ShapeItem.CreateTexture(texture, alignment, size, TopStyle));
 		return this;
 	}
 

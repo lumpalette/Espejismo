@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 
 namespace Espejismo.Core.RichText;
 
@@ -10,32 +11,67 @@ public readonly struct Glyph // 56 bytes pesa la marrana
 	/// <summary>
 	/// Gets the start position of the glyph within the source string.
 	/// </summary>
-	public int Start { get; internal init; }
+	public int Start { get; private init; }
 
 	/// <summary>
 	/// Gets the end position of the glyph within the source string.
 	/// </summary>
-	public int End { get; internal init; }
+	public int End { get; private init; }
 
 	/// <summary>
-	/// Gets the index of the glyph in the source font, if applicable.
+	/// Gets the number of glyphs in the grapheme cluster, only set in the first glyph.
 	/// </summary>
-	public ushort Index { get; internal init; } // fonts cannot hold more than 0xFFFF glyphs, so ushort it's fine.
+	public byte Count { get; private init; }
 
 	/// <summary>
-	/// Gets the <see cref="TextServer"/> font resource used for the glyphs, if applicable.
+	/// Gets the number of consecutive times the glyph should be drawn.
 	/// </summary>
-	public Rid Font { get; internal init; }
+	public byte Repeat { get; private init; }
+
+	/// <summary>
+	/// Gets a value describing the category or characteristics of this glyph.
+	/// </summary>
+	public ushort Flags { get; private init; } // This is a TextServer.GraphemeFlag value.
+
+	/// <summary>
+	/// Gets the offset to the glyph's origin from the baseline.
+	/// </summary>
+	public Vector2 Offset { get; private init; }
+
+	/// <summary>
+	/// Gets the distance to the next glyph along the baseline.
+	/// </summary>
+	public float Advance { get; private init; }
+
+	/// <summary>
+	/// Gets the <see cref="TextServer"/> font resource used for the glyph.
+	/// </summary>
+	public Rid Font { get; private init; }
 
 	/// <summary>
 	/// Gets the size of the <see cref="Font"/>, in pixels.
 	/// </summary>
-	public ushort FontSize { get; internal init; }
+	public ushort FontSize { get; private init; }
 
 	/// <summary>
-	/// Gets the texture resource associated to the icon, if applicable.
+	/// Gets the index of the glyph in the source <see cref="Font"/>, if applicable.
 	/// </summary>
-	public Texture2D? IconTexture { get; internal init; }
+	public ushort Index { get; private init; } // fonts cannot hold more than 0xFFFF glyphs, so ushort it's fine.
+
+	/// <summary>
+	/// Gets the texture resource associated to the icon.
+	/// </summary>
+	public Texture2D? IconTexture { get; private init; }
+
+	/// <summary>
+	/// Gets the size of the rectangle used for <see cref="IconTexture"/>.
+	/// </summary>
+	public Vector2 IconSize { get; private init; }
+
+	/// <summary>
+	/// Gets the group of style properties associated to this glyph.
+	/// </summary>
+	public GlyphStyle Style { get; private init; }
 
 	/// <summary>
 	/// Gets a value indicating whether the glyph represents a text character.
@@ -45,33 +81,44 @@ public readonly struct Glyph // 56 bytes pesa la marrana
 	/// </value>
 	public bool IsChar => Index != 0;
 
-	/// <summary>
-	/// Gets the group of style properties associated to this glyph.
-	/// </summary>
-	public GlyphStyle Style { get; internal init; }
+	internal static Glyph CreateChar(Dictionary gl, GlyphStyle style)
+	{
+		return new Glyph
+		{
+			Start = (int)gl["start"],
+			End   = (int)gl["end"],
 
-	/// <summary>
-	/// Gets the distance to the next glyph along the baseline.
-	/// </summary>
-	public float Advance { get; internal init; }
+			Count  = (byte)gl["count"],
+			Repeat = (byte)gl["repeat"],
+			Flags  = (ushort)gl["flags"],
 
-	/// <summary>
-	/// Gets the offset to the glyph's origin from the baseline.
-	/// </summary>
-	public Vector2 Offset { get; internal init; }
+			Offset  = (Vector2)gl["offset"],
+			Advance = (float)gl["advance"],
 
-	/// <summary>
-	/// Gets the number of glyphs in the grapheme cluster, only set in the first glyph.
-	/// </summary>
-	public byte Count { get; internal init; }
+			Font     = (Rid)gl["font_rid"],
+			FontSize = (ushort)gl["font_size"],
+			Index    = (ushort)gl["index"],
+			Style = style,
+		};
+	}
 
-	/// <summary>
-	/// Gets the number of consecutive times the glyph should be drawn.
-	/// </summary>
-	public byte Repeat { get; internal init; }
+	internal static Glyph CreateIcon(Dictionary gl, GlyphStyle style, Texture2D tex, Rect2 rect)
+	{
+		return new Glyph
+		{
+			Start = (int)gl["start"],
+			End   = (int)gl["end"],
 
-	/// <summary>
-	/// Gets a value describing the category or characteristics of this glyph.
-	/// </summary>
-	public ushort Flags { get; internal init; } // This is a TextServer.GraphemeFlag value.
+			Count  = 1,
+			Repeat = (byte)gl["repeat"],
+			Flags  = (ushort)(TextServer.GraphemeFlag.Valid | TextServer.GraphemeFlag.EmbeddedObject),
+
+			Offset  = rect.Position,
+			Advance = (float)gl["advance"],
+
+			IconTexture = tex,
+			IconSize    = rect.Size,
+			Style       = style,
+		};
+	}
 }

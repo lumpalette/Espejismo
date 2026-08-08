@@ -10,9 +10,16 @@ internal readonly struct ShapeItem
 		return new ShapeItem { Type = ShapeItemType.Run, Text = text, Style = style };
 	}
 
-	public static ShapeItem CreateTexture(Texture2D tex, InlineAlignment alignment, TextStyle style)
+	public static ShapeItem CreateTexture(Texture2D tex, InlineAlignment alignment, Vector2 size, TextStyle style)
 	{
-		return new ShapeItem { Type = ShapeItemType.Texture, Texture = tex, TextureAlignment = alignment, Style = style };
+		return new ShapeItem
+		{
+			Type = ShapeItemType.Texture,
+			Texture = tex,
+			TextureAlignment = alignment,
+			TextureSize = size,
+			Style = style
+		};
 	}
 
 	public static ShapeItem CreateMarker(string name, TagAttribute[] attributes)
@@ -41,12 +48,9 @@ internal readonly struct ShapeItem
 
 	public InlineAlignment TextureAlignment { get; private init; }
 
+	public Vector2 TextureSize { get; private init; }
+
 	public TagAttribute[] Attributes { get; private init; }
 
 	public HorizontalAlignment? Alignment { get; private init; }
-
-	public ShapeItem WithStyle(in TextStyle style)
-	{
-		return this with { Style = style };
-	}
 }

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Espejismo.Core.RichText;
 
@@ -98,13 +99,19 @@ public partial class ResourceDB : Resource
 	/// <param name="name">
 	/// The name of the resource to get.
 	/// </param>
+	/// <param name="resource">
+	/// When this method returns, contains the resource associated with <paramref name="name"/>, if registered;
+	/// otherwise, <see langword="null"/>.
+	/// </param>
 	/// <returns>
-	/// The requested <typeparamref name="T"/>, if registered; otherwise, <see langword="null"/>.
+	/// <see langword="true"/> if a <typeparamref name="T"/> resource with the name <paramref name="name"/> is
+	/// registered; otherwise, <see langword="false"/>.
 	/// </returns>
 	/// <exception cref="ArgumentException">
 	/// Thrown if <typeparamref name="T"/> is not a supported resource type.
 	/// </exception>
-	public static T? GetResource<[MustBeVariant] T>(ReadOnlySpan<char> name) where T : Resource
+	public static bool TryGetResource<[MustBeVariant] T>(ReadOnlySpan<char> name, [NotNullWhen(true)] out T? resource)
+		where T : Resource
 	{
 		// I don't want to write a method for every type of resource defined lol.
 		object? map = null;
@@ -131,7 +138,8 @@ public partial class ResourceDB : Resource
 			throw new ArgumentException($"Resource type '{typeof(T).FullName}' is not supported", nameof(T));
 		}
 
-		return ((Map<T>)map).GetValue(name);
+		resource = ((Map<T>)map).GetValue(name);
+		return resource is not null;
 	}
 
 	private readonly struct Map<[MustBeVariant] T> where T : Resource

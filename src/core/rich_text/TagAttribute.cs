@@ -56,7 +56,7 @@ public readonly struct TagAttribute
 	public ReadOnlySpan<char> Value => _source.AsSpan(_valueStart, _valueLength);
 
 	/// <summary>
-	/// Gets a value indicating whether the attribute is a <see langword="default"/> instance.
+	/// Gets a value indicating whether the attribute was specified in a tag.
 	/// </summary>
-	public bool IsDefault => _source is null;
+	public bool IsDefined => _source is not null;
 }

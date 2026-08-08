@@ -1,14 +1,25 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace Espejismo.Core.RichText;
 
 /// <summary>
 /// Provides the base class for defining the behaviour of a rich-text tag during parsing.
 /// </summary>
+/// <param name="requiredAttributes">
+/// The names of the attributes required by the tag.
+/// </param>
 [GlobalClass]
-public abstract partial class TextTag : Resource
+public abstract partial class TextTag(string[] requiredAttributes) : Resource
 {
+
+	/// <summary>
+	/// Gets a collection of strings representing the names of the attributes required for the tag to function.
+	/// </summary>
+	public IReadOnlyList<string> RequiredAttributes { get; } = requiredAttributes;
+
 	/// <summary>
 	/// Called when an element begins, before its children are processed.
 	/// </summary>
@@ -17,17 +28,17 @@ public abstract partial class TextTag : Resource
 	/// <paramref name="builder"/>. Any resource the element may require (fonts, textures, etc.) should be resolved
 	/// through the static <see cref="ResourceDB"/> API.
 	/// </remarks>
-	/// <param name="attributes">
-	/// The attributes associated to the tag.
-	/// </param>
 	/// <param name="builder">
 	/// The working text state.
+	/// </param>
+	/// <param name="attributes">
+	/// The attributes associated to the tag.
 	/// </param>
 	/// <returns>
 	/// <see langword="true"/> if <see cref="End"/> should be called once the element's children have been processed;
 	/// otherwise, <see langword="false"/>.
 	/// </returns>
-	public abstract bool Begin(ReadOnlySpan<TagAttribute> attributes, TextBuilder builder);
+	public abstract bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes);
 
 	/// <summary>
 	/// Called when an element ends, after its children have been processed.
@@ -45,6 +56,34 @@ public abstract partial class TextTag : Resource
 	/// The working text state.
 	/// </param>
 #pragma warning disable CA1716 // Identifiers should not match keywords
-	public abstract void End(TextBuilder builder);
+	public virtual void End(TextBuilder builder)
+	{
+	}
 #pragma warning restore CA1716 // Identifiers should not match keywords
+
+	/// <summary>
+	/// Searches for a <see cref="TagAttribute"/> with the specified name within a <see cref="ReadOnlySpan{T}"/>.
+	/// </summary>
+	/// <param name="attributes">
+	/// The attributes to search through.
+	/// </param>
+	/// <param name="name">
+	/// The name of the attribute to find, case-sensitive.
+	/// </param>
+	/// <returns>
+	/// The matching <see cref="TagAttribute"/> if found; otherwise, the <see langword="default"/> value for
+	/// <see cref="TagAttribute"/>.
+	/// </returns>
+	protected static TagAttribute FindAttribute(ReadOnlySpan<TagAttribute> attributes, string name)
+	{
+		foreach (var attribute in attributes)
+		{
+			if (attribute.Name.SequenceEqual(name))
+			{
+				return attribute;
+			}
+		}
+
+		return default;
+	}
 }
