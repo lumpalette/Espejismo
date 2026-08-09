@@ -201,8 +201,6 @@ internal readonly struct Shaper()
 		var initialGlyphCount = Glyphs.Count;
 		var maxLeading = float.MinValue;
 
-		// We calculate the line's descent using ResolvedStyle.LineSpacing because FontVariation mixes the
-		// font's descent with the leading for some reason.
 		foreach (var g in TS.ShapedTextGetGlyphs(lineShaped))
 		{
 			var leading = ProcessRawGlyph(g, lineShaped);

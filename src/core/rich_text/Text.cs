@@ -256,6 +256,7 @@ public partial class Text
 			var font = mergedStyle.Font!;
 			var spcX = mergedStyle.LetterSpacing!.Value;
 			
+			// We don't pass the line spacing to the font, as it is stored inside the LineSpan.Leading separately.
 			if (spcX != 0)
 			{
 				font = new FontVariation
