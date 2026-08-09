@@ -255,15 +255,13 @@ public partial class Text
 
 			var font = mergedStyle.Font!;
 			var spcX = mergedStyle.LetterSpacing!.Value;
-			var spcY = mergedStyle.LineSpacing!.Value;
-
-			if (spcX != 0 || spcY != 0)
+			
+			if (spcX != 0)
 			{
 				font = new FontVariation
 				{
 					BaseFont = font,
 					SpacingGlyph = spcX,
-					SpacingBottom = spcY
 				};
 			}
 
@@ -271,7 +269,7 @@ public partial class Text
 			{
 				Font = font,
 				FontSize = mergedStyle.FontSize!.Value,
-				LineSpacing = spcY,
+				LineSpacing = mergedStyle.LineSpacing!.Value,
 				Style = new GlyphStyle
 				{
 					Color = mergedStyle.Color!.Value,

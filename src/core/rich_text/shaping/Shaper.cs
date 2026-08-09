@@ -220,7 +220,7 @@ internal readonly struct Shaper()
 			Length = Glyphs.Count - initialGlyphCount,
 			Width = (float)TS.ShapedTextGetWidth(lineShaped),
 			Ascent = (float)TS.ShapedTextGetAscent(lineShaped),
-			Descent = (float)TS.ShapedTextGetDescent(lineShaped) - maxLeading,
+			Descent = (float)TS.ShapedTextGetDescent(lineShaped),
 			Leading = maxLeading,
 			Alignment = paragraph.Alignment
 		});
