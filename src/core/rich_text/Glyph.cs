@@ -6,7 +6,7 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 /// Represents the visual shape of a text character or icon.
 /// </summary>
-public readonly struct Glyph // 56 bytes pesa la marrana
+public readonly struct Glyph // 64 bytes pesa la marranota
 {
 	/// <summary>
 	/// Gets the start position of the glyph within the source string.

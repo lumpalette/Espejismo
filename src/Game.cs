@@ -51,7 +51,7 @@ public partial class Game : Node
 	{
 		if (_input is null)
 		{
-			throw new InvalidOperationException($"ShapeInput node is null");
+			throw new InvalidOperationException($"Input node is null");
 		}
 	}
 
