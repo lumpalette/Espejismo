@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bgk2i03yjvnkr" path="res://src/core/rich_text/builtin_tags/IconTag.cs" id="3_ocran"]
 [ext_resource type="Script" uid="uid://cqgt54sy0g1t6" path="res://src/core/rich_text/builtin_tags/FontTag.cs" id="6_kv8rq"]
 [ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://shared/icons/icon.png" id="7_kv8rq"]
+[ext_resource type="Script" uid="uid://cjwm1veyo2eva" path="res://src/core/rich_text/builtin_tags/StyleTag.cs" id="7_qdj71"]
 
 [sub_resource type="Resource" id="Resource_gh0ne"]
 script = ExtResource("2_hput7")
@@ -40,6 +41,10 @@ script = ExtResource("2_hput7")
 _alignment = 2
 metadata/_custom_type_script = "uid://cs3odg278xwhh"
 
+[sub_resource type="Resource" id="Resource_ftp4u"]
+script = ExtResource("7_qdj71")
+metadata/_custom_type_script = "uid://cjwm1veyo2eva"
+
 [resource]
 script = ExtResource("1_gnpa1")
 _defaultStyle = ExtResource("1_b0dk3")
@@ -59,6 +64,7 @@ RegistryTags = Dictionary[String, Object]({
 "font": SubResource("Resource_qdj71"),
 "icon": SubResource("Resource_85lh8"),
 "left": SubResource("Resource_eewff"),
-"right": SubResource("Resource_5q4o7")
+"right": SubResource("Resource_5q4o7"),
+"style": SubResource("Resource_ftp4u")
 })
 metadata/_custom_type_script = "uid://voqj0ov3ox3q"

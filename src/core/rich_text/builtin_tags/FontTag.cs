@@ -8,7 +8,7 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;font [name="id"] [size="size"]&gt;...&lt;/font&gt;</c>
+/// Syntax: <c>&lt;font [id="id"] [size="size"]&gt;...&lt;/font&gt;</c>
 /// </para>
 /// <para>
 /// Where:
@@ -27,19 +27,19 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 [GlobalClass]
 public sealed partial class FontTag() : TextTag([])
 {
-	private const string OptionalName = "name";
+	private const string OptionalId = "id";
 	private const string OptionalSize = "size";
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var nameA = FindAttribute(attributes, OptionalName);
+		var idA = FindAttribute(attributes, OptionalId);
 		var sizeA = FindAttribute(attributes, OptionalSize);
 
 		var font = builder.TopStyle.Font;
 		var size = builder.TopStyle.FontSize;
 
-		if (nameA.IsDefined && !ResourceDB.TryGetResource(nameA.Value, out font))
+		if (idA.IsDefined && !ResourceDB.TryGetResource(idA.Value, out font))
 		{
 			return false;
 		}

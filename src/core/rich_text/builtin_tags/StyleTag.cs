@@ -1,3 +1,4 @@
+using Godot;
 using System;
 
 namespace Espejismo.Core.RichText.BuiltinTags;
@@ -7,22 +8,23 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;style name="id"&gt;...&lt;/style&gt;</c>
+/// Syntax: <c>&lt;style id="id"&gt;...&lt;/style&gt;</c>
 /// </para>
 /// <para>
 /// Where <c>id</c> is the identifier for the <see cref="StyleTemplate"/>, as defiend in <see cref="ResourceDB"/>.
 /// </para>
 /// </remarks>
-public sealed partial class StyleTag() : TextTag([RequiredName])
+[GlobalClass]
+public sealed partial class StyleTag() : TextTag([RequiredId])
 {
-	private const string RequiredName = "name";
+	private const string RequiredId = "id";
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var nameA = FindAttribute(attributes, RequiredName);
+		var idA = FindAttribute(attributes, RequiredId);
 
-		if (!ResourceDB.TryGetResource<StyleTemplate>(nameA.Value, out var template))
+		if (!ResourceDB.TryGetResource<StyleTemplate>(idA.Value, out var template))
 		{
 			return false;
 		}

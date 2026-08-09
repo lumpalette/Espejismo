@@ -8,7 +8,7 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;icon name="id" [align="top|center|bottom"] [size="WxH"]/&gt;</c>
+/// Syntax: <c>&lt;icon id="id" [align="top|center|bottom"] [size="WxH"]/&gt;</c>
 /// </para>
 /// <para>
 /// Where:
@@ -25,20 +25,20 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class IconTag() : TextTag([RequiredName])
+public sealed partial class IconTag() : TextTag([RequiredId])
 {
-	private const string RequiredName = "name";
+	private const string RequiredId = "id";
 	private const string OptionalAlign = "align";
 	private const string OptionalSize = "size";
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var nameA = FindAttribute(attributes, RequiredName);
+		var idA = FindAttribute(attributes, RequiredId);
 		var alignA = FindAttribute(attributes, OptionalAlign);
 		var sizeA = FindAttribute(attributes, OptionalSize);
 
-		if (!ResourceDB.TryGetResource<Texture2D>(nameA.Value, out var icon))
+		if (!ResourceDB.TryGetResource<Texture2D>(idA.Value, out var icon))
 		{
 			return false;
 		}
