@@ -7,7 +7,6 @@
 [sub_resource type="Resource" id="Resource_3cfgd"]
 script = ExtResource("2_gh0ne")
 Font = ExtResource("2_5q4o7")
-LetterSpacing = 4
 LineSpacing = 0
 metadata/_custom_type_script = "uid://dqv8xe0vejoqk"
 
@@ -19,8 +18,6 @@ anchors_preset = 0
 offset_right = 211.0
 offset_bottom = 134.0
 script = ExtResource("1_eewff")
-Content = "Mira una cara <color value=\"red\"><icon name=\"test\" align=\"top\"/></color>"
+Content = "Wait... <font size=24>WHAT?!</font>"
 BaseStyle = SubResource("Resource_3cfgd")
-HorizontalAlignment = 3
-VerticalAlignment = 1
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"

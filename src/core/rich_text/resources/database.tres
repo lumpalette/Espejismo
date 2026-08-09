@@ -6,7 +6,8 @@
 [ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="1_thbjs"]
 [ext_resource type="Script" uid="uid://cs3odg278xwhh" path="res://src/core/rich_text/builtin_tags/AlignmentTag.cs" id="2_hput7"]
 [ext_resource type="Script" uid="uid://bgk2i03yjvnkr" path="res://src/core/rich_text/builtin_tags/IconTag.cs" id="3_ocran"]
-[ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://icon.png" id="4_85lh8"]
+[ext_resource type="Script" uid="uid://cqgt54sy0g1t6" path="res://src/core/rich_text/builtin_tags/FontTag.cs" id="6_kv8rq"]
+[ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://shared/icons/icon.png" id="7_kv8rq"]
 
 [sub_resource type="Resource" id="Resource_gh0ne"]
 script = ExtResource("2_hput7")
@@ -21,6 +22,10 @@ metadata/_custom_type_script = "uid://c7qa3sldws3gd"
 script = ExtResource("2_hput7")
 _alignment = 3
 metadata/_custom_type_script = "uid://cs3odg278xwhh"
+
+[sub_resource type="Resource" id="Resource_qdj71"]
+script = ExtResource("6_kv8rq")
+metadata/_custom_type_script = "uid://cqgt54sy0g1t6"
 
 [sub_resource type="Resource" id="Resource_85lh8"]
 script = ExtResource("3_ocran")
@@ -42,7 +47,7 @@ RegistryFonts = Dictionary[String, Font]({
 "main": ExtResource("1_thbjs")
 })
 RegistryTextures = Dictionary[String, Texture2D]({
-"test": ExtResource("4_85lh8")
+"test": ExtResource("7_kv8rq")
 })
 RegistryStyles = Dictionary[String, Object]({
 "default": ExtResource("1_b0dk3")
@@ -51,6 +56,7 @@ RegistryTags = Dictionary[String, Object]({
 "center": SubResource("Resource_gh0ne"),
 "color": SubResource("Resource_lbwgk"),
 "fill": SubResource("Resource_3cfgd"),
+"font": SubResource("Resource_qdj71"),
 "icon": SubResource("Resource_85lh8"),
 "left": SubResource("Resource_eewff"),
 "right": SubResource("Resource_5q4o7")

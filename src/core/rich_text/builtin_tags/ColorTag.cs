@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 namespace Espejismo.Core.RichText.BuiltinTags;
 
 /// <summary>
-/// Represents a tag that changes the color of a specified segment of text.
+/// Represents a tag that changes the color of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>

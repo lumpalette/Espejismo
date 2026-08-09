@@ -255,10 +255,10 @@ internal readonly struct Shaper()
 		switch (item.Type)
 		{
 			case ShapeItemType.Run:
-				return AppendCharGlyph(gl, item);
+				return AppendChar(gl, item);
 			
 			case ShapeItemType.Texture:
-				return AppendIconGlyph(gl, item, itemIndex, lineShaped);
+				return AppendIcon(gl, item, itemIndex, lineShaped);
 			
 			default:
 				Markers.Add(new TextMarker(item.Text, item.Attributes, Glyphs.Count));
@@ -266,7 +266,7 @@ internal readonly struct Shaper()
 		}
 	}
 
-	private float AppendCharGlyph(Godot.Collections.Dictionary gl, in ShapeItem item)
+	private float AppendChar(Godot.Collections.Dictionary gl, in ShapeItem item)
 	{
 		var resolved = StyleMap[item.Style];
 		var glyph = Glyph.CreateChar(gl, resolved.Style);
@@ -276,7 +276,7 @@ internal readonly struct Shaper()
 		return resolved.LineSpacing;
 	}
 
-	private float AppendIconGlyph(Godot.Collections.Dictionary gl, in ShapeItem item, int itemIndex, Rid shaped)
+	private float AppendIcon(Godot.Collections.Dictionary gl, in ShapeItem item, int itemIndex, Rid shaped)
 	{
 		var rect = TS.ShapedTextGetObjectRect(shaped, itemIndex);
 		rect.Position = new Vector2
