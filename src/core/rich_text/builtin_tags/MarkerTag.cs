@@ -28,6 +28,7 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </list>
 /// </para>
 /// </remarks>
+[GlobalClass]
 public sealed partial class MarkerTag() : TextTag([])
 {
 	[Export]

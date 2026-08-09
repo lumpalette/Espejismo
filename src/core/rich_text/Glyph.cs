@@ -56,7 +56,7 @@ public readonly struct Glyph // 64 bytes pesa la marranota
 	/// <summary>
 	/// Gets the index of the glyph in the source <see cref="Font"/>, if applicable.
 	/// </summary>
-	public ushort Index { get; private init; } // fonts cannot hold more than 0xFFFF glyphs, so ushort it's fine.
+	public int Index { get; private init; }
 
 	/// <summary>
 	/// Gets the texture resource associated to the icon.
