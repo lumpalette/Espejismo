@@ -1,6 +1,5 @@
 using Espejismo.Core.RichText.Parsing;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -141,7 +140,7 @@ internal struct Synthesizer(Document document, TextBuilder builder)
 		for (var i = 0; i < length; i++)
 		{
 			var attr = document.Attributes[start + i];
-			
+
 			_attributes[i] = new TagAttribute(
 				document.Source,
 				attr.NameStart,

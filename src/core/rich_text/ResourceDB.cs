@@ -54,7 +54,7 @@ public partial class ResourceDB : Resource
 	private readonly Map<Texture2D> _mapTextures = new();
 	private readonly Map<StyleTemplate> _mapStyles = new();
 	private readonly Map<TextTag> _mapTags = new();
-	
+
 	/// <summary>
 	/// Gets the style template used as a last fallback for unset <see cref="TextStyle"/> properties.
 	/// </summary>
@@ -132,7 +132,7 @@ public partial class ResourceDB : Resource
 		{
 			map = Active._mapTags;
 		}
-		
+
 		if (map is null)
 		{
 			throw new ArgumentException($"Resource type '{typeof(T).FullName}' is not supported", nameof(T));

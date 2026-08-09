@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Security.Cryptography;
 
 namespace Espejismo.Core.RichText.BuiltinTags;
 
@@ -13,15 +12,15 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </para>
 /// <para>
 /// where:<br/>
-/// • <c>name</c> is the name of one of the colors in the <see cref="Colors"/> class, case-insensitive.<br/>
-/// • <c>html_code</c> is a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
+/// • <c>"name"</c> is the name of one of the colors in the <see cref="Colors"/> class, case-insensitive.<br/>
+/// • <c>"html_code"</c> is a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
 /// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class ColorTag() : TextTag([RequiredValue])
 {
 	private const string RequiredValue = "value";
-	
+
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{

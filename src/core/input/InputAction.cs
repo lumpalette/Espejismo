@@ -74,7 +74,7 @@ public class InputAction
 					? InputActionState.WasPressed
 					: InputActionState.Pressed;
 			}
-			
+
 			if (_currentStrength == 0f)
 			{
 				return (Engine.GetProcessFrames() == _releasedProcessFrame)
@@ -188,7 +188,7 @@ public class InputAction
 			var wasActive = _currentStrength != 0f;
 
 			_currentStrength = GetCurrentMaxStrength();
-			
+
 			var nowActive = _currentStrength != 0f;
 
 			// We offset the physics timestamps by +1 because the frame counter increases just before entering that

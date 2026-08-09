@@ -186,7 +186,7 @@ partial struct Tokenizer
 
 		AppendCurrentAttribute();
 		_currentAttributeNameStart = _position - 1;
-		
+
 		return ReconsumeIn(State.AttributeName);
 	}
 

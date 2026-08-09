@@ -24,7 +24,7 @@ internal ref partial struct Tokenizer(string source)
 	private int _currentAttributeValueStart;
 	private int _currentAttributeValueLength;
 	private char _attributeDelimiter;
-	
+
 	public TokenType TokenType { get; private set; }
 
 	// Depends on the token type:

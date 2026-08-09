@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 
 namespace Espejismo.Core.RichText;
 

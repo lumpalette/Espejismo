@@ -34,7 +34,7 @@ public class GlyphStyle
 	/// <summary>
 	/// Gets the displacement applied to the shadow effect, relative to the glyph position.
 	/// </summary>
-	public Vector2 ShadowOffset { get;internal set; }
+	public Vector2 ShadowOffset { get; internal set; }
 
 	/// <summary>
 	/// Gets the size of the glyph outline, in pixels.

@@ -1,4 +1,3 @@
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -116,7 +115,7 @@ internal readonly struct Document
 
 		// Add sibling to the last child of the parent.
 		var lastChildIndex = parent.ChildIndex;
-		
+
 		while (lastChildIndex != -1)
 		{
 			var siblingIndex = _nodes[lastChildIndex].SiblingIndex;
@@ -125,7 +124,7 @@ internal readonly struct Document
 			{
 				break;
 			}
-			
+
 			lastChildIndex = siblingIndex;
 		}
 

@@ -8,12 +8,12 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;icon name="name" [align="top|center|bottom"] [size="W×H"]/&gt;</c>
+/// Syntax: <c>&lt;icon name="id" [align="top|center|bottom"] [size="W×H"]/&gt;</c>
 /// </para>
 /// <para>
 /// Where:<br/>
-/// • <c>name</c> is the name of the <see cref="Texture2D"/> resource, as defined in <see cref="ResourceDB"/>.<br/>
-/// • <c>WxH</c> are the dimensions of the texture rect, specified as <c>(width × height)</c>.
+/// • <c>"id"</c> is the identifier for the <see cref="Texture2D"/> resource, as defined in <see cref="ResourceDB"/>.<br/>
+/// • <c>"WxH"</c> are the dimensions of the texture rect, specified as <c>(width × height)</c>.
 /// </para>
 /// </remarks>
 [GlobalClass]

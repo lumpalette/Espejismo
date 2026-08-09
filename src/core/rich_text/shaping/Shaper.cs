@@ -58,7 +58,7 @@ internal readonly struct Shaper()
 
 		var paragraph = new Paragraph(TS, Direction, Orientation) { Alignment = BaseAlignment };
 		var independent = true;
-		
+
 		for (var i = 0; i < Items.Length; i++)
 		{
 			var item = Items[i];
@@ -149,7 +149,7 @@ internal readonly struct Shaper()
 
 	private int[] CalculateLineBreaks(Rid shaped)
 	{
-		var width = (MaxWidth > 0) ? MaxWidth : float.MaxValue; 
+		var width = (MaxWidth > 0) ? MaxWidth : float.MaxValue;
 
 		var breakFlags = TextServer.LineBreakFlag.WordBound
 			| TextServer.LineBreakFlag.Adaptive
@@ -162,7 +162,7 @@ internal readonly struct Shaper()
 	private void InsertEmptyLine(HorizontalAlignment alignment)
 	{
 		float ascent, descent, leading;
-		
+
 		if (Lines.Count == 0)
 		{
 			// No previous line, so we have to make some bullshit metrics by ourselves.
@@ -224,7 +224,7 @@ internal readonly struct Shaper()
 			Leading = maxLeading,
 			Alignment = paragraph.Alignment
 		});
-					
+
 		TS.FreeRid(lineShaped);
 	}
 
@@ -249,17 +249,17 @@ internal readonly struct Shaper()
 		var itemIndex = (int)(flags.HasFlag(TextServer.GraphemeFlag.EmbeddedObject)
 			? TS.ShapedGetSpanEmbeddedObject(lineShaped, spanIndex)
 			: TS.ShapedGetSpanMeta(lineShaped, spanIndex));
-		
+
 		var item = Items[itemIndex];
 
 		switch (item.Type)
 		{
 			case ShapeItemType.Run:
 				return AppendChar(gl, item);
-			
+
 			case ShapeItemType.Texture:
 				return AppendIcon(gl, item, itemIndex, lineShaped);
-			
+
 			default:
 				Markers.Add(new TextMarker(item.Text, item.Attributes, Glyphs.Count));
 				return 0f;
@@ -270,9 +270,9 @@ internal readonly struct Shaper()
 	{
 		var resolved = StyleMap[item.Style];
 		var glyph = Glyph.CreateChar(gl, resolved.Style);
-			
+
 		Glyphs.Add(glyph);
-			
+
 		return resolved.LineSpacing;
 	}
 
@@ -284,12 +284,12 @@ internal readonly struct Shaper()
 			X = (Orientation == TextServer.Orientation.Vertical) ? rect.Position.X : 0f,
 			Y = (Orientation == TextServer.Orientation.Vertical) ? 0f : rect.Position.Y
 		};
-		
+
 		var resolved = StyleMap[item.Style];
 		var glyph = Glyph.CreateIcon(gl, resolved.Style, item.Texture, rect);
-			
+
 		Glyphs.Add(glyph);
-			
+
 		return resolved.LineSpacing;
 	}
 }

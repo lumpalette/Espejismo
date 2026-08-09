@@ -37,7 +37,7 @@ public readonly struct TagAttribute
 	public TagAttribute(string source, int nameStart, int nameLength, int valueStart, int valueLength)
 	{
 		ArgumentNullException.ThrowIfNull(source, nameof(source));
-		
+
 		_source = source;
 		_nameStart = nameStart;
 		_nameLength = nameLength;

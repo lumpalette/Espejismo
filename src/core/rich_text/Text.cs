@@ -20,7 +20,7 @@ public partial class Text
 	private readonly List<Paragraph> _paragraphs = [];
 
 	private readonly ShapeItem[] _items;
-	
+
 	private Font? _fallbackFont;
 	private ushort _fallbackFontSize;
 	private int _fallbackLeading;
@@ -28,7 +28,7 @@ public partial class Text
 	internal Text(ShapeItem[] items, TextStyle style)
 	{
 		_items = items;
-		
+
 		if (style == default)
 		{
 			GenerateStyleMap();
@@ -58,7 +58,7 @@ public partial class Text
 			return CollectionsMarshal.AsSpan(_glyphs);
 		}
 	}
-	
+
 	/// <summary>
 	/// Gets the total number of shaped <see cref="Glyph"/> instances.
 	/// </summary>
@@ -177,7 +177,7 @@ public partial class Text
 
 		// Looks cursed somehow, but whatever, it works.
 		new Synthesizer(document, builder).Read();
-		
+
 		return builder.Build(style);
 	}
 
@@ -203,10 +203,10 @@ public partial class Text
 		var shaper = new Shaper
 		{
 			// Input.
-			TS        = _TS,
-			Items     = _items,
+			TS       = _TS,
+			Items    = _items,
 			StyleMap = _styleMap,
-			
+
 			// Layout options.
 			MaxWidth      = Width,
 			BaseAlignment = Alignment,
@@ -224,7 +224,7 @@ public partial class Text
 			FallbackFontSize = _fallbackFontSize,
 			FallbackLeading  = _fallbackLeading
 		};
-		
+
 		shaper.Shape();
 	}
 
@@ -252,7 +252,7 @@ public partial class Text
 
 			// when eres un fokin nerd y el orden de los parámetros importa.
 			var mergedStyle = item.Style.MergedWith(baseStyle);
-			
+
 			var font = mergedStyle.Font!;
 			var spcX = mergedStyle.LetterSpacing!.Value;
 			var spcY = mergedStyle.LineSpacing!.Value;

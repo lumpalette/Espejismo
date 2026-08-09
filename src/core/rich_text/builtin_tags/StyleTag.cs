@@ -1,0 +1,40 @@
+using System;
+
+namespace Espejismo.Core.RichText.BuiltinTags;
+
+/// <summary>
+/// Represents a tag that changes the entire styling of a specific segment of text.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Syntax: <c>&lt;style name="id"&gt;...&lt;/style&gt;</c>
+/// </para>
+/// <para>
+/// Where:<br/>
+/// • <c>"id"</c> is the identifier for the <see cref="StyleTemplate"/> resource, as defined in <see cref="ResourceDB"/>.
+/// </para>
+/// </remarks>
+public sealed partial class StyleTag() : TextTag([RequiredName])
+{
+	private const string RequiredName = "name";
+
+	/// <inheritdoc/>
+	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
+	{
+		var nameA = FindAttribute(attributes, RequiredName);
+
+		if (!ResourceDB.TryGetResource<StyleTemplate>(nameA.Value, out var template))
+		{
+			return false;
+		}
+
+		builder.PushStyle(template.Create());
+		return true;
+	}
+
+	/// <inheritdoc/>
+	public override void End(TextBuilder builder)
+	{
+		builder.PopStyle();
+	}
+}

@@ -19,7 +19,7 @@ public interface IPlayerInputManager
 	/// Gets a collection containing all the <see cref="PlayerInput"/> instances assigned to places indexes.
 	/// </summary>
 	IEnumerable<PlayerInput> Players { get; }
-	
+
 	/// <summary>
 	/// Gets the total number of defined player indexes.
 	/// </summary>

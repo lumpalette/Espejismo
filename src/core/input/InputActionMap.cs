@@ -26,7 +26,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 	/// Gets the number of <see cref="InputAction"/> instances defined in the map.
 	/// </summary>
 	public int Count => _actions.Count;
-	
+
 	/// <summary>
 	/// Gets the <see cref="InputAction"/>  defined with the specified name.
 	/// </summary>
@@ -47,7 +47,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 		get
 		{
 			ArgumentNullException.ThrowIfNull(name, nameof(name));
-			
+
 			if (!_actions.TryGetValue(name, out var action))
 			{
 				throw new KeyNotFoundException($"Action with name '{name}' is undefined");

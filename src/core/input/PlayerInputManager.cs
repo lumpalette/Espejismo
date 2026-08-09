@@ -79,7 +79,7 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 				return entry.Key;
 			}
 		}
-		
+
 		return -1;
 	}
 

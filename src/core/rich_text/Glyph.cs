@@ -98,7 +98,7 @@ public readonly struct Glyph // 56 bytes pesa la marrana
 			Font     = (Rid)gl["font_rid"],
 			FontSize = (ushort)gl["font_size"],
 			Index    = (ushort)gl["index"],
-			Style = style,
+			Style    = style,
 		};
 	}
 

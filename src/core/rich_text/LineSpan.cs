@@ -136,7 +136,7 @@ public readonly struct LineSpan : IEnumerable<Glyph>
 				_index++;
 				return true;
 			}
-			
+
 			_current = default;
 			return false;
 		}

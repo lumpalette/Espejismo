@@ -57,7 +57,7 @@ public readonly record struct TextStyle
 	/// Gets the color for the shadow effect.
 	/// </summary>
 	public Color? ShadowColor { get; init; }
-	
+
 	/// <summary>
 	/// Gets the displacement for the shadow effect, relative to the main text.
 	/// </summary>

@@ -116,7 +116,7 @@ public partial class RichLabel : Control
 		_text = Text.Parse(Content, style);
 		_text.Width = Size.X;
 		_text.Alignment = HorizontalAlignment;
-		
+
 		QueueRedraw();
 	}
 
@@ -221,7 +221,7 @@ public partial class RichLabel : Control
 			foreach (var glyph in line)
 			{
 				var pos = new Vector2(x, y) + glyph.Offset;
-				
+
 				if (glyph.IconTexture is not null)
 				{
 					DrawTextureRect(glyph.IconTexture, new(pos, glyph.IconSize), false, glyph.Style.Color);
