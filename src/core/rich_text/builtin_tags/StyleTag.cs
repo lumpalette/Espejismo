@@ -10,8 +10,7 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// Syntax: <c>&lt;style name="id"&gt;...&lt;/style&gt;</c>
 /// </para>
 /// <para>
-/// Where:<br/>
-/// • <c>"id"</c> is the identifier for the <see cref="StyleTemplate"/> resource, as defined in <see cref="ResourceDB"/>.
+/// Where <c>id</c> is the identifier for the <see cref="StyleTemplate"/>, as defiend in <see cref="ResourceDB"/>.
 /// </para>
 /// </remarks>
 public sealed partial class StyleTag() : TextTag([RequiredName])

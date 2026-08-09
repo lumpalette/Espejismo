@@ -11,9 +11,17 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// Syntax: <c>&lt;color value="name|html_code"&gt;...&lt;/color&gt;</c>
 /// </para>
 /// <para>
-/// where:<br/>
-/// • <c>"name"</c> is the name of one of the colors in the <see cref="Colors"/> class, case-insensitive.<br/>
-/// • <c>"html_code"</c> is a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
+/// Where:
+/// <list type="bullet">
+///   <item>
+///     <term><c>name</c></term>
+///     <description>The name of one of the colors in the <see cref="Colors"/> class, case-insensitive.</description>
+///   </item>
+///   <item>
+///     <term><c>html_code</c></term>
+///     <description>A 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.</description>
+///   </item>
+/// </list>
 /// </para>
 /// </remarks>
 [GlobalClass]

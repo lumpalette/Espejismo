@@ -8,12 +8,20 @@ namespace Espejismo.Core.RichText.BuiltinTags;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;font [name="name"] [size="size"]&gt;...&lt;/font&gt;</c>
+/// Syntax: <c>&lt;font [name="id"] [size="size"]&gt;...&lt;/font&gt;</c>
 /// </para>
 /// <para>
-/// Where:<br/>
-/// • <c>name</c> is the name of the <see cref="Font"/> resource, as defined in <see cref="ResourceDB"/>.<br/>
-/// • <c>size</c> is the size of the font, in pixels. Must be greater than 0.
+/// Where:
+/// <list type="bullet">
+///   <item>
+///     <term><c>id</c></term>
+///     <description>The identifier for the <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
+///   </item>
+///   <item>
+///     <term><c>size</c></term>
+///     <description>The size of the font, in pixels. Must be greater than 0.</description>
+///   </item>
+/// </list>
 /// </para>
 /// </remarks>
 [GlobalClass]
