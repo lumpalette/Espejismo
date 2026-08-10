@@ -3,7 +3,7 @@ using System;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Describes metadata associated to a rich-text tag, placed at a specific glyph position.
+/// Represents a named container of <see cref="TagAttribute"/> instances, embedded into shaped <see cref="Text"/>.
 /// </summary>
 public readonly struct TextMarker
 {
@@ -13,7 +13,7 @@ public readonly struct TextMarker
 	{
 		Name = name;
 		_attributes = attributes;
-		GlyphIndex = index;
+		Index = index;
 	}
 
 	/// <summary>
@@ -27,7 +27,7 @@ public readonly struct TextMarker
 	public ReadOnlySpan<TagAttribute> Attributes => _attributes;
 
 	/// <summary>
-	/// Gets the index of the glyph the mark is positioned at.
+	/// Gets the index into <see cref="Text.Glyphs"/> at which the mark is embedded.
 	/// </summary>
-	public int GlyphIndex { get; }
+	public int Index { get; }
 }

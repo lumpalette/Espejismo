@@ -8,5 +8,16 @@ namespace Espejismo.Core.RichText;
 [GlobalClass]
 public abstract partial class TextEffect : Resource
 {
-	// TODO: write a method and probably a helper structure for updating the glyph effect.
+	/// <summary>
+	/// Gets a value indicating whether the effect must be reprocessed every frame.
+	/// </summary>
+	public abstract bool IsAnimated { get; }
+
+	/// <summary>
+	/// Computes the visual transformation applied to a single <see cref="Glyph"/>.
+	/// </summary>
+	/// <param name="trans">
+	/// The mutable transform state of the glyph to process.
+	/// </param>
+	public abstract void Process(ref GlyphTransform trans); // inguesu
 }

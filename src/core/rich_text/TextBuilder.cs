@@ -22,7 +22,7 @@ namespace Espejismo.Core.RichText;
 ///   </item>
 ///   <item>
 ///     <term>Markers</term>
-///     <description>Metadata associated with a tag, placed at a specific glyph index.</description>
+///     <description>Named container of tag attributes, inserted at a specific glyph index.</description>
 ///   </item>
 ///   <item>
 ///     <term>Line breaks</term>
@@ -36,7 +36,7 @@ namespace Espejismo.Core.RichText;
 /// </para>
 /// <para>
 /// To synthesize rich-text, use the methods provided by this class to sequentially append shape items to the output.
-/// At the end, use <see cref="Build"/> to generate a <see cref="Text"/>, instance based on the final state of the
+/// At the end, use <see cref="Build"/> to generate a <see cref="Text"/> instance based on the final state of the
 /// builder.
 /// </para>
 /// <para>

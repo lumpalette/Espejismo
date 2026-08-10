@@ -9,12 +9,12 @@ namespace Espejismo.Core.RichText;
 public readonly struct Glyph // 64 bytes pesa la marranota
 {
 	/// <summary>
-	/// Gets the start position of the glyph within the source string.
+	/// Gets the start index of the glyph within the source string.
 	/// </summary>
 	public int Start { get; private init; }
 
 	/// <summary>
-	/// Gets the end position of the glyph within the source string.
+	/// Gets the end index of the glyph within the source string.
 	/// </summary>
 	public int End { get; private init; }
 

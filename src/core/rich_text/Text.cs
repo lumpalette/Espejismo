@@ -90,7 +90,7 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets the <see cref="TextMarker"/> instances embedded into the shaped text.
+	/// Gets the <see cref="TextMarker"/> instances embedded into the text.
 	/// </summary>
 	/// <remarks>
 	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.

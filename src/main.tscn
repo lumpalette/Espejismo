@@ -1,13 +1,6 @@
 [gd_scene format=3 uid="uid://b33c8l4fw10vj"]
 
 [ext_resource type="Script" uid="uid://bjpdr6mrvvpw2" path="res://src/core/RichLabel.cs" id="1_eewff"]
-[ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="2_5q4o7"]
-[ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="2_gh0ne"]
-
-[sub_resource type="Resource" id="Resource_5q4o7"]
-script = ExtResource("2_gh0ne")
-Font = ExtResource("2_5q4o7")
-metadata/_custom_type_script = "uid://dqv8xe0vejoqk"
 
 [node name="Main" type="Node" unique_id=213237798]
 
@@ -17,10 +10,7 @@ anchors_preset = 0
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 312.0
-offset_bottom = 33.0
+offset_bottom = 150.0
 script = ExtResource("1_eewff")
-Content = "Esperando con ansias el final. <icon id=\"test\"/>
-Otra linea"
-BaseStyle = SubResource("Resource_5q4o7")
-VerticalAlignment = 1
+Content = "texto kul <icon id=\"test\"/>"
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"
