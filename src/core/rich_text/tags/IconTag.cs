@@ -1,31 +1,42 @@
 using Godot;
 using System;
 
-namespace Espejismo.Core.RichText.BuiltinTags;
+namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
 /// Represents a self-closing tag that inserts an icon at the tag's position.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;icon id="id" [align="top|center|bottom"] [size="WxH"]/&gt;</c>
+/// <b>Type:</b> Void Element.
 /// </para>
 /// <para>
-/// Where:
+/// <b>Attributes:</b>
 /// <list type="bullet">
 ///   <item>
-///     <term>id</term>
-///     <description>The identifier for the <see cref="Texture2D"/>, as defined in <see cref="ResourceDB"/>.</description>
+///     <term><c>id</c></term>
+///     <description>
+///       Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="ResourceDB"/>
+///     </description>
 ///   </item>
 ///   <item>
-///     <term>WxH</term>
-///     <description>The dimensions of the texture rect, in the format <c>(width × height)</c>.</description>
+///     <term><c>[align]</c></term>
+///     <description>
+///       The alignment of the icon, which can be <c>top</c>, <c>center</c> or <c>bottom</c>.
+///     </description>
+///   </item>
+///   <item>
+///     <term><c>[size]</c></term>
+///     <description>The dimensions of the texture rect, formatted as <c>WxH</c>.</description>
 ///   </item>
 /// </list>
 /// </para>
+/// <para>
+/// <b>Example:</b> <c>"Smily &lt;icon id=smile/&gt; face!"</c>
+/// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class IconTag() : TextTag([RequiredId])
+public sealed partial class IconTag() : TextTag(requiredAttributes: [RequiredId])
 {
 	private const string RequiredId = "id";
 	private const string OptionalAlign = "align";
@@ -34,30 +45,46 @@ public sealed partial class IconTag() : TextTag([RequiredId])
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var idA = FindAttribute(attributes, RequiredId);
-		var alignA = FindAttribute(attributes, OptionalAlign);
-		var sizeA = FindAttribute(attributes, OptionalSize);
+		Texture2D? tex = null;
+		var align = InlineAlignment.Center;
+		var size = Vector2.Zero;
 
-		if (!ResourceDB.TryGetResource<Texture2D>(idA.Value, out var icon))
+		foreach (var attr in attributes)
+		{
+			switch (attr.Name)
+			{
+				case RequiredId:
+					if (!ResourceDB.TryGetResource(attr.Value, out tex))
+					{
+						return false;
+					}
+					break;
+				case OptionalAlign:
+					if (!TryParseAlignment(attr.Value, out align))
+					{
+						return false;
+					}
+					break;
+				case OptionalSize:
+					if (!TryParseSize(attr.Value, out size))
+					{
+						return false;
+					}
+					break;
+			}
+		}
+
+		if (tex is null)
 		{
 			return false;
 		}
 
-		var alignment = InlineAlignment.Center;
-
-		if (alignA.IsDefined && !TryParseAlignment(alignA.Value, out alignment))
+		if (size == Vector2.Zero)
 		{
-			return false;
+			size = tex.GetSize();
 		}
 
-		var size = icon.GetSize();
-
-		if (sizeA.IsDefined && !TryParseSize(sizeA.Value, out size))
-		{
-			return false;
-		}
-
-		builder.AppendIcon(icon, alignment, size);
+		builder.AppendIcon(tex, align, size);
 		return true;
 	}
 

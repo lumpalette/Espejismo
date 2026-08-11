@@ -78,6 +78,11 @@ public partial class RichLabel : Control
 		RebuildText();
 	}
 
+	public override void _Process(double delta)
+	{
+		QueueRedraw();
+	}
+
 	public override void _ExitTree()
 	{
 		if (BaseStyle is not null)
@@ -218,13 +223,45 @@ public partial class RichLabel : Control
 				_ => 0f
 			});
 
+			var glyphCount = 0;
+
 			foreach (var glyph in line)
 			{
 				var pos = new Vector2(x, y) + glyph.Offset;
+				var col = glyph.Style.Color;
+
+				if (glyph.Style.Effect is not null)
+				{
+					var trans = new GlyphTransform
+					{
+						Glyph = glyph,
+						Index = 0,
+						LineProgress = (float)glyphCount / (float)line.Length,
+						LineLength = line.Length,
+						Time = Time.GetTicksMsec() / 1000f,
+						Color = col
+					};
+
+					glyph.Style.Effect.Process(ref trans);
+
+					if (trans.Visibility == GlyphVisibility.Omitted)
+					{
+						continue;
+					}
+					else if (trans.Visibility == GlyphVisibility.Invisible)
+					{
+						x += glyph.Advance;
+						glyphCount++;
+						continue;
+					}
+
+					pos += trans.Offset;
+					col = trans.Color;
+				}
 
 				if (glyph.IconTexture is not null)
 				{
-					DrawTextureRect(glyph.IconTexture, new(pos, glyph.IconSize), false, glyph.Style.Color);
+					DrawTextureRect(glyph.IconTexture, new(pos, glyph.IconSize), false, col);
 				}
 				else if (glyph.Font.IsValid)
 				{
@@ -238,10 +275,11 @@ public partial class RichLabel : Control
 						_TS.FontDrawGlyph(glyph.Font, canvas, glyph.Style.ShadowSize, pos + glyph.Style.ShadowOffset, glyph.Index, glyph.Style.ShadowColor);
 					}
 
-					_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos, glyph.Index, glyph.Style.Color);
+					_TS.FontDrawGlyph(glyph.Font, canvas, glyph.FontSize, pos, glyph.Index, col);
 				}
 
 				x += glyph.Advance;
+				glyphCount++;
 			}
 
 			y += line.Descent + line.Leading;

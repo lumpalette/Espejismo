@@ -28,7 +28,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 	public int Count => _actions.Count;
 
 	/// <summary>
-	/// Gets the <see cref="InputAction"/>  defined with the specified name.
+	/// Gets the <see cref="InputAction"/> defined with the specified name.
 	/// </summary>
 	/// <param name="name">
 	/// The name of the action to get, case-insensitive.
@@ -40,7 +40,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 	/// Thrown if <paramref name="name"/> is <see langword="null"/>.
 	/// </exception>
 	/// <exception cref="KeyNotFoundException">
-	/// Thrown if no action is defined with the name <paramref name="name"/>.
+	/// Thrown if there is no action defined with <paramref name="name"/>.
 	/// </exception>
 	public InputAction this[string name]
 	{
@@ -67,7 +67,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 	/// The action to define.
 	/// </param>
 	/// <exception cref="ArgumentException">
-	/// Thrown if an action with the name <paramref name="name"/> is already defined.
+	/// Thrown if an action with the same <paramref name="name"/> is already defined.
 	/// </exception>
 	/// <exception cref="ArgumentNullException">
 	/// Thrown if <paramref name="name"/> or <paramref name="action"/> are <see langword="null"/>.
@@ -76,7 +76,7 @@ public sealed class InputActionMap : IEnumerable<KeyValuePair<string, InputActio
 	{
 		ArgumentNullException.ThrowIfNull(name, nameof(name));
 		ArgumentNullException.ThrowIfNull(action, nameof(action));
-
+		
 		if (!_actions.TryAdd(name, action))
 		{
 			throw new ArgumentException($"Action with name '{name}' is already defined", nameof(name));

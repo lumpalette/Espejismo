@@ -16,7 +16,7 @@ public enum GlyphVisibility
 	Invisible,
 
 	/// <summary>
-	/// The glyph must be skipped by the renderer, reflowing the glyphs next to it.
+	/// The glyph must be skipped by the renderer, reflowing consecutive glyphs.
 	/// </summary>
 	Omitted
 }

@@ -1,31 +1,34 @@
 using Godot;
 using System;
 
-namespace Espejismo.Core.RichText.BuiltinTags;
+namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
 /// Represents a tag that changes the font properties of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Syntax: <c>&lt;font [id="id"] [size="size"]&gt;...&lt;/font&gt;</c>
+/// <b>Type:</b> Normal Element.
 /// </para>
 /// <para>
-/// Where:
+/// <b>Attributes:</b>
 /// <list type="bullet">
 ///   <item>
-///     <term><c>id</c></term>
-///     <description>The identifier for the <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
+///     <term><c>[id]</c></term>
+///     <description>Identifier for the new <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
 ///   </item>
 ///   <item>
-///     <term><c>size</c></term>
+///     <term><c>[size]</c></term>
 ///     <description>The size of the font, in pixels. Must be greater than 0.</description>
 ///   </item>
 /// </list>
 /// </para>
+/// <para>
+/// <b>Example:</b> <c>"Font 1,&lt;font id=example&gt;\nFont 2.&lt;/font&gt;</c>
+/// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class FontTag() : TextTag([])
+public sealed partial class FontTag() : TextTag(requiredAttributes: [])
 {
 	private const string OptionalId = "id";
 	private const string OptionalSize = "size";
@@ -33,27 +36,26 @@ public sealed partial class FontTag() : TextTag([])
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var idA = FindAttribute(attributes, OptionalId);
-		var sizeA = FindAttribute(attributes, OptionalSize);
-
 		var font = builder.TopStyle.Font;
 		var size = builder.TopStyle.FontSize;
 
-		if (idA.IsDefined && !ResourceDB.TryGetResource(idA.Value, out font))
+		foreach (var attr in attributes)
 		{
-			return false;
-		}
-
-		if (sizeA.IsDefined)
-		{
-			if (!ushort.TryParse(sizeA.Value, out var psize))
+			if (attr.IsNamed(OptionalId) && !ResourceDB.TryGetResource(attr.Value, out font))
 			{
 				return false;
 			}
-
-			if (psize != 0)
+			else if (attr.IsNamed(OptionalSize))
 			{
-				size = psize;
+				if (!ushort.TryParse(attr.Value, out var psize))
+				{
+					return false;
+				}
+
+				if (psize != 0)
+				{
+					size = psize;
+				}
 			}
 		}
 

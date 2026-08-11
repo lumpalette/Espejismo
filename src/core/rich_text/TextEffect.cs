@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace Espejismo.Core.RichText;
 
@@ -9,15 +10,24 @@ namespace Espejismo.Core.RichText;
 public abstract partial class TextEffect : Resource
 {
 	/// <summary>
-	/// Gets a value indicating whether the effect must be reprocessed every frame.
-	/// </summary>
-	public abstract bool IsAnimated { get; }
-
-	/// <summary>
 	/// Computes the visual transformation applied to a single <see cref="Glyph"/>.
 	/// </summary>
 	/// <param name="trans">
-	/// The mutable transform state of the glyph to process.
+	/// The mutable state of the glyph to process.
 	/// </param>
-	public abstract void Process(ref GlyphTransform trans); // inguesu
+	public abstract void Process(ref GlyphTransform trans); // inguesumaiz
+
+	/// <summary>
+	/// Returns a <see cref="TextEffect"/> initialized according to the specified attributes.
+	/// </summary>
+	/// <param name="attributes">
+	/// The attributes passed to the tag that applies this effect.
+	/// </param>
+	/// <returns>
+	/// A <see cref="TextEffect"/> of the same type as this instance, reflecting <paramref name="attributes"/>.
+	/// </returns>
+	public virtual TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
+	{
+		return this;
+	}
 }

@@ -59,4 +59,18 @@ public readonly struct TagAttribute
 	/// Gets a value indicating whether the attribute was specified in a tag.
 	/// </summary>
 	public bool IsDefined => _source is not null;
+
+	/// <summary>
+	/// Indicates whether the attribute has the specified name.
+	/// </summary>
+	/// <param name="name">
+	/// The name to check.
+	/// </param>
+	/// <returns>
+	/// <see langword="true"/> if the attribute's name matches <paramref name="name"/>; otherwise,<see langword="false"/>.
+	/// </returns>
+	public bool IsNamed(string name)
+	{
+		return Name.SequenceEqual(name);
+	}
 }

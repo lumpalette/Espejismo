@@ -10,7 +10,7 @@ internal readonly struct ResolvedStyle
 
 	// The reasong this is here is because otherwise there is no other (cheaper) way to differentiate between the
 	// line's descent and leading, since FontVariation combines them into one property (TextServer.font_get_descent).
-	public readonly int LineSpacing { get; init; }
+	public required int LineSpacing { get; init; }
 
 	public required GlyphStyle Style { get; init; }
 }

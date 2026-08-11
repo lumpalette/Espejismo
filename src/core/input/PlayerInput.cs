@@ -151,7 +151,7 @@ public sealed class PlayerInput
 	/// Thrown if <see cref="ActionMap"/> is <see langword="null"/>.
 	/// </exception>
 	/// <exception cref="KeyNotFoundException">
-	/// Thrown if no action is defined with the name <paramref name="actionName"/>.
+	/// Thrown if there is no action defined with <paramref name="actionName"/>.
 	/// </exception>
 	public float GetStrength(string actionName)
 	{
@@ -174,7 +174,7 @@ public sealed class PlayerInput
 	/// Thrown if <see cref="ActionMap"/> is <see langword="null"/>.
 	/// </exception>
 	/// <exception cref="KeyNotFoundException">
-	/// Thrown if no action is defined with the name <paramref name="actionName"/>.
+	/// Thrown if there is no action defined with <paramref name="actionName"/>.
 	/// </exception>
 	public bool IsPressed(string actionName)
 	{
@@ -197,7 +197,7 @@ public sealed class PlayerInput
 	/// Thrown if <see cref="ActionMap"/> is <see langword="null"/>.
 	/// </exception>
 	/// <exception cref="KeyNotFoundException">
-	/// Thrown if no action is defined with the name <paramref name="actionName"/>.
+	/// Thrown if there is no action defined with <paramref name="actionName"/>.
 	/// </exception>
 	public bool WasPressed(string actionName)
 	{
@@ -220,7 +220,7 @@ public sealed class PlayerInput
 	/// Thrown if <see cref="ActionMap"/> is <see langword="null"/>.
 	/// </exception>
 	/// <exception cref="KeyNotFoundException">
-	/// Thrown if no action is defined with the name <paramref name="actionName"/>.
+	/// Thrown if there is no action defined with <paramref name="actionName"/>.
 	/// </exception>
 	public bool WasReleased(string actionName)
 	{

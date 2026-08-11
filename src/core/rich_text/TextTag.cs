@@ -59,30 +59,4 @@ public abstract partial class TextTag(string[] requiredAttributes) : Resource
 	{
 	}
 #pragma warning restore CA1716 // Identifiers should not match keywords
-
-	/// <summary>
-	/// Searches for a <see cref="TagAttribute"/> with the specified name within a <see cref="ReadOnlySpan{T}"/>.
-	/// </summary>
-	/// <param name="attributes">
-	/// The attributes to search through.
-	/// </param>
-	/// <param name="name">
-	/// The name of the attribute to find, case-sensitive.
-	/// </param>
-	/// <returns>
-	/// The matching <see cref="TagAttribute"/> if found; otherwise, the <see langword="default"/> value for
-	/// <see cref="TagAttribute"/>.
-	/// </returns>
-	protected static TagAttribute FindAttribute(ReadOnlySpan<TagAttribute> attributes, string name)
-	{
-		foreach (var attribute in attributes)
-		{
-			if (attribute.Name.SequenceEqual(name))
-			{
-				return attribute;
-			}
-		}
-
-		return default;
-	}
 }
