@@ -13,5 +13,4 @@ offset_top = 8.0
 offset_right = 312.0
 offset_bottom = 150.0
 script = ExtResource("1_eewff")
-Content = "texto <font size=16>kul</font> <icon id=\"test\"/>"
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"

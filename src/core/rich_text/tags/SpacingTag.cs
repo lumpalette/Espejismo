@@ -1,3 +1,4 @@
+using Godot;
 using System;
 
 namespace Espejismo.Core.RichText.Tags;
@@ -26,6 +27,7 @@ namespace Espejismo.Core.RichText.Tags;
 /// <b>Example:</b> <c>"&lt;spacing letter=3&gt;Ominous&lt;/spacing&gt; text."</c>
 /// </para>
 /// </remarks>
+[GlobalClass]
 public sealed partial class SpacingTag() : TextTag(requiredAttributes: [])
 {
 	private const string OptionalLetter = "letter";
@@ -40,13 +42,23 @@ public sealed partial class SpacingTag() : TextTag(requiredAttributes: [])
 
 		foreach (var attr in attributes)
 		{
-			if (attr.IsNamed(OptionalLetter) && int.TryParse(attr.Value, out var pvalue))
+			if (attr.IsNamed(OptionalLetter))
 			{
+				if (!int.TryParse(attr.Value, out var pvalue))
+				{
+					return false;
+				}
+
 				spcX = pvalue;
 				changed = true;
 			}
-			else if (attr.IsNamed(OptionalLine) && int.TryParse(attr.Value, out pvalue))
+			else if (attr.IsNamed(OptionalLine))
 			{
+				if (!int.TryParse(attr.Value, out var pvalue))
+				{
+					return false;
+				}
+
 				spcY = pvalue;
 				changed = true;
 			}
