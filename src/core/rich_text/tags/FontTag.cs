@@ -36,14 +36,20 @@ public sealed partial class FontTag() : TextTag(requiredAttributes: [])
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
+		var changed = false;
 		var font = builder.TopStyle.Font;
 		var size = builder.TopStyle.FontSize;
 
 		foreach (var attr in attributes)
 		{
-			if (attr.IsNamed(OptionalId) && !ResourceDB.TryGetResource(attr.Value, out font))
+			if (attr.IsNamed(OptionalId))
 			{
-				return false;
+				if (!ResourceDB.TryGetResource(attr.Value, out font))
+				{
+					return false;
+				}
+
+				changed = true;
 			}
 			else if (attr.IsNamed(OptionalSize))
 			{
@@ -51,12 +57,15 @@ public sealed partial class FontTag() : TextTag(requiredAttributes: [])
 				{
 					return false;
 				}
-
-				if (psize != 0)
-				{
-					size = psize;
-				}
+				
+				size = psize;
+				changed = true;
 			}
+		}
+
+		if (!changed)
+		{
+			return false;
 		}
 
 		builder.PushStyle(builder.TopStyle with { Font = font, FontSize = size });
