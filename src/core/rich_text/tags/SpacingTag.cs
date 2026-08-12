@@ -44,22 +44,22 @@ public sealed partial class SpacingTag() : TextTag(requiredAttributes: [])
 		{
 			if (attr.IsNamed(OptionalLetter))
 			{
-				if (!int.TryParse(attr.Value, out var pvalue))
+				if (!int.TryParse(attr.Value, out var pspcX))
 				{
 					return false;
 				}
 
-				spcX = pvalue;
+				spcX = pspcX;
 				changed = true;
 			}
 			else if (attr.IsNamed(OptionalLine))
 			{
-				if (!int.TryParse(attr.Value, out var pvalue))
+				if (!int.TryParse(attr.Value, out var pspcY))
 				{
 					return false;
 				}
 
-				spcY = pvalue;
+				spcY = pspcY;
 				changed = true;
 			}
 		}
