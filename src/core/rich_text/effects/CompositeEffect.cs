@@ -97,6 +97,16 @@ public sealed partial class CompositeEffect : TextEffect
 	/// <inheritdoc/>
 	public override TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
 	{
-		return this;
+		// I optimized the parsing layer so I could do shit like this without consecuences.
+		var effects = new TextEffect?[_effects.Length];
+		var changed = false;
+
+		for (var i = 0; i < effects.Length; i++)
+		{
+			effects[i] = _effects[i]?.Setup(attributes);
+			changed |= !ReferenceEquals(effects[i], _effects[i]);
+		}
+
+		return changed ? new CompositeEffect(_effects) : this;
 	}
 }
