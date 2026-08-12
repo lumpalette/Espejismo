@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Represents a rich-text string that can be shaped into renderable glyphs.
+///   Represents a rich-text string that can be shaped into renderable glyphs.
 /// </summary>
 public partial class Text
 {
@@ -40,15 +40,15 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets a value indicating whether text's attributes have been changed and needs reshaping.
+	///   Gets a value indicating whether text's attributes have been changed and needs reshaping.
 	/// </summary>
 	public bool IsDirty { get; private set; } = true;
 
 	/// <summary>
-	/// Gets the shaped <see cref="Glyph"/> instances, in visual order (LTR).
+	///   Gets the shaped <see cref="Glyph"/> instances, in visual order (LTR).
 	/// </summary>
 	/// <remarks>
-	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
+	///   A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
 	/// </remarks>
 	public ReadOnlySpan<Glyph> Glyphs
 	{
@@ -60,10 +60,10 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets the total number of shaped <see cref="Glyph"/> instances.
+	///   Gets the total number of shaped <see cref="Glyph"/> instances.
 	/// </summary>
 	/// <remarks>
-	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
+	///   A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
 	/// </remarks>
 	public int Length
 	{
@@ -75,10 +75,10 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets the shaped <see cref="LineSpan"/> instances, in visual order (top-to-bottom).
+	///   Gets the shaped <see cref="LineSpan"/> instances, in visual order (top-to-bottom).
 	/// </summary>
 	/// <remarks>
-	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
+	///   A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
 	/// </remarks>
 	public ReadOnlySpan<LineSpan> Lines
 	{
@@ -90,10 +90,10 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets the <see cref="TextMarker"/> instances embedded into the text.
+	///   Gets the <see cref="TextMarker"/> instances embedded into the text.
 	/// </summary>
 	/// <remarks>
-	/// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
+	///   A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
 	/// </remarks>
 	public ReadOnlySpan<TextMarker> Markers
 	{
@@ -105,7 +105,7 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets or sets the base style applied to all the text.
+	///   Gets or sets the base style applied to all the text.
 	/// </summary>
 	public TextStyle Style
 	{
@@ -122,7 +122,7 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets or sets the maximum width allowed for a text line, in pixels.
+	///   Gets or sets the maximum width allowed for a text line, in pixels.
 	/// </summary>
 	public float Width
 	{
@@ -138,7 +138,7 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Gets or sets the horizontal alignment of the text.
+	///   Gets or sets the horizontal alignment of the text.
 	/// </summary>
 	public HorizontalAlignment Alignment
 	{
@@ -154,19 +154,19 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Parses a rich-text string into a <see cref="Text"/> with the specified <see cref="TextStyle"/> applied.
+	///   Parses a rich-text string into a <see cref="Text"/> with the specified <see cref="TextStyle"/> applied.
 	/// </summary>
 	/// <param name="richText">
-	/// The rich-text formatted string to parse.
+	///   The rich-text formatted string to parse.
 	/// </param>
 	/// <param name="style">
-	/// The style to apply to the resulting text.
+	///   The style to apply to the resulting text.
 	/// </param>
 	/// <returns>
-	/// The <see cref="Text"/> representation of <paramref name="richText"/>. 
+	///   The <see cref="Text"/> representation of <paramref name="richText"/>. 
 	/// </returns>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown if <paramref name="richText"/> is <see langword="null"/>.
+	///   Thrown if <paramref name="richText"/> is <see langword="null"/>.
 	/// </exception>
 	public static Text Parse(string richText, TextStyle style)
 	{
@@ -182,7 +182,7 @@ public partial class Text
 	}
 
 	/// <summary>
-	/// Shapes the stored shape items into a sequence of <see cref="Glyph"/> instances.
+	///   Shapes the stored shape items into a sequence of <see cref="Glyph"/> instances.
 	/// </summary>
 	public void Shape()
 	{

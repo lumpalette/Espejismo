@@ -5,17 +5,17 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a tag that changes the visual effect of a specific segment of text.
+///   Represents a tag that changes the visual effect of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Type:</b> Normal Element.
+///   <b>Type:</b> Normal Element.
 /// </para>
 /// <para>
-/// <b>Attributes:</b> Varies (depends on the specific effect).
+///   <b>Attributes:</b> Varies (depends on the specific effect).
 /// </para>
 /// <para>
-/// <b>Example:</b> <c>"&lt;shake&gt;This&lt;/shake&gt; word is shaking."</c>
+///   <b>Example:</b> <c>"&lt;shake&gt;This&lt;/shake&gt; word is shaking."</c>
 /// </para>
 /// </remarks>
 public sealed partial class EffectTag() : TextTag(requiredAttributes: [])

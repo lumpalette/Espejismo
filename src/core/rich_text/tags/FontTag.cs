@@ -4,27 +4,27 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a tag that changes the font properties of a specific segment of text.
+///   Represents a tag that changes the font properties of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Type:</b> Normal Element.
+///   <b>Type:</b> Normal Element.
 /// </para>
 /// <para>
-/// <b>Attributes:</b>
-/// <list type="bullet">
-///   <item>
-///     <term><c>[id]</c></term>
-///     <description>Identifier for the new <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
-///   </item>
-///   <item>
-///     <term><c>[size]</c></term>
-///     <description>The size of the font, in pixels. Must be greater than 0.</description>
-///   </item>
-/// </list>
+///   <b>Attributes:</b>
+///   <list type="bullet">
+///     <item>
+///       <term><c>[id]</c></term>
+///       <description>Identifier for the new <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
+///     </item>
+///     <item>
+///       <term><c>[size]</c></term>
+///       <description>The size of the font, in pixels. Must be greater than 0.</description>
+///     </item>
+///   </list>
 /// </para>
 /// <para>
-/// <b>Example:</b> <c>"Font 1,&lt;font id=example&gt;\nFont 2.&lt;/font&gt;</c>
+///   <b>Example:</b> <c>"Font 1,&lt;font id=example&gt;\nFont 2.&lt;/font&gt;</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -44,7 +44,7 @@ public sealed partial class FontTag() : TextTag(requiredAttributes: [])
 		{
 			if (attr.IsNamed(OptionalId))
 			{
-				if (!ResourceDB.TryGetResource(attr.Value, out font))
+				if (!ResourceDB.TryGetFont(attr.Value, out font))
 				{
 					return false;
 				}

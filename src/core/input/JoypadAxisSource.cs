@@ -5,23 +5,23 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-/// Represents an axis or trigger from a joypad device.
+///   Represents an axis or trigger from a joypad device.
 /// </summary>
 /// <param name="axis">
-/// The joypad axis to assign.
+///   The joypad axis to assign.
 /// </param>
 /// <param name="isPositive">
-/// <see langword="true"/> whether the axis direction is positive, <see langword="false"/> if it's negative.
+///   <see langword="true"/> whether the axis direction is positive, <see langword="false"/> if it's negative.
 /// </param>
 public class JoypadAxisSource(JoyAxis axis, bool isPositive) : InputSource<JoypadAxisSource>
 {
 	/// <summary>
-	/// Gets the identifier of the axis or trigger.
+	///   Gets the identifier of the axis or trigger.
 	/// </summary>
 	public JoyAxis Axis { get; } = axis;
 
 	/// <summary>
-	/// Gets a value indicating whether the axis direction is positive.
+	///   Gets a value indicating whether the axis direction is positive.
 	/// </summary>
 	public bool IsPositive { get; } = isPositive;
 

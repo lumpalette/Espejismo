@@ -6,13 +6,13 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Provides static, read-only access to the rich-text resources used for the game.
+///   Provides static, read-only access to the rich-text resources used for the game.
 /// </summary>
 [GlobalClass]
 public partial class ResourceDB : Resource
 {
 	/// <summary>
-	/// The resource path where the resource database is located.
+	///   The resource path where the resource database is located.
 	/// </summary>
 	public const string Path = "res://src/core/rich_text/resources/database.tres";
 
@@ -24,42 +24,42 @@ public partial class ResourceDB : Resource
 	[Export]
 	private Godot.Collections.Dictionary<string, Font> RegistryFonts
 	{
-		get => _mapFonts.Export;
-		set => _mapFonts.Export = value;
+		get => _fonts.Export;
+		set => _fonts.Export = value;
 	}
 
 	[Export]
 	private Godot.Collections.Dictionary<string, Texture2D> RegistryTextures
 	{
-		get => _mapTextures.Export;
-		set => _mapTextures.Export = value;
+		get => _textures.Export;
+		set => _textures.Export = value;
 	}
 
 	[Export]
 	private Godot.Collections.Dictionary<string, StyleTemplate> RegistryStyles
 	{
-		get => _mapStyles.Export;
-		set => _mapStyles.Export = value;
+		get => _templates.Export;
+		set => _templates.Export = value;
 	}
 
 	[Export]
 	private Godot.Collections.Dictionary<string, TextTag> RegistryTags
 	{
-		get => _mapTags.Export;
-		set => _mapTags.Export = value;
+		get => _tags.Export;
+		set => _tags.Export = value;
 	}
 	#endregion
 
-	private readonly Map<Font> _mapFonts = new();
-	private readonly Map<Texture2D> _mapTextures = new();
-	private readonly Map<StyleTemplate> _mapStyles = new();
-	private readonly Map<TextTag> _mapTags = new();
+	private readonly Registry<Font> _fonts = new();
+	private readonly Registry<Texture2D> _textures = new();
+	private readonly Registry<StyleTemplate> _templates = new();
+	private readonly Registry<TextTag> _tags = new();
 
 	/// <summary>
-	/// Gets the style template used as a last fallback for unset <see cref="TextStyle"/> properties.
+	///   Gets the style template used as a last fallback for unset <see cref="TextStyle"/> properties.
 	/// </summary>
 	/// <exception cref="InvalidOperationException">
-	/// Thrown if a style template was not specified in the editor.
+	///   Thrown if a style template was not specified in the editor.
 	/// </exception>
 	public static StyleTemplate DefaultStyle
 	{
@@ -94,59 +94,87 @@ public partial class ResourceDB : Resource
 	}
 
 	/// <summary>
-	/// Gets the <typeparamref name="T"/> resource registered with the specified name.
+	///   Gets the <see cref="Font"/> registered with the specified name.
 	/// </summary>
 	/// <param name="name">
-	/// The name of the resource to get.
+	///   The name of the <see cref="Font"/> to get.
 	/// </param>
-	/// <param name="resource">
-	/// When this method returns, contains the resource associated with <paramref name="name"/>, if registered;
-	/// otherwise, <see langword="null"/>.
+	/// <param name="font">
+	///   When this method returns, contains the font registered with <paramref name="name"/>, if exists; otherwise,
+	///   <see langword="null"/>.
 	/// </param>
 	/// <returns>
-	/// <see langword="true"/> if a <typeparamref name="T"/> resource with the name <paramref name="name"/> is
-	/// registered; otherwise, <see langword="false"/>.
+	///   <see langword="true"/> if a font named <paramref name="name"/> exists; otherwise, <see langword="false"/>.
 	/// </returns>
-	/// <exception cref="ArgumentException">
-	/// Thrown if <typeparamref name="T"/> is not a supported resource type.
-	/// </exception>
-	public static bool TryGetResource<[MustBeVariant] T>(ReadOnlySpan<char> name, [NotNullWhen(true)] out T? resource)
-		where T : Resource
+	public static bool TryGetFont(ReadOnlySpan<char> name, [NotNullWhen(true)] out Font? font)
 	{
-		// I don't want to write a method for every type of resource defined lol.
-		object? map = null;
-
-		if (typeof(T) == typeof(Font))
-		{
-			map = Active._mapFonts;
-		}
-		else if (typeof(T) == typeof(Texture2D))
-		{
-			map = Active._mapTextures;
-		}
-		else if (typeof(T) == typeof(StyleTemplate))
-		{
-			map = Active._mapStyles;
-		}
-		else if (typeof(T) == typeof(TextTag))
-		{
-			map = Active._mapTags;
-		}
-
-		if (map is null)
-		{
-			throw new ArgumentException($"Resource type '{typeof(T).FullName}' is not supported", nameof(T));
-		}
-
-		resource = ((Map<T>)map).GetValue(name);
-		return resource is not null;
+		font = Active._fonts.GetValue(name);
+		return font is not null;
 	}
 
-	private readonly struct Map<[MustBeVariant] T> where T : Resource
+	/// <summary>
+	///   Gets the <see cref="Texture2D"/> registered with the specified name.
+	/// </summary>
+	/// <param name="name">
+	///   The name of the <see cref="Texture2D"/> to get.
+	/// </param>
+	/// <param name="texture">
+	///   When this method returns, contains the texture registered with <paramref name="name"/>, if exists; otherwise,
+	///   <see langword="null"/>.
+	/// </param>
+	/// <returns>
+	///   <see langword="true"/> if a texture named <paramref name="name"/> exists; otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool TryGetTexture(ReadOnlySpan<char> name, [NotNullWhen(true)] out Texture2D? texture)
+	{
+		texture = Active._textures.GetValue(name);
+		return texture is not null;
+	}
+
+	/// <summary>
+	///   Gets the <see cref="StyleTemplate"/> registered with the specified name.
+	/// </summary>
+	/// <param name="name">
+	///   The name of the <see cref="StyleTemplate"/> to get.
+	/// </param>
+	/// <param name="template">
+	///   When this method returns, contains the template registered with <paramref name="name"/>, if exists;
+	///   otherwise, <see langword="null"/>.
+	/// </param>
+	/// <returns>
+	///   <see langword="true"/> if a template named <paramref name="name"/> exists; otherwise,
+	///   <see langword="false"/>.
+	/// </returns>
+	public static bool TryGetStyle(ReadOnlySpan<char> name, [NotNullWhen(true)] out StyleTemplate? template)
+	{
+		template = Active._templates.GetValue(name);
+		return template is not null;
+	}
+
+	/// <summary>
+	///   Gets the <see cref="TextTag"/> registered with the specified name.
+	/// </summary>
+	/// <param name="name">
+	///   The name of the <see cref="TextTag"/> to get.
+	/// </param>
+	/// <param name="tag">
+	///   When this method returns, contains the tag registered with <paramref name="name"/>, if exists; otherwise,
+	///   <see langword="null"/>.
+	/// </param>
+	/// <returns>
+	///   <see langword="true"/> if a tag named <paramref name="name"/> exists; otherwise, <see langword="false"/>.
+	/// </returns>
+	public static bool TryGetTag(ReadOnlySpan<char> name, [NotNullWhen(true)] out TextTag? tag)
+	{
+		tag = Active._tags.GetValue(name);
+		return tag is not null;
+	}
+
+	private readonly struct Registry<[MustBeVariant] T> where T : Resource
 	{
 		private readonly Dictionary<string, T>.AlternateLookup<ReadOnlySpan<char>> _data;
 
-		public Map()
+		public Registry()
 		{
 			_data = new Dictionary<string, T>().GetAlternateLookup<ReadOnlySpan<char>>();
 		}

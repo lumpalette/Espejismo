@@ -6,42 +6,42 @@ using System.Collections.Generic;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Provides a mechanism for sequentially constructing <see cref="Text"/> instances.
+///   Provides a mechanism for sequentially constructing <see cref="Text"/> instances.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A rich-text string is composed by five types of items, known as <b>shape items</b>:
-/// <list type="bullet">
-///   <item>
-///     <term>Runs</term>
-///     <description>A sequence of characters that shares the same style.</description>
-///   </item>
-///   <item>
-///     <term>Icons</term>
-///     <description>A texture embedded directly into the text.</description>
-///   </item>
-///   <item>
-///     <term>Markers</term>
-///     <description>Named container of tag attributes, inserted at a specific glyph index.</description>
-///   </item>
-///   <item>
-///     <term>Line breaks</term>
-///     <description>Indicates the position of a structural or explicit line break.</description>
-///   </item>
-///   <item>
-///     <term>Alignment</term>
-///     <description>The horizontal alignment in which text runs or icons are positioned.</description>
-///   </item>
-/// </list>
+///   A rich-text string is composed by five types of items, known as <b>shape items</b>:
+///   <list type="bullet">
+///     <item>
+///       <term>Runs</term>
+///       <description>A sequence of characters that shares the same style.</description>
+///     </item>
+///     <item>
+///       <term>Icons</term>
+///       <description>A texture embedded directly into the text.</description>
+///     </item>
+///     <item>
+///       <term>Markers</term>
+///       <description>Named container of tag attributes, inserted at a specific glyph index.</description>
+///     </item>
+///     <item>
+///       <term>Line breaks</term>
+///       <description>Indicates the position of a structural or explicit line break.</description>
+///     </item>
+///     <item>
+///       <term>Alignment</term>
+///       <description>The horizontal alignment in which text runs or icons are positioned.</description>
+///     </item>
+///   </list>
 /// </para>
 /// <para>
-/// To synthesize rich-text, use the methods provided by this class to sequentially append shape items to the output.
-/// At the end, use <see cref="Build"/> to generate a <see cref="Text"/> instance based on the final state of the
-/// builder.
+///   To synthesize rich-text, use the methods provided by this class to sequentially append shape items to the output.
+///   At the end, use <see cref="Build"/> to generate a <see cref="Text"/> instance based on the final state of the
+///   builder.
 /// </para>
 /// <para>
-/// The class also maintains a stack of styles overrides and alignments, which you can modify using the
-/// <c>Push/Pop*</c> methods, which allows complex nesting if required.
+///   The class also maintains a stack of styles overrides and alignments, which you can modify using the
+///   <c>Push/Pop*</c> methods, which allows complex nesting if required.
 /// </para>
 /// </remarks>
 public class TextBuilder
@@ -51,10 +51,10 @@ public class TextBuilder
 	private readonly Stack<HorizontalAlignment> _alignmentStack = [];
 
 	/// <summary>
-	/// Gets the style override currently at the top of the style stack.
+	///   Gets the style override currently at the top of the style stack.
 	/// </summary>
 	/// <remarks>
-	/// Returns a <see langword="default"/> style if the style stack is empty.
+	///   Returns a <see langword="default"/> style if the style stack is empty.
 	/// </remarks>
 	public TextStyle TopStyle
 	{
@@ -66,11 +66,11 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Gets the alignment currently at the top of the style stack.
+	///   Gets the alignment currently at the top of the style stack.
 	/// </summary>
 	/// <remarks>
-	/// Returns <see langword="null"/> if the alignment stack is empty, which indicates that the base alignment should
-	/// be used instead.
+	///   Returns <see langword="null"/> if the alignment stack is empty, which indicates that the base alignment
+	///   should be used instead.
 	/// </remarks>
 	public HorizontalAlignment? TopAlignment
 	{
@@ -86,17 +86,18 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Inserts the specified <see cref="TextStyle"/> override at the top of the style stack.
+	///   Inserts the specified <see cref="TextStyle"/> override at the top of the style stack.
 	/// </summary>
 	/// <remarks>
-	/// This inserts a new, fresh <see cref="TextStyle"/> in the stack. To merge the properties from the current active
-	/// style, use the <see cref="TopStyle"/> property using the <c><see langword="with"/></c> expression syntax.
+	///   This inserts a new, fresh <see cref="TextStyle"/> in the stack. To merge the properties from the current
+	///   active style, use the <see cref="TopStyle"/> property using the <c><see langword="with"/></c> expression
+	///   syntax.
 	/// </remarks>
 	/// <param name="style">
-	/// The style to push onto the stack.
+	///   The style to push onto the stack.
 	/// </param>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder PushStyle(TextStyle style)
 	{
@@ -105,10 +106,10 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Removes the style override currently at the top of the style stack.
+	///   Removes the style override currently at the top of the style stack.
 	/// </summary>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder PopStyle()
 	{
@@ -117,16 +118,16 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Appends a run of text using the <see cref="TopStyle"/>.
+	///   Appends a run of text using the <see cref="TopStyle"/>.
 	/// </summary>
 	/// <remarks>
-	/// If <paramref name="text"/> is <see langword="null"/> or empty, the method call is ignored.
+	///   If <paramref name="text"/> is <see langword="null"/> or empty, the method call is ignored.
 	/// </remarks>
 	/// <param name="text">
-	/// The text to append.
+	///   The text to append.
 	/// </param>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder AppendText(string text)
 	{
@@ -140,19 +141,19 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Appends an icon associated to the specified <see cref="Texture2D"/>.
+	///   Appends an icon associated to the specified <see cref="Texture2D"/>.
 	/// </summary>
 	/// <param name="texture">
-	/// The texture associated to the icon.
+	///   The texture associated to the icon.
 	/// </param>
 	/// <param name="alignment">
-	/// The vertical alignment of the icon relative to the surrounding text.
+	///   The vertical alignment of the icon relative to the surrounding text.
 	/// </param>
 	/// <param name="size">
-	/// The size of the texture rect, in pixels.
+	///   The size of the texture rect, in pixels.
 	/// </param>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder AppendIcon(Texture2D texture, InlineAlignment alignment, Vector2 size)
 	{
@@ -161,16 +162,16 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Appends a marker with to the specified name and attributes.
+	///   Appends a marker with to the specified name and attributes.
 	/// </summary>
 	/// <param name="name">
-	/// The name for the marker.
+	///   The name for the marker.
 	/// </param>
 	/// <param name="attributes">
-	/// The attributes associated to the marker.
+	///   The attributes associated to the marker.
 	/// </param>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder AppendMarker(string name, ReadOnlySpan<TagAttribute> attributes)
 	{
@@ -179,10 +180,10 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Appends a marker for a hard line break.
+	///   Appends a marker for a hard line break.
 	/// </summary>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder AppendBreak()
 	{
@@ -191,14 +192,14 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Inserts the specified <see cref="HorizontalAlignment"/> at the top of the alignment stack, which affects all
-	/// subsequent text runs and icons.
+	///   Inserts the specified <see cref="HorizontalAlignment"/> at the top of the alignment stack, which affects all
+	///   subsequent text runs and icons.
 	/// </summary>
 	/// <param name="alignment">
-	/// The alignment to push onto the stack.
+	///   The alignment to push onto the stack.
 	/// </param>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder PushAlignment(HorizontalAlignment alignment)
 	{
@@ -208,10 +209,10 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Removes the alignment currently at the top of the alignment stack, reverting back to the previous alignment.
+	///   Removes the alignment currently at the top of the alignment stack, reverting back to the previous alignment.
 	/// </summary>
 	/// <returns>
-	/// The same <see cref="TextBuilder"/> instance.
+	///   The same <see cref="TextBuilder"/> instance.
 	/// </returns>
 	public TextBuilder PopAlignment()
 	{
@@ -224,13 +225,13 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Creates a new <see cref="Text"/> instance based on the state of the builder.
+	///   Creates a new <see cref="Text"/> instance based on the state of the builder.
 	/// </summary>
 	/// <param name="style">
-	/// The base style to apply to the text.
+	///   The base style to apply to the text.
 	/// </param>
 	/// <returns>
-	/// The resulting <see cref="Text"/>.
+	///   The resulting <see cref="Text"/>.
 	/// </returns>
 	public Text Build(TextStyle style)
 	{
@@ -238,7 +239,7 @@ public class TextBuilder
 	}
 
 	/// <summary>
-	/// Clears the shape items appended to the builder.
+	///   Clears the shape items appended to the builder.
 	/// </summary>
 	public void Clear()
 	{

@@ -4,35 +4,35 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a self-closing tag that inserts an icon at the tag's position.
+///   Represents a self-closing tag that inserts an icon at the tag's position.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Type:</b> Void Element.
+///   <b>Type:</b> Void Element.
 /// </para>
 /// <para>
-/// <b>Attributes:</b>
-/// <list type="bullet">
-///   <item>
-///     <term><c>id</c></term>
-///     <description>
-///       Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="ResourceDB"/>
-///     </description>
-///   </item>
-///   <item>
-///     <term><c>[align]</c></term>
-///     <description>
-///       The alignment of the icon, which can be <c>top</c>, <c>center</c> or <c>bottom</c>.
-///     </description>
-///   </item>
-///   <item>
-///     <term><c>[size]</c></term>
-///     <description>The dimensions of the texture rect, formatted as <c>WxH</c>.</description>
-///   </item>
-/// </list>
+///   <b>Attributes:</b>
+///   <list type="bullet">
+///     <item>
+///       <term><c>id</c></term>
+///       <description>
+///         Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="ResourceDB"/>
+///       </description>
+///     </item>
+///     <item>
+///       <term><c>[align]</c></term>
+///       <description>
+///         The alignment of the icon, which can be <c>top</c>, <c>center</c> or <c>bottom</c>.
+///       </description>
+///     </item>
+///     <item>
+///       <term><c>[size]</c></term>
+///       <description>The dimensions of the texture rect, formatted as <c>WxH</c>.</description>
+///     </item>
+///   </list>
 /// </para>
 /// <para>
-/// <b>Example:</b> <c>"Smily &lt;icon id=smile/&gt; face!"</c>
+///   <b>Example:</b> <c>"Smily &lt;icon id=smile/&gt; face!"</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -54,7 +54,7 @@ public sealed partial class IconTag() : TextTag(requiredAttributes: [RequiredId]
 			switch (attr.Name)
 			{
 				case RequiredId:
-					if (!ResourceDB.TryGetResource(attr.Value, out tex))
+					if (!ResourceDB.TryGetTexture(attr.Value, out tex))
 					{
 						return false;
 					}

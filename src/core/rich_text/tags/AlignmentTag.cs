@@ -4,24 +4,24 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a tag that changes the horizontal alignment of a text paragraph.
+///   Represents a tag that changes the horizontal alignment of a text paragraph.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Type:</b> Normal Element.
+///   <b>Type:</b> Normal Element.
 /// </para>
 /// <para>
-/// <b>Attributes:</b> None.
+///   <b>Attributes:</b> None.
 /// </para>
 /// <para>
-/// <b>Example:</b> <c>"&lt;center&gt;This paragraph is centered.&lt;/center&gt;"</c>
+///   <b>Example:</b> <c>"&lt;center&gt;This paragraph is centered.&lt;/center&gt;"</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class AlignmentTag() : TextTag(requiredAttributes: [])
 {
 	/// <summary>
-	/// Gets the type of alignment applied by the tag, configured through the editor.
+	///   Gets the type of alignment applied by the tag, configured through the editor.
 	/// </summary>
 	[Export]
 	public HorizontalAlignment Alignment { get; private set; }

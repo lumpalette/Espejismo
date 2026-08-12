@@ -4,80 +4,80 @@ using Godot.Collections;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Represents the visual shape of a text character or icon.
+///   Represents the visual shape of a text character or icon.
 /// </summary>
 public readonly struct Glyph // 64 bytes pesa la marranota
 {
 	/// <summary>
-	/// Gets the start index of the glyph within the source string.
+	///   Gets the start index of the glyph within the source string.
 	/// </summary>
 	public int Start { get; private init; }
 
 	/// <summary>
-	/// Gets the end index of the glyph within the source string.
+	///   Gets the end index of the glyph within the source string.
 	/// </summary>
 	public int End { get; private init; }
 
 	/// <summary>
-	/// Gets the number of glyphs in the grapheme cluster, only set in the first glyph.
+	///   Gets the number of glyphs in the grapheme cluster, only set in the first glyph.
 	/// </summary>
 	public byte Count { get; private init; }
 
 	/// <summary>
-	/// Gets the number of consecutive times the glyph should be drawn.
+	///   Gets the number of consecutive times the glyph should be drawn.
 	/// </summary>
 	public byte Repeat { get; private init; }
 
 	/// <summary>
-	/// Gets a value describing the category or characteristics of this glyph.
+	///   Gets a value describing the category or characteristics of this glyph.
 	/// </summary>
 	public ushort Flags { get; private init; } // This is a TextServer.GraphemeFlag value.
 
 	/// <summary>
-	/// Gets the offset to the glyph's origin from the baseline.
+	///   Gets the offset to the glyph's origin from the baseline.
 	/// </summary>
 	public Vector2 Offset { get; private init; }
 
 	/// <summary>
-	/// Gets the distance to the next glyph along the baseline.
+	///   Gets the distance to the next glyph along the baseline.
 	/// </summary>
 	public float Advance { get; private init; }
 
 	/// <summary>
-	/// Gets the <see cref="TextServer"/> font resource used for the glyph.
+	///   Gets the <see cref="TextServer"/> font resource used for the glyph.
 	/// </summary>
 	public Rid Font { get; private init; }
 
 	/// <summary>
-	/// Gets the size of the <see cref="Font"/>, in pixels.
+	///   Gets the size of the <see cref="Font"/>, in pixels.
 	/// </summary>
 	public ushort FontSize { get; private init; }
 
 	/// <summary>
-	/// Gets the index of the glyph in the source <see cref="Font"/>, if applicable.
+	///   Gets the index of the glyph in the source <see cref="Font"/>, if applicable.
 	/// </summary>
 	public int Index { get; private init; }
 
 	/// <summary>
-	/// Gets the texture resource associated to the icon.
+	///   Gets the texture resource associated to the icon.
 	/// </summary>
 	public Texture2D? IconTexture { get; private init; }
 
 	/// <summary>
-	/// Gets the size of the rectangle used for <see cref="IconTexture"/>.
+	///   Gets the size of the rectangle used for <see cref="IconTexture"/>.
 	/// </summary>
 	public Vector2 IconSize { get; private init; }
 
 	/// <summary>
-	/// Gets the group of style properties associated to this glyph.
+	///   Gets the group of style properties associated to this glyph.
 	/// </summary>
 	public GlyphStyle Style { get; private init; }
 
 	/// <summary>
-	/// Gets a value indicating whether the glyph represents a text character.
+	///   Gets a value indicating whether the glyph represents a text character.
 	/// </summary>
 	/// <value>
-	/// <see langword="true"/> if the glyph represents a character; <see langword="false"/> if it represents an icon.
+	///   <see langword="true"/> if the glyph represents a character; <see langword="false"/> if it represents an icon.
 	/// </value>
 	public bool IsChar => Index != 0;
 

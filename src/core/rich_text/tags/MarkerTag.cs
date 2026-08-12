@@ -4,17 +4,17 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a self-closing tag that inserts a <see cref="TextMarker"/> at the tag's position.
+///   Represents a self-closing tag that inserts a <see cref="TextMarker"/> at the tag's position.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Type:</b> Void Element.
+///   <b>Type:</b> Void Element.
 /// </para>
 /// <para>
-/// <b>Attributes:</b> Varies (depends on the marker's purpose).
+///   <b>Attributes:</b> Varies (depends on the marker's purpose).
 /// </para>
 /// <para>
-/// <b>Example:</b> <c>"Embedded&lt;wait time=1s/&gt; marker."</c>
+///   <b>Example:</b> <c>"Embedded&lt;wait time=1s/&gt; marker."</c>
 /// </para>
 /// </remarks>
 [GlobalClass]

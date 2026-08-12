@@ -4,25 +4,25 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a tag that changes the entire styling of a specific segment of text.
+///   Represents a tag that changes the entire styling of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Type:</b> Normal Element.
+///   <b>Type:</b> Normal Element.
 /// </para>
 /// <para>
-/// <b>Attributes:</b>
-/// <list type="bullet">
-///   <item>
-///     <term><c>id</c></term>
-///     <description>
-///       Identifier for the <see cref="StyleTemplate"/> to use, as defined in <see cref="ResourceDB"/>.
-///     </description>
-///   </item>
-/// </list>
+///   <b>Attributes:</b>
+///   <list type="bullet">
+///     <item>
+///       <term><c>id</c></term>
+///       <description>
+///         Identifier for the <see cref="StyleTemplate"/> to use, as defined in <see cref="ResourceDB"/>.
+///       </description>
+///     </item>
+///   </list>
 /// </para>
 /// <para>
-/// <b>Example:</b> <c>"Main style, and &lt;style id=fantasy&gt;fantasy style.&lt;/style&gt;"</c>
+///   <b>Example:</b> <c>"Main style, and &lt;style id=fantasy&gt;fantasy style.&lt;/style&gt;"</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -37,7 +37,7 @@ public sealed partial class StyleTag() : TextTag(requiredAttributes: [RequiredId
 		{
 			if (attr.IsNamed(RequiredId))
 			{
-				if (!ResourceDB.TryGetResource<StyleTemplate>(attr.Value, out var template))
+				if (!ResourceDB.TryGetStyle(attr.Value, out var template))
 				{
 					return false;
 				}

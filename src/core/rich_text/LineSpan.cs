@@ -6,67 +6,67 @@ using System.Collections.Generic;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Represents a single laid-out line of text, defined as a slice of <see cref="Glyph"/> instances from a source
-/// <see cref="Text"/>.
+///   Represents a single laid-out line of text, defined as a slice of <see cref="Glyph"/> instances from a source
+///   <see cref="Text"/>.
 /// </summary>
 public readonly struct LineSpan : IEnumerable<Glyph>
 {
 	/// <summary>
-	/// Gets the index of the first glyph on the line within the source <see cref="Text"/>.
+	///   Gets the index of the first glyph on the line within the source <see cref="Text"/>.
 	/// </summary>
 	public int Start { get; internal init; }
 
 	/// <summary>
-	/// Gets the number of glyphs in the line.
+	///   Gets the number of glyphs in the line.
 	/// </summary>
 	public int Length { get; internal init; }
 
 	/// <summary>
-	/// Gets the total extent of the line, in pixels.
+	///   Gets the total extent of the line, in pixels.
 	/// </summary>
 	public float Width { get; internal init; }
 
 	/// <summary>
-	/// Gets the distance from the baseline to the top of the line, in pixels.
+	///   Gets the distance from the baseline to the top of the line, in pixels.
 	/// </summary>
 	public float Ascent { get; internal init; }
 
 	/// <summary>
-	/// Gets the distance from the baseline to the bottom of the line, in pixels.
+	///   Gets the distance from the baseline to the bottom of the line, in pixels.
 	/// </summary>
 	public float Descent { get; internal init; }
 
 	/// <summary>
-	/// Gets the extra vertical added between lines of text, from the bottom of the line.
+	///   Gets the extra vertical added between lines of text, from the bottom of the line.
 	/// </summary>
 	public float Leading { get; internal init; }
 
 	/// <summary>
-	/// Gets the total height of the line, including the line gap, in pixels.
+	///   Gets the total height of the line, including the line gap, in pixels.
 	/// </summary>
 	/// <value>
-	/// The result of <see cref="Ascent"/> + <see cref="Descent"/> + <see cref="Leading"/>.
+	///   The result of <see cref="Ascent"/> + <see cref="Descent"/> + <see cref="Leading"/>.
 	/// </value>
 	public float Height => Ascent + Descent + Leading;
 
 	/// <summary>
-	/// Gets the horizontal alignment applied to the line.
+	///   Gets the horizontal alignment applied to the line.
 	/// </summary>
 	public HorizontalAlignment Alignment { get; internal init; }
 
 	internal List<Glyph> Glyphs { get; init; }
 
 	/// <summary>
-	/// Gets the <see cref="Glyph"/> at the specified index.
+	///   Gets the <see cref="Glyph"/> at the specified index.
 	/// </summary>
 	/// <param name="index">
-	/// The zero-based index of the glyph.
+	///   The zero-based index of the glyph.
 	/// </param>
 	/// <returns>
-	/// The <see cref="Glyph"/> at the specified <paramref name="index"/>.
+	///   The <see cref="Glyph"/> at the specified <paramref name="index"/>.
 	/// </returns>
 	/// <exception cref="ArgumentOutOfRangeException">
-	/// Thrown if <paramref name="index"/> is negative or greater than or equal to <see cref="Length"/>.
+	///   Thrown if <paramref name="index"/> is negative or greater than or equal to <see cref="Length"/>.
 	/// </exception>
 	public Glyph this[int index]
 	{
@@ -80,10 +80,10 @@ public readonly struct LineSpan : IEnumerable<Glyph>
 	}
 
 	/// <summary>
-	/// Returns an enumerator that iterates through the <see cref="Glyph"/> instances in the line.
+	///   Returns an enumerator that iterates through the <see cref="Glyph"/> instances in the line.
 	/// </summary>
 	/// <returns>
-	/// A <see cref="Enumerator"/> for the <see cref="LineSpan"/>.
+	///   A <see cref="Enumerator"/> for the <see cref="LineSpan"/>.
 	/// </returns>
 	public Enumerator GetEnumerator()
 	{
@@ -101,7 +101,7 @@ public readonly struct LineSpan : IEnumerable<Glyph>
 	}
 
 	/// <summary>
-	/// Enumerates through the glyphs of a <see cref="LineSpan"/>.
+	///   Enumerates through the glyphs of a <see cref="LineSpan"/>.
 	/// </summary>
 	public struct Enumerator : IEnumerator<Glyph>
 	{
