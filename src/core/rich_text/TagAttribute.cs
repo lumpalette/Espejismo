@@ -70,7 +70,7 @@ public readonly struct TagAttribute
 	///   <see langword="true"/> if the attribute's name matches <paramref name="name"/>; otherwise,
 	///   <see langword="false"/>.
 	/// </returns>
-	public bool IsNamed(string name)
+	public bool IsNamed(ReadOnlySpan<char> name)
 	{
 		return Name.SequenceEqual(name);
 	}

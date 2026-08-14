@@ -241,7 +241,7 @@ public partial class Text
 
 		_fallbackFont = baseStyle.Font!;
 		_fallbackFontSize = baseStyle.FontSize!.Value;
-		_fallbackLeading = baseStyle.LineSpacing!.Value;
+		_fallbackLeading = baseStyle.Spacing!.Value.Y;
 
 		foreach (var item in _items)
 		{
@@ -254,15 +254,15 @@ public partial class Text
 			var mergedStyle = item.Style.MergedWith(baseStyle);
 
 			var font = mergedStyle.Font!;
-			var spcX = mergedStyle.LetterSpacing!.Value;
+			var spacing = mergedStyle.Spacing!.Value;
 			
 			// We don't pass the line spacing to the font, as it is stored inside the LineSpan.Leading separately.
-			if (spcX != 0)
+			if (spacing.X != 0)
 			{
 				font = new FontVariation
 				{
 					BaseFont = font,
-					SpacingGlyph = spcX,
+					SpacingGlyph = spacing.X,
 				};
 			}
 
@@ -270,7 +270,7 @@ public partial class Text
 			{
 				Font = font,
 				FontSize = mergedStyle.FontSize!.Value,
-				LineSpacing = mergedStyle.LineSpacing!.Value,
+				Leading = spacing.Y,
 				Style = new GlyphStyle
 				{
 					Color = mergedStyle.Color!.Value,

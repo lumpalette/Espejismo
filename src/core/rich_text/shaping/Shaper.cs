@@ -271,7 +271,7 @@ internal readonly struct Shaper()
 
 		Glyphs.Add(glyph);
 
-		return resolved.LineSpacing;
+		return resolved.Leading;
 	}
 
 	private float AppendIcon(Godot.Collections.Dictionary gl, in ShapeItem item, int itemIndex, Rid shaped)
@@ -288,6 +288,6 @@ internal readonly struct Shaper()
 
 		Glyphs.Add(glyph);
 
-		return resolved.LineSpacing;
+		return resolved.Leading;
 	}
 }

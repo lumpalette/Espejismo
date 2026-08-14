@@ -18,7 +18,7 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class MarkerTag() : TextTag(requiredAttributes: [])
+public sealed partial class MarkerTag : TextTag
 {
 	[Export]
 	private string _name = string.Empty;

@@ -18,7 +18,7 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class AlignmentTag() : TextTag(requiredAttributes: [])
+public sealed partial class AlignmentTag : TextTag
 {
 	/// <summary>
 	///   Gets the type of alignment applied by the tag, configured through the editor.

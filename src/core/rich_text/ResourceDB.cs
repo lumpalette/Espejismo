@@ -100,8 +100,8 @@ public partial class ResourceDB : Resource
 	///   The name of the <see cref="Font"/> to get.
 	/// </param>
 	/// <param name="font">
-	///   When this method returns, contains the font registered with <paramref name="name"/>, if exists; otherwise,
-	///   <see langword="null"/>.
+	///   When this method returns, contains the font associated with <paramref name="name"/>, if registered;
+	///   otherwise, <see langword="null"/>.
 	/// </param>
 	/// <returns>
 	///   <see langword="true"/> if a font named <paramref name="name"/> exists; otherwise, <see langword="false"/>.
@@ -119,8 +119,8 @@ public partial class ResourceDB : Resource
 	///   The name of the <see cref="Texture2D"/> to get.
 	/// </param>
 	/// <param name="texture">
-	///   When this method returns, contains the texture registered with <paramref name="name"/>, if exists; otherwise,
-	///   <see langword="null"/>.
+	///   When this method returns, contains the texture associated with <paramref name="name"/>, if registered;
+	///   otherwise, <see langword="null"/>.
 	/// </param>
 	/// <returns>
 	///   <see langword="true"/> if a texture named <paramref name="name"/> exists; otherwise, <see langword="false"/>.
@@ -138,7 +138,7 @@ public partial class ResourceDB : Resource
 	///   The name of the <see cref="StyleTemplate"/> to get.
 	/// </param>
 	/// <param name="template">
-	///   When this method returns, contains the template registered with <paramref name="name"/>, if exists;
+	///   When this method returns, contains the template associated with <paramref name="name"/>, if registered;
 	///   otherwise, <see langword="null"/>.
 	/// </param>
 	/// <returns>
@@ -158,7 +158,7 @@ public partial class ResourceDB : Resource
 	///   The name of the <see cref="TextTag"/> to get.
 	/// </param>
 	/// <param name="tag">
-	///   When this method returns, contains the tag registered with <paramref name="name"/>, if exists; otherwise,
+	///   When this method returns, contains the tag associated with <paramref name="name"/>, if registered; otherwise,
 	///   <see langword="null"/>.
 	/// </param>
 	/// <returns>

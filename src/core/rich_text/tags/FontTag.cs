@@ -28,48 +28,33 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class FontTag() : TextTag(requiredAttributes: [])
+public sealed partial class FontTag : TextTag
 {
-	private const string OptionalId = "id";
-	private const string OptionalSize = "size";
-
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var changed = false;
-		var font = builder.TopStyle.Font;
-		var size = builder.TopStyle.FontSize;
+		var style = builder.TopStyle;
 
-		foreach (var attr in attributes)
+		var font = style.Font;
+		var size = style.FontSize;
+
+		if (attributes.TryGetValue("id", out ReadOnlySpan<char> id) && ResourceDB.TryGetFont(id, out var pfont))
 		{
-			if (attr.IsNamed(OptionalId))
-			{
-				if (!ResourceDB.TryGetFont(attr.Value, out font))
-				{
-					return false;
-				}
-
-				changed = true;
-			}
-			else if (attr.IsNamed(OptionalSize))
-			{
-				if (!ushort.TryParse(attr.Value, out var psize))
-				{
-					return false;
-				}
-				
-				size = psize;
-				changed = true;
-			}
+			font = pfont;
 		}
 
-		if (!changed)
+		if (attributes.TryGetValue("size", out ushort psize))
 		{
-			return false;
+			size = psize;
 		}
 
-		builder.PushStyle(builder.TopStyle with { Font = font, FontSize = size });
-		return true;
+		if (style.Font != font || style.FontSize != size)
+		{
+			builder.PushStyle(style with { Font = font, FontSize = size });
+			return true;
+		}
+
+		return false;
 	}
 
 	/// <inheritdoc/>

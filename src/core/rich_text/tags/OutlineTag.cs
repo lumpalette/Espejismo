@@ -31,61 +31,38 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class OutlineTag() : TextTag(requiredAttributes: [])
+public sealed partial class OutlineTag : TextTag
 {
-	private const string OptionalSize = "size";
-	private const string OptionalColor = "color";
-
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var changed = false;
-		var size = builder.TopStyle.OutlineSize;
-		var color = builder.TopStyle.OutlineColor;
-		
-		foreach (var attr in attributes)
+		var style = builder.TopStyle;
+
+		var size = style.OutlineSize;
+		var color = style.OutlineColor;
+
+		if (attributes.TryGetValue("size", out ushort psize))
 		{
-			if (attr.IsNamed(OptionalSize))
-			{
-				if (!ushort.TryParse(attr.Value, out var psize))
-				{
-					return false;
-				}
-
-				size = psize;
-				changed = true;
-			}
-			else if (attr.IsNamed(OptionalColor))
-			{
-				if (!TryParseColor(attr.Value.ToString(), out Color pcolor))
-				{
-					return false;
-				}
-
-				color = pcolor;
-				changed = true;
-			}
+			size = psize;
 		}
 
-		if (!changed)
+		if (attributes.TryGetValue("color", out Color pcolor))
 		{
-			return false;
+			color = pcolor;
 		}
 
-		builder.PushStyle(builder.TopStyle with { OutlineSize = size, OutlineColor = color });
-		return true;
+		if (style.OutlineSize != size || style.OutlineColor != color)
+		{
+			builder.PushStyle(style with { OutlineSize = size, OutlineColor = color });
+			return true;
+		}
+
+		return false;
 	}
 
 	/// <inheritdoc/>
 	public override void End(TextBuilder builder)
 	{
 		builder.PopStyle();
-	}
-
-	private static bool TryParseColor(string s, out Color color)
-	{
-		var fallback = new Color(-1f, -2f, -3f, -4f);
-		color = Color.FromString(s, fallback);
-		return color != fallback;
 	}
 }

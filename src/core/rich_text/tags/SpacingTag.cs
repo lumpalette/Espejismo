@@ -14,63 +14,65 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b>
 ///   <list type="bullet">
 ///     <item>
-///       <term><c>[letter]</c></term>
-///       <description>Extra space added between letters, in pixels. Can be negative.</description>
+///       <term><c>[value]</c></term>
+///       <description>
+///         The spacing to apply, formatted as <c>X,Y</c>. Takes precedence before the <c>x</c> and <c>y</c>
+///         attributes.
+///       </description>
 ///     </item>
 ///     <item>
-///       <term><c>[line]</c></term>
-///       <description>Extra space added between lines of text, in pixels. Can be negative.</description>
+///       <term><c>[x]</c></term>
+///       <description>
+///         Extra space added between letters, in pixels, and can be negative. Only applied when the <c>value</c>
+///         attribute is not specified.
+///       </description>
+///     </item>
+///     <item>
+///       <term><c>[y]</c></term>
+///       <description>
+///         Extra space added between lines of text, in pixels, and can be negative. Only applied when the <c>value</c>
+///         attribute is not specified.
+///       </description>
 ///     </item>
 ///   </list>
 /// </para>
 /// <para>
-///   <b>Example:</b> <c>"&lt;spacing letter=3&gt;Ominous&lt;/spacing&gt; text."</c>
+///   <b>Example:</b> <c>"&lt;spacing x=3&gt;Ominous&lt;/spacing&gt; text."</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class SpacingTag() : TextTag(requiredAttributes: [])
+public sealed partial class SpacingTag : TextTag
 {
-	private const string OptionalLetter = "letter";
-	private const string OptionalLine = "line";
-
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var changed = false;
-		var spcX = builder.TopStyle.LetterSpacing;
-		var spcY = builder.TopStyle.LineSpacing;
+		var style = builder.TopStyle;
+		var spacing = style.Spacing;
 
-		foreach (var attr in attributes)
+		if (attributes.TryGetValue("value", sep: ',', out Vector2 pspacing))
 		{
-			if (attr.IsNamed(OptionalLetter))
+			spacing = (Vector2I)pspacing;
+		}
+		else
+		{
+			if (attributes.TryGetValue("x", out int x))
 			{
-				if (!int.TryParse(attr.Value, out var pspcX))
-				{
-					return false;
-				}
-
-				spcX = pspcX;
-				changed = true;
+				spacing = (spacing ?? Vector2I.Zero) with { X = x };
 			}
-			else if (attr.IsNamed(OptionalLine))
-			{
-				if (!int.TryParse(attr.Value, out var pspcY))
-				{
-					return false;
-				}
 
-				spcY = pspcY;
-				changed = true;
+			if (attributes.TryGetValue("y", out int y))
+			{
+				spacing = (spacing ?? Vector2I.Zero) with { Y = y };
 			}
 		}
 
-		if (!changed)
+		if (style.Spacing != spacing)
 		{
-			return false;
+			builder.PushStyle(style with { Spacing = spacing });
+			return true;
 		}
 
-		builder.PushStyle(builder.TopStyle with { LetterSpacing = spcX, LineSpacing = spcY });
-		return true;
+		return false;
 	}
 
 	/// <inheritdoc/>

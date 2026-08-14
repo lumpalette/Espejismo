@@ -236,7 +236,7 @@ public partial class RichLabel : Control
 					{
 						Glyph = glyph,
 						Index = 0,
-						LineProgress = (float)glyphCount / (float)line.Length,
+						LineProgress = glyphCount / (float)line.Length,
 						LineLength = line.Length,
 						Time = Time.GetTicksMsec() / 1000f,
 						Color = col

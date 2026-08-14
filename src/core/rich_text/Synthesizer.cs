@@ -19,36 +19,6 @@ internal struct Synthesizer(Document document, TextBuilder builder)
 		WalkBranch(rootIndex: 0);
 	}
 
-	private static bool AttributesAreValid(TextTag tag, ReadOnlySpan<TagAttribute> attrs)
-	{
-		if (tag.RequiredAttributes.Count == 0)
-		{
-			// You can pass as many optional arguments as you want.
-			return true;
-		}
-
-		foreach (var required in tag.RequiredAttributes)
-		{
-			var found = false;
-
-			foreach (var attr in attrs)
-			{
-				if (attr.Name.SequenceEqual(required))
-				{
-					found = true;
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	private void WalkBranch(int rootIndex)
 	{
 		var entityBuffer = (stackalloc char[2]);
@@ -116,21 +86,13 @@ internal struct Synthesizer(Document document, TextBuilder builder)
 		}
 
 		var attrs = ConvertAttributeRange(node.AttributeStart, node.AttributeCount);
+		var success = tag.Begin(builder, attrs);
 
-		if (AttributesAreValid(tag, attrs))
+		WalkBranch(nodeIndex);
+
+		if (success)
 		{
-			var success = tag.Begin(builder, attrs);
-
-			WalkBranch(nodeIndex);
-
-			if (success)
-			{
-				tag.End(builder);
-			}
-		}
-		else
-		{
-			WalkBranch(nodeIndex);
+			tag.End(builder);
 		}
 	}
 

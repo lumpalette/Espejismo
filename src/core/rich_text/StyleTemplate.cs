@@ -30,29 +30,23 @@ public partial class StyleTemplate : Resource
 	public Color Color { get; private set; } = Colors.White;
 
 	/// <summary>
+	///   Gets the additional space added between letters and lines of text, represented as a 2D vector. Defaults to
+	///   <c>(0,8)</c>.
+	/// </summary>
+	[Export]
+	public Vector2I Spacing { get; private set; } = new(0, 8);
+
+	/// <summary>
 	///   Gets the visual effect applied to the text.
 	/// </summary>
-	[ExportGroup("Effects")] // kinda useless but whatever
+	[ExportGroup("Effects")]
 	[Export]
 	public TextEffect? Effect { get; private set; }
 
 	/// <summary>
-	///   Gets the additional spacing added between text characters or icons.
-	/// </summary>
-	[ExportGroup("Spacing")]
-	[Export]
-	public int LetterSpacing { get; private set; }
-
-	/// <summary>
-	///   Gets the additional spacing added between lines of text. Defaults to 8px.
-	/// </summary>
-	[Export]
-	public int LineSpacing { get; private set; } = 8;
-
-	/// <summary>
 	///   Gets the size for the shadow effect, in pixels.
 	/// </summary>
-	[ExportGroup("Shadow", "Shadow")]
+	[ExportGroup("Shadow", prefix: "Shadow")]
 	[Export]
 	public ushort ShadowSize { get; private set; }
 
@@ -71,7 +65,7 @@ public partial class StyleTemplate : Resource
 	/// <summary>
 	///   Gets the size for the text outline, in pixels. Defaults to 4px.
 	/// </summary>
-	[ExportGroup("Outline", "Outline")]
+	[ExportGroup("Outline", prefix: "Outline")]
 	[Export]
 	public ushort OutlineSize { get; private set; } = 4;
 
@@ -121,8 +115,7 @@ public partial class StyleTemplate : Resource
 			FontSize = style.FontSize ?? FontSize,
 			Color = style.Color ?? Color,
 			Effect = style.Effect ?? Effect,
-			LetterSpacing = style.LetterSpacing ?? LetterSpacing,
-			LineSpacing = style.LineSpacing ?? LineSpacing,
+			Spacing = style.Spacing ?? Spacing,
 			ShadowSize = style.ShadowSize ?? ShadowSize,
 			ShadowColor = style.ShadowColor ?? ShadowColor,
 			ShadowOffset = style.ShadowOffset ?? ShadowOffset,

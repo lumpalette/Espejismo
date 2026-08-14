@@ -26,25 +26,15 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class StyleTag() : TextTag(requiredAttributes: [RequiredId])
+public sealed partial class StyleTag : TextTag
 {
-	private const string RequiredId = "id";
-
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		foreach (var attr in attributes)
+		if (attributes.TryGetValue("id", out ReadOnlySpan<char> id) && ResourceDB.TryGetStyle(id, out var template))
 		{
-			if (attr.IsNamed(RequiredId))
-			{
-				if (!ResourceDB.TryGetStyle(attr.Value, out var template))
-				{
-					return false;
-				}
-
-				builder.PushStyle(template.Create());
-				return true;
-			}
+			builder.PushStyle(template.Create());
+			return true;
 		}
 
 		return false;

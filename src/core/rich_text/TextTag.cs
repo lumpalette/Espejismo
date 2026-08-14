@@ -7,18 +7,9 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 ///   Provides the base class for defining the behaviour of a rich-text tag during parsing.
 /// </summary>
-/// <param name="requiredAttributes">
-///   The names of the attributes required by the tag.
-/// </param>
 [GlobalClass]
-public abstract partial class TextTag(string[] requiredAttributes) : Resource
+public abstract partial class TextTag : Resource
 {
-
-	/// <summary>
-	///   Gets a collection of strings representing the names of the attributes required for the tag to function.
-	/// </summary>
-	public IReadOnlyList<string> RequiredAttributes { get; } = requiredAttributes;
-
 	/// <summary>
 	///   Called when an element begins, before its children are processed.
 	/// </summary>

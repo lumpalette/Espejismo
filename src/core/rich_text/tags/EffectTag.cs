@@ -18,7 +18,8 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Example:</b> <c>"&lt;shake&gt;This&lt;/shake&gt; word is shaking."</c>
 /// </para>
 /// </remarks>
-public sealed partial class EffectTag() : TextTag(requiredAttributes: [])
+[GlobalClass]
+public sealed partial class EffectTag : TextTag
 {
 	/// <summary>
 	/// Gets the effect applied by the tag, configured through the editor.
@@ -36,7 +37,7 @@ public sealed partial class EffectTag() : TextTag(requiredAttributes: [])
 
 		var current = builder.TopStyle.Effect;
 		var composite = CompositeEffect.Combine(current, Effect.Setup(attributes));
-
+		
 		builder.PushStyle(builder.TopStyle with { Effect = composite });
 		return true;
 	}

@@ -27,40 +27,23 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class ColorTag() : TextTag(requiredAttributes: [RequiredValue])
+public sealed partial class ColorTag : TextTag
 {
-	private const string RequiredValue = "value";
-
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		foreach (var attr in attributes)
+		if (!attributes.TryGetValue("value", out Color value))
 		{
-			if (attr.IsNamed(RequiredValue))
-			{
-				if (!TryParseColor(attr.Value.ToString(), out Color color))
-				{
-					return false;
-				}
-
-				builder.PushStyle(builder.TopStyle with { Color = color });
-				return true;
-			}
+			return false;
 		}
 
-		return false;
+		builder.PushStyle(builder.TopStyle with { Color = value });
+		return true;
 	}
 
 	/// <inheritdoc/>
 	public override void End(TextBuilder builder)
 	{
 		builder.PopStyle();
-	}
-
-	private static bool TryParseColor(string s, out Color color)
-	{
-		var fallback = new Color(-1f, -2f, -3f, -4f);
-		color = Color.FromString(s, fallback);
-		return color != fallback;
 	}
 }

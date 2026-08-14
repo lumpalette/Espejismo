@@ -34,19 +34,14 @@ public readonly record struct TextStyle
 	public Color? Color { get; init; }
 
 	/// <summary>
+	///   Gets the additional space added between letters and lines of text, represented as a 2D vector.
+	/// </summary>
+	public Vector2I? Spacing { get; init; }
+
+	/// <summary>
 	///   Gets the visual effect applied to the text.
 	/// </summary>
 	public TextEffect? Effect { get; init; }
-
-	/// <summary>
-	///   Gets the additional spacing added between glyphs.
-	/// </summary>
-	public int? LetterSpacing { get; init; }
-
-	/// <summary>
-	///   Gets the additional spacing added between lines of text.
-	/// </summary>
-	public int? LineSpacing { get; init; }
 
 	/// <summary>
 	///   Gets the size of the shadow effect, in pixels.
@@ -90,8 +85,7 @@ public readonly record struct TextStyle
 			FontSize = FontSize ?? other.FontSize,
 			Color = Color ?? other.Color,
 			Effect = Effect ?? other.Effect,
-			LetterSpacing = LetterSpacing ?? other.LetterSpacing,
-			LineSpacing = LineSpacing ?? other.LineSpacing,
+			Spacing = Spacing ?? other.Spacing,
 			ShadowSize = ShadowSize ?? other.ShadowSize,
 			ShadowColor = ShadowColor ?? other.ShadowColor,
 			ShadowOffset = ShadowOffset ?? other.ShadowOffset,

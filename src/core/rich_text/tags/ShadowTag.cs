@@ -37,96 +37,44 @@ namespace Espejismo.Core.RichText.Tags;
 /// </para>
 /// </remarks>
 [GlobalClass]
-public sealed partial class ShadowTag() : TextTag(requiredAttributes: [])
+public sealed partial class ShadowTag : TextTag
 {
-	private const string OptionalSize = "size";
-	private const string OptionalColor = "color";
-	private const string OptionalOffset = "offset";
-
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		var changed = false;
-		var size = builder.TopStyle.ShadowSize;
-		var color = builder.TopStyle.ShadowColor;
-		var offset = builder.TopStyle.ShadowOffset;
+		var style = builder.TopStyle;
 		
-		foreach (var attr in attributes)
+		var size = style.ShadowSize;
+		var color = style.ShadowColor;
+		var offset = style.ShadowOffset;
+		
+		if (attributes.TryGetValue("size", out ushort psize))
 		{
-			switch (attr.Name)
-			{
-				case OptionalSize:
-					if (!ushort.TryParse(attr.Value, out var psize))
-					{
-						return false;
-					}
-
-					size = psize;
-					changed = true;
-					break;
-				case OptionalColor:
-					if (!TryParseColor(attr.Value.ToString(), out Color pcolor))
-					{
-						return false;
-					}
-
-					color = pcolor;
-					changed = true;
-					break;
-				case OptionalOffset:
-					if (!TryParseOffset(attr.Value, out var poffset))
-					{
-						return false;
-					}
-
-					offset = poffset;
-					changed = true;
-					break;
-			}
+			size = psize;
 		}
 
-		if (!changed)
+		if (attributes.TryGetValue("color", out Color pcolor))
 		{
-			return false;
+			color = pcolor;
 		}
 
-		builder.PushStyle(builder.TopStyle with { ShadowSize = size, ShadowColor = color, ShadowOffset = offset });
-		return true;
+		if (attributes.TryGetValue("offset", sep: ',', out Vector2 poffset))
+		{
+			offset = poffset;
+		}
+
+		if (style.ShadowSize != size || style.ShadowColor != color || style.ShadowOffset != offset)
+		{
+			builder.PushStyle(builder.TopStyle with { ShadowSize = size, ShadowColor = color, ShadowOffset = offset });
+			return true;
+		}
+
+		return false;
 	}
 
 	/// <inheritdoc/>
 	public override void End(TextBuilder builder)
 	{
 		builder.PopStyle();
-	}
-
-	private static bool TryParseColor(string s, out Color color)
-	{
-		var fallback = new Color(-1f, -2f, -3f, -4f);
-		color = Color.FromString(s, fallback);
-		return color != fallback;
-	}
-
-	private static bool TryParseOffset(ReadOnlySpan<char> s, out Vector2 offset)
-	{
-		var commaIndex = s.IndexOf(',');
-
-		if (commaIndex == -1)
-		{
-			offset = Vector2.Zero;
-			return false;
-		}
-
-		var xSpan = s[..commaIndex].Trim();
-		var ySpan = s[(commaIndex + 1)..].Trim();
-
-		if (!int.TryParse(xSpan, out var x) || !int.TryParse(ySpan, out var y))
-		{
-			offset = Vector2.Zero;
-			return false;
-		}
-
-		offset = new Vector2(x, y);
-		return true;
 	}
 }
