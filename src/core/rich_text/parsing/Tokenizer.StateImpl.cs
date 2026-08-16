@@ -13,7 +13,8 @@ partial struct Tokenizer
 		{
 			if (_position - 1 > StartIndex)
 			{
-				ReadValue = _source[StartIndex..--_position];
+				_position--;
+				ReadValue = _source[StartIndex.._position];
 				return TokenType.Text;
 			}
 
@@ -51,12 +52,10 @@ partial struct Tokenizer
 
 		if (input == Eof)
 		{
-			ReadValue = _source[StartIndex..];
-			return SwitchTo(State.Data, TokenType.Text);
+			return ReconsumeIn(State.Data);
 		}
 
-		ReadValue = _source[StartIndex.._position];
-		return SwitchTo(State.Data, TokenType.Text);
+		return ReconsumeIn(State.Data);
 	}
 
 	private TokenType ExecEndTagOpen()
@@ -66,18 +65,17 @@ partial struct Tokenizer
 
 		if (char.IsAsciiLetter((char)input))
 		{
+			_isEndTag = true;
 			StartIndex = _position - 1;
 			return ReconsumeIn(State.TagName);
 		}
 
 		if (input == Eof)
 		{
-			ReadValue = _source[StartIndex..];
-			return SwitchTo(State.Data, TokenType.Text);
+			return ReconsumeIn(State.Data);
 		}
 
-		ReadValue = _source[StartIndex.._position];
-		return SwitchTo(State.Data, TokenType.Text);
+		return ReconsumeIn(State.Data);
 	}
 
 	private TokenType ExecTagName()
@@ -98,14 +96,14 @@ partial struct Tokenizer
 				return SwitchTo(State.SelfClosingStartTag);
 			}
 
-			return SwitchTo(State.Data, (_source[StartIndex - 1] != '/') ? TokenType.StartTag : TokenType.EndTag);
+			return SwitchTo(State.Data, GetCurrentTagType());
 		}
-		
+
 		// This is not part of the HTML standard. Allows for defining a main tag attribute (e.g. <color=red>).
 		if (input == '=')
 		{
 			ReadValue = _source[StartIndex..(_position - 1)];
-			
+
 			// Main tag attributes are nameless.
 			_currentAttributeNameStart = StartIndex;
 			_currentAttributeNameLength = 0;
@@ -129,6 +127,13 @@ partial struct Tokenizer
 		if (input == ' ')
 		{
 			return TokenType.None;
+		}
+
+		// In this system, attributes cannot start with a '<' sign, which is different to what HTML does.
+		if (input == '<')
+		{
+			StartIndex -= _isEndTag ? 2 : 1;
+			return ReconsumeIn(State.Data);
 		}
 
 		if (input is '/' or '>' or Eof)
@@ -199,7 +204,7 @@ partial struct Tokenizer
 		if (input == '>')
 		{
 			AppendCurrentAttribute();
-			return SwitchTo(State.Data, TokenType.StartTag);
+			return SwitchTo(State.Data, GetCurrentTagType());
 		}
 
 		if (input == Eof)
@@ -225,7 +230,7 @@ partial struct Tokenizer
 		if (input == '>')
 		{
 			AppendCurrentAttribute();
-			return SwitchTo(State.Data, TokenType.StartTag);
+			return SwitchTo(State.Data, GetCurrentTagType());
 		}
 
 		if (input is '"' or '\'')
@@ -278,7 +283,7 @@ partial struct Tokenizer
 				return SwitchTo(State.SelfClosingStartTag);
 			}
 
-			return SwitchTo(State.Data, TokenType.StartTag);
+			return SwitchTo(State.Data, GetCurrentTagType());
 		}
 
 		if (input == Eof)
@@ -306,7 +311,7 @@ partial struct Tokenizer
 
 		if (input == '>')
 		{
-			return SwitchTo(State.Data, TokenType.StartTag);
+			return SwitchTo(State.Data, GetCurrentTagType());
 		}
 
 		if (input == Eof)
@@ -324,7 +329,7 @@ partial struct Tokenizer
 		if (input == '>')
 		{
 			IsSelfClosing = true;
-			return SwitchTo(State.Data, TokenType.StartTag);
+			return SwitchTo(State.Data, GetCurrentTagType());
 		}
 
 		if (input == Eof)
@@ -377,8 +382,7 @@ partial struct Tokenizer
 
 		if (!validInput)
 		{
-			ReadValue = _source[StartIndex.._position];
-			return SwitchTo(State.Data, TokenType.Text);
+			return ReconsumeIn(State.Data);
 		}
 
 		return TokenType.None;

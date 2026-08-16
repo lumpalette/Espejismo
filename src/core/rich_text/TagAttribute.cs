@@ -29,7 +29,7 @@ public readonly struct TagAttribute
 	/// </summary>
 	/// <remarks>
 	///   An empty name indicates that the current instance is a <b>main attribute</b> — the implicit attribute
-	///   specified directly after the tag name (e.g. <c>aqua</c> in <c>"&lt;c=aqua&gt;"</c>), with no explicit
+	///   specified directly after the tag name (e.g. <c>aqua</c> in <c>"&lt;color=aqua&gt;"</c>), with no explicit
 	///   attribute name of its own.
 	/// </remarks>
 	public ReadOnlySpan<char> Name => _source.AsSpan(_nameStart, _nameLength);
@@ -43,6 +43,11 @@ public readonly struct TagAttribute
 	///   Gets a value indicating whether the attribute was specified in a tag.
 	/// </summary>
 	public bool IsDefined => _source is not null;
+
+	/// <summary>
+	///   Gets a value indicating whether the attribute is the main, implicit attribute of a tag.
+	/// </summary>
+	public bool IsMain => IsNamed(string.Empty);
 
 	/// <summary>
 	///   Indicates whether the attribute has the specified name.

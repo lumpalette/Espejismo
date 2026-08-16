@@ -7,7 +7,7 @@ namespace Espejismo.Core.RichText.Effects;
 ///   Represents an effect that moves the text around a circle.
 /// </summary>
 /// <remarks>
-///   <c>Parameters:</c>
+///   <b>Parameters:</b>
 ///   <list type="bullet">
 ///     <item>
 ///       <term>Radius (<c>radius</c>)</term>
@@ -34,14 +34,16 @@ public sealed partial class TornadoEffect : TextEffect
 	private float _spacing = 2f;
 
 	/// <inheritdoc/>
-	public override void Process(ref GlyphTransform trans)
+	public override bool Process(ref GlyphTransform trans)
 	{
-		var angle = (trans.Time * _frequency) + (trans.LineProgress * _spacing);
+		var angle = (trans.ElapsedTime * _frequency) + (trans.LinePosition * _spacing);
 
 		var x = (float)Math.Sin(angle) * _radius;
 		var y = (float)Math.Cos(angle) * _radius;
 
 		trans.Offset = new Vector2(x, y);
+
+		return true;
 	}
 
 	/// <inheritdoc/>

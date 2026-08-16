@@ -8,19 +8,9 @@ namespace Espejismo.Core.RichText;
 public struct GlyphTransform
 {
 	/// <summary>
-	///   Gets the subject glyph being transformed.
+	///   Gets the number of seconds since the text started rendering.
 	/// </summary>
-	public required Glyph Glyph { get; init; }
-
-	/// <summary>
-	///   Gets the elapsed time since the text started rendering, in seconds.
-	/// </summary>
-	public required float Time { get; init; }
-
-	/// <summary>
-	///   Gets the index of the specific <see cref="RichText.Glyph"/> within the source <see cref="Text"/>.
-	/// </summary>
-	public required int Index { get; init; }
+	public required float ElapsedTime { get; init; }
 
 	/// <summary>
 	///   Gets the normalized position of the glyph within the source line.
@@ -28,20 +18,52 @@ public struct GlyphTransform
 	/// <value>
 	///   A floating-point number in the range [0,1].
 	/// </value>
-	public required float LineProgress { get; init; }
+	public required float LinePosition { get; init; }
 
 	/// <summary>
 	///   Gets the number of glyphs in the source line.
 	/// </summary>
-	public required int LineLength { get; init; } 
+	public required int LineLength { get; init; }
 
 	/// <summary>
-	///   Gets or sets the color that the glyph will be drawn with.
+	///   Gets the glyph to which the transformation is applied.
+	/// </summary>
+	public required Glyph Glyph { get; init; }
+
+	/// <summary>
+	///   Gets or sets the glyph index, specific to <see cref="Glyph.Font"/>.
+	/// </summary>
+	/// <remarks>
+	///   You can change this property by using <see cref="TextServer.FontGetGlyphIndex"/> along with
+	///   <see cref="Glyph.Font"/> and <see cref="Glyph.FontSize"/> to generate a new, valid index.
+	/// </remarks>
+	public int Index { get; set; }
+
+	/// <summary>
+	///   Gets or sets the color tint applied to the glyph.
 	/// </summary>
 	public Color Color { get; set; }
 
 	/// <summary>
-	///   Gets or sets the displacement applied to the glyph's draw position.
+	///   Gets or sets the color for the shadow effect.
+	/// </summary>
+	/// <remarks>
+	///   The shadow effect will not be rendered if <see cref="GlyphStyle.ShadowSize"/> is set to 0; you can change the
+	///   shadow size by either changing the source <see cref="TextStyle"/> or by using an <c>&lt;outline&gt;</c> tag.
+	/// </remarks>
+	public Color ShadowColor { get; set; }
+
+	/// <summary>
+	///   Gets or sets the color for the glyph outline.
+	/// </summary>
+	/// <remarks>
+	///   The outline will not be rendered if <see cref="GlyphStyle.OutlineSize"/> is set to 0; you can change the
+	///   outline size by either changing the source <see cref="TextStyle"/> or by using a <c>&lt;shadow&gt;</c> tag.
+	/// </remarks>
+	public Color OutlineColor { get; set; }
+
+	/// <summary>
+	///   Gets or sets the displacement applied to the glyph's draw position, in pixels.
 	/// </summary>
 	public Vector2 Offset { get; set; }
 

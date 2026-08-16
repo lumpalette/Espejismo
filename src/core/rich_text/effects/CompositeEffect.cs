@@ -86,12 +86,19 @@ public sealed partial class CompositeEffect : TextEffect
 	}
 
 	/// <inheritdoc/>
-	public override void Process(ref GlyphTransform trans)
+	public override bool Process(ref GlyphTransform trans)
 	{
+		var status = true;
+
 		foreach (var effect in Effects)
 		{
-			effect?.Process(ref trans);
+			if (effect is not null)
+			{
+				status &= effect.Process(ref trans);
+			}
 		}
+
+		return status;
 	}
 
 	/// <inheritdoc/>

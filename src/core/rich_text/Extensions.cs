@@ -17,7 +17,8 @@ public static class Extensions
 		///   Searches for the <see cref="TagAttribute"/> associated with the specified name.
 		/// </summary>
 		/// <param name="name">
-		///   The name of the attribute to search.
+		///   The name of the attribute to search. Use <c>"&lt;main&gt;"</c> or an empty span to look for the main
+		///   attribute, if exists.
 		/// </param>
 		/// <param name="attribute">
 		///   When this method returns, contains the attribute associated with <paramref name="name"/>, if exists;
@@ -29,6 +30,11 @@ public static class Extensions
 		/// </returns>
 		public bool TryFind(ReadOnlySpan<char> name, out TagAttribute attribute)
 		{
+			if (name.SequenceEqual("<main>"))
+			{
+				name = string.Empty;
+			}
+
 			for (var i = 0; i < attributes.Length; i++)
 			{
 				attribute = attributes[i];
@@ -51,7 +57,8 @@ public static class Extensions
 		///   The type of the value to parse.
 		/// </typeparam>
 		/// <param name="name">
-		///   The name of the attribute to search.
+		///   The name of the attribute to search. Use <c>"&lt;main&gt;"</c> or an empty span to look for the main
+		///   attribute, if exists.
 		/// </param>
 		/// <param name="value">
 		///   When this method returns, contains the parsed result from the attribute's value, if the attribute was
@@ -81,7 +88,8 @@ public static class Extensions
 		///   The enum type to parse the value into.
 		/// </typeparam>
 		/// <param name="name">
-		///   The name of the attribute to search.
+		///   The name of the attribute to search. Use <c>"&lt;main&gt;"</c> or an empty span to look for the main
+		///   attribute, if exists.
 		/// </param>
 		/// <param name="ignoreCase">
 		///   <see langword="true"/> to ignore casing when parsing the attribute's value; <see langword="false"/> otherwise.
@@ -110,7 +118,8 @@ public static class Extensions
 		///   Searches and gets the value of the <see cref="TagAttribute"/> with the specified name
 		/// </summary>
 		/// <param name="name">
-		///   The name of the attribute to search.
+		///   The name of the attribute to search. Use <c>"&lt;main&gt;"</c> or an empty span to look for the main
+		///   attribute, if exists.
 		/// </param>
 		/// <param name="value">
 		///   When this method returns, contains the value of the attribute, if found; otherwise, the default value for
@@ -137,7 +146,8 @@ public static class Extensions
 		///   <see cref="Color"/> value.
 		/// </summary>
 		/// <param name="name">
-		///   The name of the attribute to search.
+		///   The name of the attribute to search. Use <c>"&lt;main&gt;"</c> or an empty span to look for the main
+		///   attribute, if exists.
 		/// </param>
 		/// <param name="value">
 		///   When this method returns, contains the parsed color from the attribute's value, if the attribute was
@@ -167,7 +177,8 @@ public static class Extensions
 		///   <paramref name="sep"/> = <c>','</c>, then a valid value would be <c>"8,8"</c>.
 		/// </remarks>
 		/// <param name="name">
-		///   The name of the attribute to search.
+		///   The name of the attribute to search. Use <c>"&lt;main&gt;"</c> or an empty span to look for the main
+		///   attribute, if exists.
 		/// </param>
 		/// <param name="sep">
 		///   The separator character between the X and Y components.

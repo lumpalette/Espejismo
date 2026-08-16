@@ -14,9 +14,6 @@ namespace Espejismo.Core.RichText.Tags;
 /// <para>
 ///   <b>Attributes:</b> Varies (depends on the specific effect).
 /// </para>
-/// <para>
-///   <b>Example:</b> <c>"&lt;shake&gt;This&lt;/shake&gt; word is shaking."</c>
-/// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class EffectTag : TextTag
@@ -36,9 +33,9 @@ public sealed partial class EffectTag : TextTag
 		}
 
 		var current = builder.TopStyle.Effect;
-		var composite = CompositeEffect.Combine(current, Effect.Setup(attributes));
+		var setup = (attributes.Length > 0) ? Effect.Setup(attributes) : Effect;
 		
-		builder.PushStyle(builder.TopStyle with { Effect = composite });
+		builder.PushStyle(builder.TopStyle with { Effect = CompositeEffect.Combine(current, setup) });
 		return true;
 	}
 

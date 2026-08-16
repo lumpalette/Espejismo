@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b>
 ///   <list type="bullet">
 ///     <item>
-///       <term><c>id</c></term>
+///       <term><c>&lt;main&gt;</c></term>
 ///       <description>
 ///         Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="ResourceDB"/>
 ///       </description>
@@ -31,9 +31,6 @@ namespace Espejismo.Core.RichText.Tags;
 ///     </item>
 ///   </list>
 /// </para>
-/// <para>
-///   <b>Example:</b> <c>"Smily &lt;icon id=smile/&gt; face!"</c>
-/// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class IconTag : TextTag
@@ -41,7 +38,7 @@ public sealed partial class IconTag : TextTag
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (!attributes.TryFind("id", out var idAttr) || !ResourceDB.TryGetTexture(idAttr.Value, out var tex))
+		if (!attributes.TryFind("<main>", out var idAttr) || !ResourceDB.TryGetTexture(idAttr.Value, out var tex))
 		{
 			return false;
 		}

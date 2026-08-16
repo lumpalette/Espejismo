@@ -14,15 +14,12 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b>
 ///   <list type="bullet">
 ///     <item>
-///       <term><c>id</c></term>
+///       <term><c>&lt;main&gt;</c></term>
 ///       <description>
 ///         Identifier for the <see cref="StyleTemplate"/> to use, as defined in <see cref="ResourceDB"/>.
 ///       </description>
 ///     </item>
 ///   </list>
-/// </para>
-/// <para>
-///   <b>Example:</b> <c>"Main style, and &lt;style id=fantasy&gt;fantasy style.&lt;/style&gt;"</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -31,7 +28,7 @@ public sealed partial class StyleTag : TextTag
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (attributes.TryGetValue("id", out ReadOnlySpan<char> id) && ResourceDB.TryGetStyle(id, out var template))
+		if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> id) && ResourceDB.TryGetStyle(id, out var template))
 		{
 			builder.PushStyle(template.Create());
 			return true;

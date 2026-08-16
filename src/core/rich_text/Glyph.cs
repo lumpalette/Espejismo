@@ -64,7 +64,7 @@ public readonly struct Glyph // 64 bytes pesa la marranota
 	public Texture2D? IconTexture { get; private init; }
 
 	/// <summary>
-	///   Gets the size of the rectangle used for <see cref="IconTexture"/>.
+	///   Gets the size of the rectangle used for drawing the <see cref="IconTexture"/>.
 	/// </summary>
 	public Vector2 IconSize { get; private init; }
 

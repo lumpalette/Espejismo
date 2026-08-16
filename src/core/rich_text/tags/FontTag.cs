@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b>
 ///   <list type="bullet">
 ///     <item>
-///       <term><c>[id]</c></term>
+///       <term><c>[&lt;main&gt;]</c></term>
 ///       <description>Identifier for the new <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
 ///     </item>
 ///     <item>
@@ -22,9 +22,6 @@ namespace Espejismo.Core.RichText.Tags;
 ///       <description>The size of the font, in pixels. Must be greater than 0.</description>
 ///     </item>
 ///   </list>
-/// </para>
-/// <para>
-///   <b>Example:</b> <c>"Font 1,&lt;font id=example&gt;\nFont 2.&lt;/font&gt;</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -38,7 +35,7 @@ public sealed partial class FontTag : TextTag
 		var font = style.Font;
 		var size = style.FontSize;
 
-		if (attributes.TryGetValue("id", out ReadOnlySpan<char> id) && ResourceDB.TryGetFont(id, out var pfont))
+		if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> id) && ResourceDB.TryGetFont(id, out var pfont))
 		{
 			font = pfont;
 		}

@@ -1,11 +1,8 @@
 [gd_scene format=3 uid="uid://b33c8l4fw10vj"]
 
 [ext_resource type="Script" uid="uid://bjpdr6mrvvpw2" path="res://src/core/RichLabel.cs" id="1_eewff"]
-[ext_resource type="Script" uid="uid://cq3p8fi4uwmno" path="res://src/TokenizerTest.cs" id="1_gh0ne"]
 
 [node name="Main" type="Node" unique_id=213237798]
-script = ExtResource("1_gh0ne")
-_text = "<color <main>=true>"
 
 [node name="RichLabel" type="Control" parent="." unique_id=1311058610]
 texture_filter = 1
@@ -16,4 +13,5 @@ offset_top = 7.0
 offset_right = 312.0
 offset_bottom = 149.0
 script = ExtResource("1_eewff")
+Content = "<rainbow><tornado>♪</tornado></rainbow>"
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"

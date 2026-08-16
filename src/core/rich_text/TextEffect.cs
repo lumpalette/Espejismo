@@ -15,7 +15,10 @@ public abstract partial class TextEffect : Resource
 	/// <param name="trans">
 	///   The mutable state of the glyph to process.
 	/// </param>
-	public abstract void Process(ref GlyphTransform trans); // inguesumaiz
+	/// <returns>
+	///   <see langword="true"/> if the effect was successfully applied; otherwise, <see langword="false"/>.
+	/// </returns>
+	public abstract bool Process(ref GlyphTransform trans); // inguesumaiz
 
 	/// <summary>
 	///   Returns a <see cref="TextEffect"/> initialized according to the specified attributes.

@@ -32,9 +32,6 @@ namespace Espejismo.Core.RichText.Tags;
 ///     </item>
 ///   </list>
 /// </para>
-/// <para>
-///   <b>Example:</b> <c>"&lt;shadow size=8 color=black offset=2,2&gt;Black shadow.&lt;/shadow&gt;"</c>
-/// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class ShadowTag : TextTag

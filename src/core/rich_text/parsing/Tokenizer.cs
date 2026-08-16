@@ -17,6 +17,7 @@ internal ref partial struct Tokenizer(string source)
 
 	private State _state;
 	private int _position;
+	private bool _isEndTag;
 	private AttributeArray _attributes;
 	private int _attributeCount;
 	private bool _attributeStarted;
@@ -123,6 +124,7 @@ internal ref partial struct Tokenizer(string source)
 		StartIndex = _position;
 		IsSelfClosing = false;
 		CharacterEntity = default;
+		_isEndTag = false;
 		_attributeCount = 0;
 	}
 
@@ -133,6 +135,11 @@ internal ref partial struct Tokenizer(string source)
 		_currentAttributeValueStart = 0;
 		_currentAttributeValueLength = 0;
 		_attributeStarted = false;
+	}
+
+	private TokenType GetCurrentTagType()
+	{
+		return _isEndTag ? TokenType.EndTag : TokenType.StartTag;
 	}
 
 	[InlineArray(MaxAttributes)]

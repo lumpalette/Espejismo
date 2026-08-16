@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b>
 ///   <list type="bullet">
 ///     <item>
-///       <term><c>[value]</c></term>
+///       <term><c>[&lt;main&gt;]</c></term>
 ///       <description>
 ///         The spacing to apply, formatted as <c>X,Y</c>. Takes precedence before the <c>x</c> and <c>y</c>
 ///         attributes.
@@ -23,21 +23,18 @@ namespace Espejismo.Core.RichText.Tags;
 ///     <item>
 ///       <term><c>[x]</c></term>
 ///       <description>
-///         Extra space added between letters, in pixels, and can be negative. Only applied when the <c>value</c>
-///         attribute is not specified.
+///         Extra space added between letters, in pixels, and can be negative. Only applied when the
+///         <c>&lt;main&gt;</c> attribute is not specified.
 ///       </description>
 ///     </item>
 ///     <item>
 ///       <term><c>[y]</c></term>
 ///       <description>
-///         Extra space added between lines of text, in pixels, and can be negative. Only applied when the <c>value</c>
-///         attribute is not specified.
+///         Extra space added between lines of text, in pixels, and can be negative. Only applied when the
+///         <c>&lt;main&gt;</c> attribute is not specified.
 ///       </description>
 ///     </item>
 ///   </list>
-/// </para>
-/// <para>
-///   <b>Example:</b> <c>"&lt;spacing x=3&gt;Ominous&lt;/spacing&gt; text."</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -49,7 +46,7 @@ public sealed partial class SpacingTag : TextTag
 		var style = builder.TopStyle;
 		var spacing = style.Spacing;
 
-		if (attributes.TryGetValue("value", sep: ',', out Vector2 pspacing))
+		if (attributes.TryGetValue("<main>", sep: ',', out Vector2 pspacing))
 		{
 			spacing = (Vector2I)pspacing;
 		}

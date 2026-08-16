@@ -14,16 +14,13 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b>
 ///   <list type="bullet">
 ///     <item>
-///       <term><c>value</c></term>
+///       <term><c>&lt;main&gt;</c></term>
 ///       <description>
 ///         The color to apply, which can be either the name of one of the colors in the <see cref="Colors"/> class,
 ///         case-insensitive, or a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
 ///       </description>
 ///     </item>
 ///   </list>
-/// </para>
-/// <para>
-///   <b>Example:</b> <c>"The following word &lt;color value=red&gt;is&lt;/color&gt; red."</c>
 /// </para>
 /// </remarks>
 [GlobalClass]
@@ -32,7 +29,7 @@ public sealed partial class ColorTag : TextTag
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (!attributes.TryGetValue(, out Color value))
+		if (!attributes.TryGetValue("<main>", out Color value))
 		{
 			return false;
 		}

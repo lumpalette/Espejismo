@@ -26,9 +26,6 @@ namespace Espejismo.Core.RichText.Tags;
 ///     </item>
 ///   </list>
 /// </para>
-/// <para>
-///   <b>Example:</b> <c>"&lt;outline size=8x color=black&gt;Black outline.&lt;/outline&gt;"</c>
-/// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class OutlineTag : TextTag

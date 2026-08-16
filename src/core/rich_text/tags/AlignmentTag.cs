@@ -13,9 +13,6 @@ namespace Espejismo.Core.RichText.Tags;
 /// <para>
 ///   <b>Attributes:</b> None.
 /// </para>
-/// <para>
-///   <b>Example:</b> <c>"&lt;center&gt;This paragraph is centered.&lt;/center&gt;"</c>
-/// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class AlignmentTag : TextTag

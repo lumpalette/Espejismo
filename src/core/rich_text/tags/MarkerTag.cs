@@ -13,9 +13,6 @@ namespace Espejismo.Core.RichText.Tags;
 /// <para>
 ///   <b>Attributes:</b> Varies (depends on the marker's purpose).
 /// </para>
-/// <para>
-///   <b>Example:</b> <c>"Embedded&lt;wait time=1s/&gt; marker."</c>
-/// </para>
 /// </remarks>
 [GlobalClass]
 public sealed partial class MarkerTag : TextTag
