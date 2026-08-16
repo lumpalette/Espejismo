@@ -32,7 +32,7 @@ public sealed partial class ColorTag : TextTag
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (!attributes.TryGetValue("value", out Color value))
+		if (!attributes.TryGetValue(, out Color value))
 		{
 			return false;
 		}

@@ -1,95 +1,29 @@
 [gd_resource type="Resource" script_class="ResourceDB" format=3 uid="uid://dtspp3yqqtwtg"]
 
-[ext_resource type="Script" uid="uid://c7qa3sldws3gd" path="res://src/core/rich_text/tags/ColorTag.cs" id="1_0y8p7"]
 [ext_resource type="Resource" uid="uid://dpdeqhfvvle2f" path="res://src/core/rich_text/resources/default_style.tres" id="1_b0dk3"]
 [ext_resource type="Script" uid="uid://voqj0ov3ox3q" path="res://src/core/rich_text/ResourceDB.cs" id="1_gnpa1"]
 [ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="1_thbjs"]
 [ext_resource type="Script" uid="uid://cs3odg278xwhh" path="res://src/core/rich_text/tags/AlignmentTag.cs" id="2_hput7"]
-[ext_resource type="Script" uid="uid://bgk2i03yjvnkr" path="res://src/core/rich_text/tags/IconTag.cs" id="3_ocran"]
-[ext_resource type="Script" uid="uid://cqgt54sy0g1t6" path="res://src/core/rich_text/tags/FontTag.cs" id="6_kv8rq"]
 [ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://shared/icons/icon.png" id="7_kv8rq"]
-[ext_resource type="Script" uid="uid://cjwm1veyo2eva" path="res://src/core/rich_text/tags/StyleTag.cs" id="7_qdj71"]
-[ext_resource type="Script" uid="uid://xr8kldoonm7r" path="res://src/core/rich_text/tags/MarkerTag.cs" id="8_ftp4u"]
-[ext_resource type="Script" uid="uid://c6avliqwl0rue" path="res://src/core/rich_text/tags/SpacingTag.cs" id="9_oycga"]
-[ext_resource type="Script" uid="uid://dugubxdpkpx1s" path="res://src/core/rich_text/tags/OutlineTag.cs" id="10_ol1yg"]
-[ext_resource type="Script" uid="uid://f57xm24lp6y5" path="res://src/core/rich_text/tags/ShadowTag.cs" id="11_sc8o2"]
-[ext_resource type="Script" uid="uid://cltvb5woimgqd" path="res://src/core/rich_text/effects/TornadoEffect.cs" id="12_2irsa"]
-[ext_resource type="Script" uid="uid://c3aax21xncwwh" path="res://src/core/rich_text/tags/EffectTag.cs" id="13_pja0h"]
-[ext_resource type="Script" uid="uid://b311hcqess3q0" path="res://src/core/rich_text/effects/GradientEffect.cs" id="14_pja0h"]
 
-[sub_resource type="Resource" id="Resource_gh0ne"]
+[sub_resource type="Resource" id="Resource_ocran"]
 script = ExtResource("2_hput7")
 Alignment = 1
 metadata/_custom_type_script = "uid://cs3odg278xwhh"
 
-[sub_resource type="Resource" id="Resource_lbwgk"]
-script = ExtResource("1_0y8p7")
-metadata/_custom_type_script = "uid://c7qa3sldws3gd"
-
-[sub_resource type="Resource" id="Resource_3cfgd"]
-script = ExtResource("2_hput7")
-Alignment = 3
-metadata/_custom_type_script = "uid://cs3odg278xwhh"
-
-[sub_resource type="Resource" id="Resource_qdj71"]
-script = ExtResource("6_kv8rq")
-metadata/_custom_type_script = "uid://cqgt54sy0g1t6"
-
 [sub_resource type="Resource" id="Resource_85lh8"]
-script = ExtResource("3_ocran")
-metadata/_custom_type_script = "uid://bgk2i03yjvnkr"
-
-[sub_resource type="Resource" id="Resource_eewff"]
 script = ExtResource("2_hput7")
 metadata/_custom_type_script = "uid://cs3odg278xwhh"
 
-[sub_resource type="Resource" id="Resource_2irsa"]
-script = ExtResource("10_ol1yg")
-metadata/_custom_type_script = "uid://dugubxdpkpx1s"
-
-[sub_resource type="Resource" id="Resource_5q4o7"]
+[sub_resource type="Resource" id="Resource_thbjs"]
 script = ExtResource("2_hput7")
 Alignment = 2
 metadata/_custom_type_script = "uid://cs3odg278xwhh"
 
-[sub_resource type="Resource" id="Resource_4iy08"]
-script = ExtResource("11_sc8o2")
-metadata/_custom_type_script = "uid://f57xm24lp6y5"
-
-[sub_resource type="Resource" id="Resource_4pppu"]
-script = ExtResource("9_oycga")
-metadata/_custom_type_script = "uid://c6avliqwl0rue"
-
-[sub_resource type="Resource" id="Resource_ftp4u"]
-script = ExtResource("7_qdj71")
-metadata/_custom_type_script = "uid://cjwm1veyo2eva"
-
-[sub_resource type="Resource" id="Resource_peitt"]
-script = ExtResource("12_2irsa")
-metadata/_custom_type_script = "uid://cltvb5woimgqd"
-
-[sub_resource type="Resource" id="Resource_xwrfu"]
-script = ExtResource("13_pja0h")
-Effect = SubResource("Resource_peitt")
-metadata/_custom_type_script = "uid://c3aax21xncwwh"
-
-[sub_resource type="Resource" id="Resource_oycga"]
-script = ExtResource("8_ftp4u")
-_name = "wait"
-metadata/_custom_type_script = "uid://xr8kldoonm7r"
-
-[sub_resource type="Gradient" id="Gradient_peitt"]
-offsets = PackedFloat32Array(0, 0.16, 0.33, 0.5, 0.66, 0.83, 1)
-colors = PackedColorArray(1, 0, 0, 1, 1, 0.64705884, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1)
-
-[sub_resource type="Resource" id="Resource_v8iq7"]
-script = ExtResource("14_pja0h")
-metadata/_custom_type_script = "uid://b311hcqess3q0"
-
-[sub_resource type="Resource" id="Resource_06yyc"]
-script = ExtResource("13_pja0h")
-Effect = SubResource("Resource_v8iq7")
-metadata/_custom_type_script = "uid://c3aax21xncwwh"
+[sub_resource type="Resource" id="Resource_kv8rq"]
+script = ExtResource("2_hput7")
+Alignment = 3
+metadata/_custom_type_script = "uid://cs3odg278xwhh"
 
 [resource]
 script = ExtResource("1_gnpa1")
@@ -104,19 +38,9 @@ RegistryStyles = Dictionary[String, Object]({
 "default": ExtResource("1_b0dk3")
 })
 RegistryTags = Dictionary[String, Object]({
-"center": SubResource("Resource_gh0ne"),
-"color": SubResource("Resource_lbwgk"),
-"fill": SubResource("Resource_3cfgd"),
-"font": SubResource("Resource_qdj71"),
-"icon": SubResource("Resource_85lh8"),
-"left": SubResource("Resource_eewff"),
-"outline": SubResource("Resource_2irsa"),
-"rainbow": SubResource("Resource_06yyc"),
-"right": SubResource("Resource_5q4o7"),
-"shadow": SubResource("Resource_4iy08"),
-"spacing": SubResource("Resource_4pppu"),
-"style": SubResource("Resource_ftp4u"),
-"tornado": SubResource("Resource_xwrfu"),
-"wait": SubResource("Resource_oycga")
+"center": SubResource("Resource_ocran"),
+"fill": SubResource("Resource_kv8rq"),
+"left": SubResource("Resource_85lh8"),
+"right": SubResource("Resource_thbjs")
 })
 metadata/_custom_type_script = "uid://voqj0ov3ox3q"

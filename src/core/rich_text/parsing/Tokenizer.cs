@@ -19,11 +19,12 @@ internal ref partial struct Tokenizer(string source)
 	private int _position;
 	private AttributeArray _attributes;
 	private int _attributeCount;
+	private bool _attributeStarted;
+	private char _attributeDelimiter;
 	private int _currentAttributeNameStart;
 	private int _currentAttributeNameLength;
 	private int _currentAttributeValueStart;
 	private int _currentAttributeValueLength;
-	private char _attributeDelimiter;
 
 	public TokenType TokenType { get; private set; }
 
@@ -100,8 +101,9 @@ internal ref partial struct Tokenizer(string source)
 
 	private void AppendCurrentAttribute()
 	{
-		if (_currentAttributeNameLength == 0 || _attributeCount >= MaxAttributes)
+		if (!_attributeStarted || _attributeCount >= MaxAttributes)
 		{
+			ResetCurrentAttribute();
 			return;
 		}
 
@@ -111,10 +113,7 @@ internal ref partial struct Tokenizer(string source)
 			_currentAttributeValueStart,
 			_currentAttributeValueLength);
 
-		_currentAttributeNameStart = 0;
-		_currentAttributeNameLength = 0;
-		_currentAttributeValueStart = 0;
-		_currentAttributeValueLength = 0;
+		ResetCurrentAttribute();
 	}
 
 	private void ResetToken()
@@ -125,6 +124,15 @@ internal ref partial struct Tokenizer(string source)
 		IsSelfClosing = false;
 		CharacterEntity = default;
 		_attributeCount = 0;
+	}
+
+	private void ResetCurrentAttribute()
+	{
+		_currentAttributeNameStart = 0;
+		_currentAttributeNameLength = 0;
+		_currentAttributeValueStart = 0;
+		_currentAttributeValueLength = 0;
+		_attributeStarted = false;
 	}
 
 	[InlineArray(MaxAttributes)]

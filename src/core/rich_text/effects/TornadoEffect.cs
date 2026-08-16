@@ -6,6 +6,23 @@ namespace Espejismo.Core.RichText.Effects;
 /// <summary>
 ///   Represents an effect that moves the text around a circle.
 /// </summary>
+/// <remarks>
+///   <c>Parameters:</c>
+///   <list type="bullet">
+///     <item>
+///       <term>Radius (<c>radius</c>)</term>
+///       <description>The distance the text is displaced from its origin.</description>
+///     </item>
+///     <item>
+///       <term>Frequency (<c>freq</c>)</term>
+///       <description>The angular velocity, in radians/s.</description>
+///     </item>
+///     <item>
+///       <term>Spacing (<c>spacing</c>)</term>
+///       <description>Angular offset between one glyph and the next, in radians.</description>
+///     </item>
+///   </list>
+/// </remarks>
 [GlobalClass]
 public sealed partial class TornadoEffect : TextEffect
 {

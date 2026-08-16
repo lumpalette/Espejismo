@@ -100,6 +100,19 @@ partial struct Tokenizer
 
 			return SwitchTo(State.Data, (_source[StartIndex - 1] != '/') ? TokenType.StartTag : TokenType.EndTag);
 		}
+		
+		// This is not part of the HTML standard. Allows for defining a main tag attribute (e.g. <color=red>).
+		if (input == '=')
+		{
+			ReadValue = _source[StartIndex..(_position - 1)];
+			
+			// Main tag attributes are nameless.
+			_currentAttributeNameStart = StartIndex;
+			_currentAttributeNameLength = 0;
+			_attributeStarted = true;
+
+			return SwitchTo(State.BeforeAttributeValue);
+		}
 
 		if (input == Eof)
 		{
@@ -124,14 +137,24 @@ partial struct Tokenizer
 		}
 
 		_currentAttributeNameStart = _position - 1;
+		_attributeStarted = true;
 
 		if (input == '=')
 		{
+			// Handle empty space around the equal sign of the main tag attribute.
+			if (_attributeCount == 0)
+			{
+				_currentAttributeNameStart = StartIndex;
+				_currentAttributeNameLength = 0;
+				
+				return SwitchTo(State.BeforeAttributeValue);
+			}
+
 			// Off-by-one stupid error. We also need to account for the '=', as it's part of the attribute name.
 			_currentAttributeNameLength = 1;
 			return SwitchTo(State.AttributeName);
 		}
-
+		
 		return ReconsumeIn(State.AttributeName);
 	}
 
@@ -309,6 +332,7 @@ partial struct Tokenizer
 			return TokenType.Eof;
 		}
 
+		// Tread the '/' as white-space.
 		return ReconsumeIn(State.BeforeAttributeName);
 	}
 

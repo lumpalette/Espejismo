@@ -15,29 +15,8 @@ public readonly struct TagAttribute
 	private readonly int _valueStart;
 	private readonly int _valueLength;
 
-	/// <summary>
-	///   Initializes a new instance of the <see cref="TagAttribute"/> struct using the specified source string and
-	///   character ranges for the name and value.
-	/// </summary>
-	/// <param name="source">
-	///   The source string containing the tag data. 
-	/// </param>
-	/// <param name="nameStart">
-	///   The zero-based starting index of the name in <paramref name="source"/>.
-	/// </param>
-	/// <param name="nameLength">
-	///   The number of characters in the name.
-	/// </param>
-	/// <param name="valueStart">
-	///   The zero-based starting index of the value in <paramref name="source"/>.
-	/// </param>
-	/// <param name="valueLength">
-	///   The number of characters in the value.
-	/// </param>
-	public TagAttribute(string source, int nameStart, int nameLength, int valueStart, int valueLength)
+	internal TagAttribute(string source, int nameStart, int nameLength, int valueStart, int valueLength)
 	{
-		ArgumentNullException.ThrowIfNull(source, nameof(source));
-
 		_source = source;
 		_nameStart = nameStart;
 		_nameLength = nameLength;
@@ -48,6 +27,11 @@ public readonly struct TagAttribute
 	/// <summary>
 	///   Gets the name of the attribute.
 	/// </summary>
+	/// <remarks>
+	///   An empty name indicates that the current instance is a <b>main attribute</b> — the implicit attribute
+	///   specified directly after the tag name (e.g. <c>aqua</c> in <c>"&lt;c=aqua&gt;"</c>), with no explicit
+	///   attribute name of its own.
+	/// </remarks>
 	public ReadOnlySpan<char> Name => _source.AsSpan(_nameStart, _nameLength);
 
 	/// <summary>
