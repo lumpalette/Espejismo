@@ -114,6 +114,6 @@ public sealed partial class CompositeEffect : TextEffect
 			changed |= !ReferenceEquals(effects[i], _effects[i]);
 		}
 
-		return changed ? new CompositeEffect(_effects) : this;
+		return changed ? new CompositeEffect(effects) : this;
 	}
 }

@@ -10,7 +10,7 @@ internal static class EntityDecoder
 	{
 		if (entity.Length <= 1 || entity[^1] != ';')
 		{
-			decoded = new Rune('�');
+			decoded = new Rune('\uFFFD');
 			return false;
 		}
 
@@ -30,7 +30,7 @@ internal static class EntityDecoder
 			decoded = DecodeNamedEntity(entity);
 		}
 
-		return decoded.Value != '�';
+		return decoded.Value != '\uFFFD';
 	}
 
 	private static Rune DecodeNamedEntity(ReadOnlySpan<char> entity)

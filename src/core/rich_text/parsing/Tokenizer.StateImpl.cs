@@ -50,11 +50,6 @@ partial struct Tokenizer
 			return ReconsumeIn(State.TagName);
 		}
 
-		if (input == Eof)
-		{
-			return ReconsumeIn(State.Data);
-		}
-
 		return ReconsumeIn(State.Data);
 	}
 
@@ -68,11 +63,6 @@ partial struct Tokenizer
 			_isEndTag = true;
 			StartIndex = _position - 1;
 			return ReconsumeIn(State.TagName);
-		}
-
-		if (input == Eof)
-		{
-			return ReconsumeIn(State.Data);
 		}
 
 		return ReconsumeIn(State.Data);

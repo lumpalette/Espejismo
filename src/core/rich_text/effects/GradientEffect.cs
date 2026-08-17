@@ -48,12 +48,12 @@ public sealed partial class GradientEffect : TextEffect
 	/// <inheritdoc/>
 	public override TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (attributes.TryGetValue("freq", out float freq))
+		if (!attributes.TryGetValue("freq", out float freq))
 		{
 			freq = _frequency;
 		}
 
-		if (attributes.TryGetValue("speed", out float speed))
+		if (!attributes.TryGetValue("speed", out float speed))
 		{
 			speed = _speed;
 		}

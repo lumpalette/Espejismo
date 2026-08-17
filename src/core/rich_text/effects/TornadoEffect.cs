@@ -11,7 +11,7 @@ namespace Espejismo.Core.RichText.Effects;
 ///   <list type="bullet">
 ///     <item>
 ///       <term>Radius (<c>radius</c>)</term>
-///       <description>The distance the text is displaced from its origin.</description>
+///       <description>The distance the text is displaced from its origin, in pixels.</description>
 ///     </item>
 ///     <item>
 ///       <term>Frequency (<c>freq</c>)</term>
@@ -41,7 +41,7 @@ public sealed partial class TornadoEffect : TextEffect
 		var x = (float)Math.Sin(angle) * _radius;
 		var y = (float)Math.Cos(angle) * _radius;
 
-		trans.Offset = new Vector2(x, y);
+		trans.Offset += new Vector2(x, y);
 
 		return true;
 	}

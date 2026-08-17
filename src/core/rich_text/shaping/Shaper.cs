@@ -41,6 +41,12 @@ internal readonly struct Shaper()
 
 	public void Shape()
 	{
+		if (Items.Length == 0)
+		{
+			InsertEmptyLine(BaseAlignment);
+			return;
+		}
+
 		WriteParagraphs();
 
 		if (Paragraphs.Count > 0)

@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://cjwm1veyo2eva" path="res://src/core/rich_text/tags/StyleTag.cs" id="13_06yyc"]
 [ext_resource type="Script" uid="uid://dugubxdpkpx1s" path="res://src/core/rich_text/tags/OutlineTag.cs" id="14_peitt"]
 [ext_resource type="Script" uid="uid://f57xm24lp6y5" path="res://src/core/rich_text/tags/ShadowTag.cs" id="15_xwrfu"]
+[ext_resource type="Script" uid="uid://cr78my2u6gu0u" path="res://src/core/rich_text/effects/ShakeEffect.cs" id="16_xwrfu"]
 
 [sub_resource type="Resource" id="Resource_ocran"]
 script = ExtResource("2_hput7")
@@ -91,6 +92,15 @@ metadata/_custom_type_script = "uid://dugubxdpkpx1s"
 script = ExtResource("15_xwrfu")
 metadata/_custom_type_script = "uid://f57xm24lp6y5"
 
+[sub_resource type="Resource" id="Resource_5q4o7"]
+script = ExtResource("16_xwrfu")
+metadata/_custom_type_script = "uid://cr78my2u6gu0u"
+
+[sub_resource type="Resource" id="Resource_06yyc"]
+script = ExtResource("10_peitt")
+Effect = SubResource("Resource_5q4o7")
+metadata/_custom_type_script = "uid://c3aax21xncwwh"
+
 [resource]
 script = ExtResource("1_gnpa1")
 _defaultStyle = ExtResource("1_b0dk3")
@@ -114,6 +124,7 @@ RegistryTags = Dictionary[String, Object]({
 "rainbow": SubResource("Resource_agt58"),
 "right": SubResource("Resource_thbjs"),
 "shadow": SubResource("Resource_6xa4m"),
+"shake": SubResource("Resource_06yyc"),
 "spacing": SubResource("Resource_sc8o2"),
 "style": SubResource("Resource_v8iq7"),
 "tornado": SubResource("Resource_uvd25"),
