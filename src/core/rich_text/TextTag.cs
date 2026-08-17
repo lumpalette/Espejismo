@@ -1,11 +1,10 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-///   Provides the base class for defining the behaviour of a rich-text tag during parsing.
+///   Serves as the base class for defining the behaviour of a rich-text tag during parsing.
 /// </summary>
 [GlobalClass]
 public abstract partial class TextTag : Resource

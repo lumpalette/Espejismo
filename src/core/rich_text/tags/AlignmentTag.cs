@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-///   Represents a tag that changes the horizontal alignment of a text paragraph.
+///   A rich-text tag that changes the horizontal alignment of a text paragraph.
 /// </summary>
 /// <remarks>
 /// <para>

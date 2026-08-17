@@ -5,7 +5,8 @@ using System.Collections.Generic;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-///   Contains information and the frame-based state of a logical game action.
+///   Represents a logical game action bound to one or more <see cref="InputSource"/> instances, tracking its strength
+///   and state across process and physics frames.
 /// </summary>
 public class InputAction
 {

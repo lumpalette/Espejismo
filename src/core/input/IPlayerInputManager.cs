@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-///   Provides a mechanism for managing the state and access of multiple <see cref="PlayerInput"/> instances, mapping
+///   Defines a mechanism for managing the state and access of multiple <see cref="PlayerInput"/> instances, mapping
 ///   them to unique, zero-based player indexes.
 /// </summary>
 public interface IPlayerInputManager
