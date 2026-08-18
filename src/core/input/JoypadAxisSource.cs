@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-///   Represents an axis or trigger from a joypad device.
+///   An input source driven by the movement of a joypad axis or trigger in a specific direction.
 /// </summary>
 /// <param name="axis">
 ///   The joypad axis to assign.

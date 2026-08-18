@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-///   Represents a button from a mouse device.
+///   An input source driven by a physical button on a mouse.
 /// </summary>
 /// <param name="button">
 ///   The mouse button to assign.

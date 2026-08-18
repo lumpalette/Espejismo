@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-///   Represents a key from a keyboard.
+///   An input source driven by a specific keyboard key.
 /// </summary>
 /// <param name="key">
 ///   The key to assign.

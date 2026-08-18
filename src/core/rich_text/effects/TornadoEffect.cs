@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Effects;
 
 /// <summary>
-///   Represents an effect that moves the text around a circle.
+///   A text effect that moves the text around a circle.
 /// </summary>
 /// <remarks>
 ///   <b>Parameters:</b>

@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Effects;
 
 /// <summary>
-///   Represents an effect that cycles the text's color through a gradient over time.
+///   A text effect that cycles the text's color through a gradient over time.
 /// </summary>
 /// <remarks>
 ///   <b>Parameters:</b>

@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Effects;
 
 /// <summary>
-///   Represents an effect that applies a sequence of <see cref="TextEffect"/> instances to a <see cref="Glyph"/>.
+///   A text effect that applies a sequence of <see cref="TextEffect"/> instances to a <see cref="Glyph"/>.
 /// </summary>
 [GlobalClass]
 public sealed partial class CompositeEffect : TextEffect

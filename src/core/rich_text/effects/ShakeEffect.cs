@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Effects;
 
 /// <summary>
-///   Represents an effect that vibrates the text randomly.
+///   A text effect that vibrates the text randomly.
 /// </summary>
 /// <remarks>
 ///   <b>Parameters:</b>

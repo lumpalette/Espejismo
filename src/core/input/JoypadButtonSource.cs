@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core.Input;
 
 /// <summary>
-///   Represents a button from a joypad device.
+///   An input source driven by a physical button on a joypad.
 /// </summary>
 /// <param name="button">
 ///   The joypad button to assign.

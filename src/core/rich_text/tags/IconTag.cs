@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-///   Represents a self-closing tag that inserts an icon at the tag's position.
+///   A self-closing text tag that inserts an icon at the tag's position.
 /// </summary>
 /// <remarks>
 /// <para>

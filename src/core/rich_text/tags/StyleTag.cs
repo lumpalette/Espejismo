@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-///   Represents a tag that changes the entire styling of a specific segment of text.
+///   A text tag that changes the entire styling of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>
