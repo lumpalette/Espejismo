@@ -11,69 +11,65 @@ namespace Espejismo.Core.RichText;
 public partial class StyleTemplate : Resource
 {
 	/// <summary>
-	///   Gets the <see cref="Godot.Font"/> resource used for the text.
+	///   Gets the font family used for the text.
 	/// </summary>
 	[ExportGroup("Typography")]
-	[Export, NotNull]
-	public Font? Font { get; private set; }
+	[NotNull]
+	[Export] public FontFamily? Font { get; private set; }
+
+	/// <summary>
+	///   Gets the style variant applied to the text. Defaults to <see cref="FontStyle.Regular"/>.
+	/// </summary>
+	[Export] public FontStyle FontStyle { get; private set; }
 
 	/// <summary>
 	///   Gets the size of the text, in pixels. Defaults to 8px.
 	/// </summary>
-	[Export]
-	public ushort FontSize { get; private set; } = 8;
+	[Export] public ushort FontSize { get; private set; } = 8;
 
 	/// <summary>
 	///   Gets the color tint of the text. Defaults to white.
 	/// </summary>
-	[Export]
-	public Color Color { get; private set; } = Colors.White;
+	[Export] public Color Color { get; private set; } = Colors.White;
 
 	/// <summary>
 	///   Gets the additional space added between letters and lines of text, represented as a 2D vector. Defaults to
 	///   <c>(0,8)</c>.
 	/// </summary>
-	[Export]
-	public Vector2I Spacing { get; private set; } = new(0, 8);
+	[Export] public Vector2I Spacing { get; private set; } = new(0, 8);
 
 	/// <summary>
 	///   Gets the visual effect applied to the text.
 	/// </summary>
 	[ExportGroup("Effects")]
-	[Export]
-	public TextEffect? Effect { get; private set; }
+	[Export] public TextEffect? Effect { get; private set; }
 
 	/// <summary>
 	///   Gets the size for the shadow effect, in pixels.
 	/// </summary>
 	[ExportGroup("Shadow", prefix: "Shadow")]
-	[Export]
-	public ushort ShadowSize { get; private set; }
+	[Export] public ushort ShadowSize { get; private set; }
 
 	/// <summary>
 	///   Gets the color for the shadow effect. Defaults to black.
 	/// </summary>
-	[Export]
-	public Color ShadowColor { get; private set; } = Colors.Black;
+	[Export] public Color ShadowColor { get; private set; } = Colors.Black;
 
 	/// <summary>
 	///   Gets the displacement for the shadow effect. relative to the main text. Defaults to <c>(1,1)</c>.
 	/// </summary>
-	[Export]
-	public Vector2 ShadowOffset { get; private set; } = Vector2.One;
+	[Export] public Vector2 ShadowOffset { get; private set; } = Vector2.One;
 
 	/// <summary>
 	///   Gets the size for the text outline, in pixels. Defaults to 4px.
 	/// </summary>
 	[ExportGroup("Outline", prefix: "Outline")]
-	[Export]
-	public ushort OutlineSize { get; private set; } = 4;
+	[Export] public ushort OutlineSize { get; private set; } = 4;
 
 	/// <summary>
 	///   Gets the color for the text outline. Defaults to black.
 	/// </summary>
-	[Export]
-	public Color OutlineColor { get; private set; } = Colors.Black;
+	[Export] public Color OutlineColor { get; private set; } = Colors.Black;
 
 	/// <summary>
 	///   Creates a new <see cref="TextStyle"/> based on the data of this template.
@@ -113,6 +109,7 @@ public partial class StyleTemplate : Resource
 		{
 			Font = style.Font ?? Font,
 			FontSize = style.FontSize ?? FontSize,
+			FontStyle = style.FontStyle ?? FontStyle,
 			Color = style.Color ?? Color,
 			Effect = style.Effect ?? Effect,
 			Spacing = style.Spacing ?? Spacing,

@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="TextConfig" format=3 uid="uid://buk160yo41m5l"]
+
+[ext_resource type="Script" uid="uid://d3fn36pofn5fi" path="res://src/core/rich_text/TextConfig.cs" id="1_ar6lo"]
+[ext_resource type="Resource" uid="uid://dfv12ht3lhlji" path="res://src/core/rich_text/default_style.tres" id="1_rc6x3"]
+[ext_resource type="Script" uid="uid://b8t3chmblayme" path="res://src/core/rich_text/FontFamily.cs" id="2_c7gbv"]
+[ext_resource type="Resource" uid="uid://ctpfdjd5q6wpf" path="res://src/core/rich_text/default_fonts.tres" id="3_c7gbv"]
+[ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="3_imxfu"]
+[ext_resource type="Script" uid="uid://bdo4uu1en1fwn" path="res://src/core/rich_text/TextTag.cs" id="4_ieadk"]
+[ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://shared/icons/icon.png" id="4_imxfu"]
+
+[resource]
+script = ExtResource("1_ar6lo")
+_defaultStyle = ExtResource("1_rc6x3")
+_fauxBoldThickness = 1.2
+_fauxItalicSlant = 0.4
+_styles = Dictionary[String, ExtResource("3_imxfu")]({
+"default": ExtResource("1_rc6x3")
+})
+_fonts = Dictionary[String, ExtResource("2_c7gbv")]({
+"default": ExtResource("3_c7gbv")
+})
+_icons = Dictionary[String, Texture2D]({
+"test": ExtResource("4_imxfu")
+})
+metadata/_custom_type_script = "uid://d3fn36pofn5fi"

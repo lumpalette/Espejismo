@@ -9,8 +9,7 @@ namespace Espejismo.Core.RichText.Effects;
 [GlobalClass]
 public sealed partial class CompositeEffect : TextEffect
 {
-	[Export]
-	private TextEffect?[] _effects = [];
+	[Export] private TextEffect?[] _effects = [];
 
 	/// <summary>
 	///   Initializes a new instance of the <see cref="CompositeEffect"/> class that is empty.

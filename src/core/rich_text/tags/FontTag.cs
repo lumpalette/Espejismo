@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-///   Represents a tag that changes the font properties of a specific segment of text.
+///   Represents a tag that changes the font family of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -15,7 +15,9 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <list type="bullet">
 ///     <item>
 ///       <term><c>[&lt;main&gt;]</c></term>
-///       <description>Identifier for the new <see cref="Font"/>, as defined in <see cref="ResourceDB"/>.</description>
+///       <description>
+///         Identifier for the new <see cref="FontFamily"/>, as defined in <see cref="TextConfig"/>
+///       </description>
 ///     </item>
 ///     <item>
 ///       <term><c>[size]</c></term>
@@ -35,7 +37,8 @@ public sealed partial class FontTag : TextTag
 		var font = style.Font;
 		var size = style.FontSize;
 
-		if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> id) && ResourceDB.TryGetFont(id, out var pfont))
+		if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> id)
+			&& TextConfig.Fonts.TryGetResource(id, out var pfont))
 		{
 			font = pfont;
 		}

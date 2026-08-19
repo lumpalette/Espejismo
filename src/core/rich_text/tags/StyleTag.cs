@@ -16,7 +16,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///     <item>
 ///       <term><c>&lt;main&gt;</c></term>
 ///       <description>
-///         Identifier for the <see cref="StyleTemplate"/> to use, as defined in <see cref="ResourceDB"/>.
+///         Identifier for the <see cref="StyleTemplate"/> to use, as defined in <see cref="TextConfig"/>.
 ///       </description>
 ///     </item>
 ///   </list>
@@ -28,7 +28,8 @@ public sealed partial class StyleTag : TextTag
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> id) && ResourceDB.TryGetStyle(id, out var template))
+		if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> id)
+			&& TextConfig.Styles.TryGetResource(id, out var template))
 		{
 			builder.PushStyle(template.Create());
 			return true;

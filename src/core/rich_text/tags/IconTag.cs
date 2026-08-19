@@ -16,7 +16,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///     <item>
 ///       <term><c>&lt;main&gt;</c></term>
 ///       <description>
-///         Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="ResourceDB"/>
+///         Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="TextConfig"/>.
 ///       </description>
 ///     </item>
 ///     <item>
@@ -38,7 +38,8 @@ public sealed partial class IconTag : TextTag
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		if (!attributes.TryFind("<main>", out var idAttr) || !ResourceDB.TryGetTexture(idAttr.Value, out var tex))
+		if (!attributes.TryFind("<main>", out var idAttr)
+			|| !TextConfig.Icons.TryGetResource(idAttr.Value, out var tex))
 		{
 			return false;
 		}

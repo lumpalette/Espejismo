@@ -237,9 +237,9 @@ public partial class Text
 	{
 		_styleMap.Clear();
 
-		var baseStyle = ResourceDB.DefaultStyle.CreateFrom(Style);
+		var baseStyle = TextConfig.DefaultStyle.CreateFrom(Style);
 
-		_fallbackFont = baseStyle.Font!;
+		_fallbackFont = baseStyle.Font!.GetVariant(baseStyle.FontStyle!.Value);
 		_fallbackFontSize = baseStyle.FontSize!.Value;
 		_fallbackLeading = baseStyle.Spacing!.Value.Y;
 
@@ -253,7 +253,7 @@ public partial class Text
 			// when eres un fokin nerd y el orden de los parámetros importa.
 			var mergedStyle = item.Style.MergedWith(baseStyle);
 
-			var font = mergedStyle.Font!;
+			var font = mergedStyle.Font!.GetVariant(mergedStyle.FontStyle!.Value);
 			var spacing = mergedStyle.Spacing!.Value;
 			
 			// We don't pass the line spacing to the font, as it is stored inside the LineSpan.Leading separately.

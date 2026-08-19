@@ -18,8 +18,7 @@ namespace Espejismo.Core.RichText.Effects;
 [GlobalClass]
 public sealed partial class ShakeEffect : TextEffect
 {
-	[Export]
-	private float _intensity = 1;
+	[Export] private float _intensity = 1;
 	
 	/// <inheritdoc/>
 	public override bool Process(ref GlyphTransform trans)

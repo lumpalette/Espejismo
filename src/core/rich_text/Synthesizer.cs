@@ -79,7 +79,7 @@ internal struct Synthesizer(Document document, TextBuilder builder)
 	{
 		var name = document.Source.AsSpan(node.ValueStart, node.ValueLength);
 
-		if (!ResourceDB.TryGetTag(name, out var tag))
+		if (!TextConfig.Tags.TryGetResource(name, out var tag))
 		{
 			WalkBranch(nodeIndex);
 			return;

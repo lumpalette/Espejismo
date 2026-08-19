@@ -15,7 +15,7 @@ public abstract partial class TextTag : Resource
 	/// <remarks>
 	///   Use this method to implement whatever effect the element represents, such as pushing a new style onto
 	///   <paramref name="builder"/>. Any resource the element may require (fonts, textures, etc.) should be resolved
-	///   through the static <see cref="ResourceDB"/> API.
+	///   through the static <see cref="TextConfig"/> API.
 	/// </remarks>
 	/// <param name="builder">
 	///   The working text state.

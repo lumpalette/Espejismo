@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FontFamily" format=3 uid="uid://ctpfdjd5q6wpf"]
+
+[ext_resource type="Script" uid="uid://b8t3chmblayme" path="res://src/core/rich_text/FontFamily.cs" id="1_nnok4"]
+[ext_resource type="FontVariation" uid="uid://uj4lap0byq3w" path="res://shared/fonts/main_bold.tres" id="1_xrecj"]
+[ext_resource type="FontVariation" uid="uid://datq38fbs6c4e" path="res://shared/fonts/main_bold_italics.tres" id="2_n5csc"]
+[ext_resource type="FontVariation" uid="uid://duf8b4nmn7wkh" path="res://shared/fonts/main_italics.tres" id="3_vokb1"]
+[ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="4_7it5w"]
+
+[resource]
+script = ExtResource("1_nnok4")
+Regular = ExtResource("4_7it5w")
+Bold = ExtResource("1_xrecj")
+Italic = ExtResource("3_vokb1")
+BoldItalic = ExtResource("2_n5csc")
+metadata/_custom_type_script = "uid://b8t3chmblayme"

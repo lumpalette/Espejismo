@@ -17,13 +17,15 @@ namespace Espejismo.Core.RichText.Tags;
 [GlobalClass]
 public sealed partial class MarkerTag : TextTag
 {
-	[Export]
-	private string _name = string.Empty;
+	/// <summary>
+	///   Gets the name of the marker, configured through the editor.
+	/// </summary>
+	[Export] public string MarkerName { get; private set; } = string.Empty;
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
 	{
-		builder.AppendMarker(_name ?? "<null>", attributes);
+		builder.AppendMarker(MarkerName ?? "<null>", attributes);
 		return true;
 	}
 }

@@ -20,8 +20,7 @@ public sealed partial class AlignmentTag : TextTag
 	/// <summary>
 	///   Gets the type of alignment applied by the tag, configured through the editor.
 	/// </summary>
-	[Export]
-	public HorizontalAlignment Alignment { get; private set; }
+	[Export] public HorizontalAlignment Alignment { get; private set; }
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)

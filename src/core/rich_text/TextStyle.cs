@@ -19,9 +19,14 @@ public readonly record struct TextStyle
 	}
 
 	/// <summary>
-	///   Gets the <see cref="Godot.Font"/> resource used for the text.
+	///   Gets the font family used for the text.
 	/// </summary>
-	public Font? Font { get; init; }
+	public FontFamily? Font { get; init; }
+
+	/// <summary>
+	///   Gets the style variant applied to the text.
+	/// </summary>
+	public FontStyle? FontStyle { get; init; }
 
 	/// <summary>
 	///   Gets the size of the text, in pixels.
@@ -83,6 +88,7 @@ public readonly record struct TextStyle
 		{
 			Font = Font ?? other.Font,
 			FontSize = FontSize ?? other.FontSize,
+			FontStyle = FontStyle ?? other.FontStyle,
 			Color = Color ?? other.Color,
 			Effect = Effect ?? other.Effect,
 			Spacing = Spacing ?? other.Spacing,

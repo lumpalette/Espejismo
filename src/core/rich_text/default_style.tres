@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="StyleTemplate" format=3 uid="uid://dfv12ht3lhlji"]
+
+[ext_resource type="Resource" uid="uid://ctpfdjd5q6wpf" path="res://src/core/rich_text/default_fonts.tres" id="1_a5d44"]
+[ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="1_ciac0"]
+
+[resource]
+script = ExtResource("1_ciac0")
+Font = ExtResource("1_a5d44")
+metadata/_custom_type_script = "uid://dqv8xe0vejoqk"

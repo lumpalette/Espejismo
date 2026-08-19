@@ -21,8 +21,7 @@ public sealed partial class EffectTag : TextTag
 	/// <summary>
 	/// Gets the effect applied by the tag, configured through the editor.
 	/// </summary>
-	[Export]
-	public TextEffect? Effect { get; private set; }
+	[Export] public TextEffect? Effect { get; private set; }
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)

@@ -13,5 +13,4 @@ offset_top = 7.0
 offset_right = 312.0
 offset_bottom = 149.0
 script = ExtResource("1_eewff")
-Content = "<shake>* Chara...</shake>"
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"
