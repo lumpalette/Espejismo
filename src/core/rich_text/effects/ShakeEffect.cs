@@ -15,7 +15,7 @@ namespace Espejismo.Core.RichText.Effects;
 ///     </item>
 ///   </list>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class ShakeEffect : TextEffect
 {
 	[Export] private float _intensity = 1;

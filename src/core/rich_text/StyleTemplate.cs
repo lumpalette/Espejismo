@@ -7,8 +7,8 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 ///   Represents a set of style properties that serves as a template for creating <see cref="TextStyle"/> instances.
 /// </summary>
-[GlobalClass]
-public partial class StyleTemplate : Resource
+[GlobalClass, Tool]
+public partial class StyleTemplate : TextResource
 {
 	/// <summary>
 	///   Gets the font family used for the text.

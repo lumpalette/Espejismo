@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b> None.
 /// </para>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class AlignmentTag : TextTag
 {
 	/// <summary>

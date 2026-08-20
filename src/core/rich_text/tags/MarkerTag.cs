@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b> Varies (depends on the marker's purpose).
 /// </para>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class MarkerTag : TextTag
 {
 	/// <summary>

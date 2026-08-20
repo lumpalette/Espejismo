@@ -6,8 +6,8 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 ///   Serves as the base class for implementing custom visual effects applied to <see cref="Glyph"/> instances.
 /// </summary>
-[GlobalClass]
-public abstract partial class TextEffect : Resource
+[GlobalClass, Tool]
+public abstract partial class TextEffect : TextResource
 {
 	/// <summary>
 	///   Computes the visual transformation applied to a single <see cref="Glyph"/>.

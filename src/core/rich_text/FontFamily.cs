@@ -7,8 +7,8 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 ///   Represents a group of <see cref="Font"/> resources that share a common design.
 /// </summary>
-[GlobalClass]
-public partial class FontFamily : Resource
+[GlobalClass, Tool]
+public partial class FontFamily : TextResource
 {
 	/// <summary>
 	///   Gets the regular (upright, normal weight) font resource of the family.

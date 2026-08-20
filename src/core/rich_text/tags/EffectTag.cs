@@ -15,7 +15,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   <b>Attributes:</b> Varies (depends on the specific effect).
 /// </para>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class EffectTag : TextTag
 {
 	/// <summary>

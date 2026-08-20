@@ -6,8 +6,8 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 ///   Serves as the base class for defining the behaviour of a rich-text tag during parsing.
 /// </summary>
-[GlobalClass]
-public abstract partial class TextTag : Resource
+[GlobalClass, Tool]
+public abstract partial class TextTag : TextResource
 {
 	/// <summary>
 	///   Called when an element begins, before its children are processed.

@@ -7,8 +7,8 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 ///   Provides static, read-only access to the global configuration used by the rich-text system.
 /// </summary>
-[GlobalClass]
-public partial class TextConfig : Resource
+[GlobalClass, Tool]
+public partial class TextConfig : TextResource
 {
 	/// <summary>
 	///   The resource path where the configuration resource file is located

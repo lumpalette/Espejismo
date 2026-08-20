@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText;
 ///   <b>Attributes:</b> None.
 /// </para>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class FontStyleTag : TextTag
 {
 	/// <summary>

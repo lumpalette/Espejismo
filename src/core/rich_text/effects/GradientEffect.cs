@@ -19,7 +19,7 @@ namespace Espejismo.Core.RichText.Effects;
 ///     </item>
 ///   </list>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class GradientEffect : TextEffect
 {
 	[Export] private Gradient? _gradient;

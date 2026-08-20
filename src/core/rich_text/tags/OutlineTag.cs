@@ -27,7 +27,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///   </list>
 /// </para>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class OutlineTag : TextTag
 {
 	/// <inheritdoc/>

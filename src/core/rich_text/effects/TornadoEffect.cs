@@ -23,7 +23,7 @@ namespace Espejismo.Core.RichText.Effects;
 ///     </item>
 ///   </list>
 /// </remarks>
-[GlobalClass]
+[GlobalClass, Tool]
 public sealed partial class TornadoEffect : TextEffect
 {
 	[Export] private float _radius = 2.5f;
