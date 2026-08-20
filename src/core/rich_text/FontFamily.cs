@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Espejismo.Core.RichText;
@@ -42,6 +43,11 @@ public partial class FontFamily : Resource
 	/// </returns>
 	public Font GetVariant(FontStyle style)
 	{
+		if (Regular is null)
+		{
+			throw new InvalidOperationException("Base regular font is missing");
+		}
+
 		var bold = style.HasFlag(FontStyle.Bold);
 		var italic = style.HasFlag(FontStyle.Italic);
 

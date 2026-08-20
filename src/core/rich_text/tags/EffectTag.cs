@@ -19,7 +19,7 @@ namespace Espejismo.Core.RichText.Tags;
 public sealed partial class EffectTag : TextTag
 {
 	/// <summary>
-	/// Gets the effect applied by the tag, configured through the editor.
+	///   Gets the effect applied by the tag, configured through the editor.
 	/// </summary>
 	[Export] public TextEffect? Effect { get; private set; }
 
