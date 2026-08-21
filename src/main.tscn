@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b33c8l4fw10vj"]
 
 [ext_resource type="Script" uid="uid://bjpdr6mrvvpw2" path="res://src/core/RichLabel.cs" id="1_eewff"]
+[ext_resource type="Script" uid="uid://c43ggny6ffklj" path="res://src/ui/TextRenderer.cs" id="2_gh0ne"]
 
 [node name="Main" type="Node" unique_id=213237798]
 
@@ -14,3 +15,11 @@ offset_right = 312.0
 offset_bottom = 149.0
 script = ExtResource("1_eewff")
 metadata/_custom_type_script = "uid://bjpdr6mrvvpw2"
+
+[node name="TextRenderer" type="Control" parent="." unique_id=566539907]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_gh0ne")
+metadata/_custom_type_script = "uid://c43ggny6ffklj"
