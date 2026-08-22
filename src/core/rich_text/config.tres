@@ -1,4 +1,142 @@
-[gd_resource type="Resource" format=3 uid="uid://buk160yo41m5l"]
+[gd_resource type="Resource" script_class="TextConfig" format=3 uid="uid://buk160yo41m5l"]
+
+[ext_resource type="Script" uid="uid://c1csl3k02crj4" path="res://src/core/rich_text/TextConfig.cs" id="1_ar6lo"]
+[ext_resource type="Resource" uid="uid://dfv12ht3lhlji" path="res://src/core/rich_text/default_style.tres" id="1_rc6x3"]
+[ext_resource type="Script" uid="uid://b8t3chmblayme" path="res://src/core/rich_text/FontFamily.cs" id="2_c7gbv"]
+[ext_resource type="Resource" uid="uid://ctpfdjd5q6wpf" path="res://src/core/rich_text/default_fonts.tres" id="3_c7gbv"]
+[ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="3_imxfu"]
+[ext_resource type="Script" uid="uid://bdo4uu1en1fwn" path="res://src/core/rich_text/TextTag.cs" id="4_ieadk"]
+[ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://shared/icons/icon.png" id="4_imxfu"]
+[ext_resource type="Script" uid="uid://c7qa3sldws3gd" path="res://src/core/rich_text/tags/ColorTag.cs" id="7_5gef2"]
+[ext_resource type="Script" uid="uid://cs3odg278xwhh" path="res://src/core/rich_text/tags/AlignmentTag.cs" id="8_q3go3"]
+[ext_resource type="Script" uid="uid://cqgt54sy0g1t6" path="res://src/core/rich_text/tags/FontTag.cs" id="9_u6yl1"]
+[ext_resource type="Script" uid="uid://bgk2i03yjvnkr" path="res://src/core/rich_text/tags/IconTag.cs" id="10_a35j1"]
+[ext_resource type="Script" uid="uid://cjwm1veyo2eva" path="res://src/core/rich_text/tags/StyleTag.cs" id="11_8f6p3"]
+[ext_resource type="Script" uid="uid://dugubxdpkpx1s" path="res://src/core/rich_text/tags/OutlineTag.cs" id="12_cmdmc"]
+[ext_resource type="Script" uid="uid://f57xm24lp6y5" path="res://src/core/rich_text/tags/ShadowTag.cs" id="13_rknj5"]
+[ext_resource type="Gradient" uid="uid://dx1tgebi3iajl" path="res://shared/rainbow_gradient.tres" id="14_8f6p3"]
+[ext_resource type="Script" uid="uid://c6avliqwl0rue" path="res://src/core/rich_text/tags/SpacingTag.cs" id="14_wiolj"]
+[ext_resource type="Script" uid="uid://b311hcqess3q0" path="res://src/core/rich_text/effects/GradientEffect.cs" id="15_cmdmc"]
+[ext_resource type="Script" uid="uid://cub3ipdnjgvd4" path="res://src/core/rich_text/tags/FontStyleTag.cs" id="15_q3go3"]
+[ext_resource type="Script" uid="uid://c3aax21xncwwh" path="res://src/core/rich_text/tags/EffectTag.cs" id="16_rknj5"]
+[ext_resource type="Script" uid="uid://cr78my2u6gu0u" path="res://src/core/rich_text/effects/ShakeEffect.cs" id="17_wiolj"]
+[ext_resource type="Script" uid="uid://cltvb5woimgqd" path="res://src/core/rich_text/effects/TornadoEffect.cs" id="18_wre4d"]
+
+[sub_resource type="Resource" id="Resource_y063w"]
+script = ExtResource("7_5gef2")
+metadata/_custom_type_script = "uid://c7qa3sldws3gd"
+
+[sub_resource type="Resource" id="Resource_ux4ge"]
+script = ExtResource("15_q3go3")
+FontStyle = 1
+metadata/_custom_type_script = "uid://cub3ipdnjgvd4"
+
+[sub_resource type="Resource" id="Resource_hnlj2"]
+script = ExtResource("15_q3go3")
+FontStyle = 2
+metadata/_custom_type_script = "uid://cub3ipdnjgvd4"
+
+[sub_resource type="Resource" id="Resource_8k37f"]
+script = ExtResource("8_q3go3")
+metadata/_custom_type_script = "uid://cs3odg278xwhh"
+
+[sub_resource type="Resource" id="Resource_5noam"]
+script = ExtResource("8_q3go3")
+Alignment = 1
+metadata/_custom_type_script = "uid://cs3odg278xwhh"
+
+[sub_resource type="Resource" id="Resource_sdt18"]
+script = ExtResource("8_q3go3")
+Alignment = 2
+metadata/_custom_type_script = "uid://cs3odg278xwhh"
+
+[sub_resource type="Resource" id="Resource_li4dh"]
+script = ExtResource("8_q3go3")
+Alignment = 3
+metadata/_custom_type_script = "uid://cs3odg278xwhh"
+
+[sub_resource type="Resource" id="Resource_b7788"]
+script = ExtResource("9_u6yl1")
+metadata/_custom_type_script = "uid://cqgt54sy0g1t6"
+
+[sub_resource type="Resource" id="Resource_qfv8k"]
+script = ExtResource("10_a35j1")
+metadata/_custom_type_script = "uid://bgk2i03yjvnkr"
+
+[sub_resource type="Resource" id="Resource_kuu7q"]
+script = ExtResource("12_cmdmc")
+metadata/_custom_type_script = "uid://dugubxdpkpx1s"
+
+[sub_resource type="Resource" id="Resource_5ecmh"]
+script = ExtResource("13_rknj5")
+metadata/_custom_type_script = "uid://f57xm24lp6y5"
+
+[sub_resource type="Resource" id="Resource_j6rxj"]
+script = ExtResource("14_wiolj")
+metadata/_custom_type_script = "uid://c6avliqwl0rue"
+
+[sub_resource type="Resource" id="Resource_00cxe"]
+script = ExtResource("11_8f6p3")
+metadata/_custom_type_script = "uid://cjwm1veyo2eva"
+
+[sub_resource type="Resource" id="Resource_fh6ep"]
+script = ExtResource("15_cmdmc")
+_gradient = ExtResource("14_8f6p3")
+metadata/_custom_type_script = "uid://b311hcqess3q0"
+
+[sub_resource type="Resource" id="Resource_438n7"]
+script = ExtResource("16_rknj5")
+Effect = SubResource("Resource_fh6ep")
+metadata/_custom_type_script = "uid://c3aax21xncwwh"
+
+[sub_resource type="Resource" id="Resource_ik8j0"]
+script = ExtResource("17_wiolj")
+metadata/_custom_type_script = "uid://cr78my2u6gu0u"
+
+[sub_resource type="Resource" id="Resource_ia5w5"]
+script = ExtResource("16_rknj5")
+Effect = SubResource("Resource_ik8j0")
+metadata/_custom_type_script = "uid://c3aax21xncwwh"
+
+[sub_resource type="Resource" id="Resource_5imrv"]
+script = ExtResource("18_wre4d")
+_radius = 4.0
+metadata/_custom_type_script = "uid://cltvb5woimgqd"
+
+[sub_resource type="Resource" id="Resource_22ly1"]
+script = ExtResource("16_rknj5")
+Effect = SubResource("Resource_5imrv")
+metadata/_custom_type_script = "uid://c3aax21xncwwh"
 
 [resource]
-metadata/_custom_type_script = "uid://d3fn36pofn5fi"
+script = ExtResource("1_ar6lo")
+_defaultStyle = ExtResource("1_rc6x3")
+_fauxBoldThickness = 1.2
+_fauxItalicSlant = 0.4
+_tags = Dictionary[String, ExtResource("4_ieadk")]({
+"b": SubResource("Resource_ux4ge"),
+"c": SubResource("Resource_y063w"),
+"center": SubResource("Resource_5noam"),
+"fnt": SubResource("Resource_b7788"),
+"i": SubResource("Resource_hnlj2"),
+"img": SubResource("Resource_qfv8k"),
+"justify": SubResource("Resource_li4dh"),
+"left": SubResource("Resource_8k37f"),
+"outline": SubResource("Resource_kuu7q"),
+"rainbow": SubResource("Resource_438n7"),
+"right": SubResource("Resource_sdt18"),
+"shadow": SubResource("Resource_5ecmh"),
+"shake": SubResource("Resource_ia5w5"),
+"space": SubResource("Resource_j6rxj"),
+"style": SubResource("Resource_00cxe"),
+"tornado": SubResource("Resource_22ly1")
+})
+_styles = Dictionary[String, ExtResource("3_imxfu")]({
+"default": ExtResource("1_rc6x3")
+})
+_fonts = Dictionary[String, ExtResource("2_c7gbv")]({
+"default": ExtResource("3_c7gbv")
+})
+_icons = Dictionary[String, Texture2D]({
+"test": ExtResource("4_imxfu")
+})

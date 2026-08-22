@@ -105,6 +105,15 @@ public partial class Text
 	}
 
 	/// <summary>
+	///   Gets a value indicating whether the text has at least one assigned <see cref="TextEffect"/> instance.
+	/// </summary>
+	/// <remarks>
+	///   The value of this property is recalculated whenever <see cref="Style"/> changes. You can use this property to
+	///   determine whether the text needs to be continuously redrawn to avoid any unnecessary redraws for static text.
+	/// </remarks>
+	public bool HasEffects { get; private set; }
+
+	/// <summary>
 	///   Gets or sets the base style applied to all the text.
 	/// </summary>
 	public TextStyle Style
@@ -236,6 +245,7 @@ public partial class Text
 	private void GenerateStyleMap()
 	{
 		_styleMap.Clear();
+		HasEffects = false;
 
 		var baseStyle = TextConfig.DefaultStyle.CreateFrom(Style);
 
@@ -250,13 +260,11 @@ public partial class Text
 				continue;
 			}
 
-			// when eres un fokin nerd y el orden de los parámetros importa.
+			// We don't pass the line spacing to the font, as it is stored inside the LineSpan.Leading separately.
 			var mergedStyle = item.Style.MergedWith(baseStyle);
-
 			var font = mergedStyle.Font!.GetVariant(mergedStyle.FontStyle!.Value);
 			var spacing = mergedStyle.Spacing!.Value;
 			
-			// We don't pass the line spacing to the font, as it is stored inside the LineSpan.Leading separately.
 			if (spacing.X != 0)
 			{
 				font = new FontVariation
@@ -282,6 +290,11 @@ public partial class Text
 					OutlineColor = mergedStyle.OutlineColor!.Value
 				}
 			};
+
+			if (mergedStyle.Effect is not null)
+			{
+				HasEffects = true;
+			}
 		}
 	}
 }

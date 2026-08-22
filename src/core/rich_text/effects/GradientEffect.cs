@@ -22,9 +22,12 @@ namespace Espejismo.Core.RichText.Effects;
 [GlobalClass, Tool]
 public sealed partial class GradientEffect : TextEffect
 {
-	[Export] private Gradient? _gradient;
-	[Export] private float _frequency = 0.2f;
-	[Export] private float _speed = 0.4f;
+	[Export]
+	private Gradient? _gradient;
+	[Export]
+	private float _frequency = 0.2f;
+	[Export]
+	private float _speed = 0.4f;
 
 	/// <inheritdoc/>
 	public override bool Process(ref GlyphTransform trans)

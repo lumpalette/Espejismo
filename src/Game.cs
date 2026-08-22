@@ -12,7 +12,8 @@ public partial class Game : Node
 	private static Game? s_instance;
 
 	[ExportGroup("Systems")]
-	[Export] private PlayerInputManager? _input;
+	[Export]
+	private PlayerInputManager? _input;
 
 	private Game()
 	{

@@ -20,7 +20,8 @@ public sealed partial class FontStyleTag : TextTag
 	/// <summary>
 	///   Gets the style variation applied by the tag, configured through the editor.
 	/// </summary>
-	[Export] public FontStyle FontStyle { get; private set; }
+	[Export]
+	public FontStyle FontStyle { get; private set; }
 	
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)

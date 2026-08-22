@@ -1,6 +1,6 @@
 [gd_resource type="FontVariation" format=3 uid="uid://datq38fbs6c4e"]
 
-[ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/main.ttf" id="1_dgu0d"]
+[ext_resource type="FontFile" uid="uid://dygi8uytprflr" path="res://shared/fonts/default.ttf" id="1_dgu0d"]
 
 [resource]
 base_font = ExtResource("1_dgu0d")

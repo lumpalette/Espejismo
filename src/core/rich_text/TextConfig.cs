@@ -16,17 +16,24 @@ public partial class TextConfig : TextResource
 	public const string Path = "res://src/core/rich_text/config.tres";
 
 	[ExportGroup("Defaults")]
-	[Export] private StyleTemplate? _defaultStyle;
-	[Export] private float _fauxBoldThickness;
-	[Export] private float _fauxItalicSlant;
+	[Export]
+	private StyleTemplate? _defaultStyle;
+	[Export]
+	private float _fauxBoldThickness;
+	[Export]
+	private float _fauxItalicSlant;
 
 	[ExportGroup("Markup")]
-	[Export] private Godot.Collections.Dictionary<string, TextTag> _tags = [];
+	[Export]
+	private Godot.Collections.Dictionary<string, TextTag> _tags = [];
 
 	[ExportGroup("Resources")]
-	[Export] private Godot.Collections.Dictionary<string, StyleTemplate> _styles = [];
-	[Export] private Godot.Collections.Dictionary<string, FontFamily> _fonts = [];
-	[Export] private Godot.Collections.Dictionary<string, Texture2D> _icons = [];
+	[Export]
+	private Godot.Collections.Dictionary<string, StyleTemplate> _styles = [];
+	[Export]
+	private Godot.Collections.Dictionary<string, FontFamily> _fonts = [];
+	[Export]
+	private Godot.Collections.Dictionary<string, Texture2D> _icons = [];
 
 	/// <summary>
 	///   Gets the style template used as a last fallback for unset <see cref="TextStyle"/> properties.
@@ -112,7 +119,7 @@ public partial class TextConfig : TextResource
 		get
 		{
 #if TOOLS
-			return LoadFromPath(ResourceLoader.CacheMode.ReplaceDeep);
+			return LoadFromPath();
 #else
 			field ??= LoadFromPath(ResourceLoader.CacheMode.Reuse);
 			return field;
@@ -120,14 +127,14 @@ public partial class TextConfig : TextResource
 		}
 	}
 
-	private static TextConfig LoadFromPath(ResourceLoader.CacheMode cacheMode)
+	private static TextConfig LoadFromPath()
 	{
 		if (!ResourceLoader.Exists(Path))
 		{
 			throw new FileNotFoundException($"TextConfig file at path '{Path}' was not found");
 		}
 
-		var config = ResourceLoader.Load<TextConfig>(Path, typeHint: null, cacheMode);
+		var config = GD.Load<TextConfig>(Path);
 
 		if (config._defaultStyle is null)
 		{

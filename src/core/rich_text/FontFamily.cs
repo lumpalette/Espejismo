@@ -13,23 +13,26 @@ public partial class FontFamily : TextResource
 	/// <summary>
 	///   Gets the regular (upright, normal weight) font resource of the family.
 	/// </summary>
-	[NotNull]
-	[Export] public Font? Regular { get; private set; }
+	[Export, NotNull]
+	public Font? Regular { get; private set; }
 
 	/// <summary>
 	///   Gets the bold font resource of the family, if provided.
 	/// </summary>
-	[Export] public Font? Bold { get; private set; }
+	[Export]
+	public Font? Bold { get; private set; }
 
 	/// <summary>
 	///   Gets the italic font resource of the family, if provided.
 	/// </summary>
-	[Export] public Font? Italic { get; private set; }
+	[Export]
+	public Font? Italic { get; private set; }
 
 	/// <summary>
 	///   Gets the bold-italic font resource of the family, if provided.
 	/// </summary>
-	[Export] public Font? BoldItalic { get; private set; }
+	[Export]
+	public Font? BoldItalic { get; private set; }
 
 	/// <summary>
 	///   Gets the <see cref="Font"/> that best matches the specified <see cref="FontStyle"/>, synthesizing a faux

@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.ObjectModel;
 
 namespace Espejismo.Core.RichText.Nodes;
 

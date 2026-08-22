@@ -20,7 +20,8 @@ public sealed partial class MarkerTag : TextTag
 	/// <summary>
 	///   Gets the name of the marker, configured through the editor.
 	/// </summary>
-	[Export] public string MarkerName { get; private set; } = string.Empty;
+	[Export]
+	public string MarkerName { get; private set; } = string.Empty;
 
 	/// <inheritdoc/>
 	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)

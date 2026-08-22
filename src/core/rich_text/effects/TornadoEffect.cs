@@ -26,9 +26,12 @@ namespace Espejismo.Core.RichText.Effects;
 [GlobalClass, Tool]
 public sealed partial class TornadoEffect : TextEffect
 {
-	[Export] private float _radius = 2.5f;
-	[Export] private float _frequency = 4f;
-	[Export] private float _spacing = 2f;
+	[Export]
+	private float _radius = 2.5f;
+	[Export]
+	private float _frequency = 4f;
+	[Export]
+	private float _spacing = 2f;
 
 	/// <inheritdoc/>
 	public override bool Process(ref GlyphTransform trans)
