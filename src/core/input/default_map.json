@@ -55,7 +55,7 @@
 		},
 		{
 			"source": "joypad_axis",
-			"axis": "left_y",
+			"axis": "LeftY",
 			"is_positive": false
 		},
 		{
@@ -71,7 +71,7 @@
 		},
 		{
 			"source": "joypad_axis",
-			"axis": "left_x",
+			"axis": "LeftX",
 			"is_positive": false
 		},
 		{
@@ -87,7 +87,7 @@
 		},
 		{
 			"source": "joypad_axis",
-			"axis": "left_y",
+			"axis": "LeftY",
 			"is_positive": true
 		},
 		{
@@ -103,7 +103,7 @@
 		},
 		{
 			"source": "joypad_axis",
-			"axis": "left_x",
+			"axis": "LeftX",
 			"is_positive": true
 		},
 		{

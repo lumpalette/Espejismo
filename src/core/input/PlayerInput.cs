@@ -93,12 +93,19 @@ public sealed class PlayerInput
 	/// <param name="deviceId">
 	///   The identifier of the device to remove.
 	/// </param>
-	public void RemoveDevice(long deviceId)
+	/// <returns>
+	///   <see langword="true"/> if the device was successfully removed; otherwise, <see langword="false"/>.
+	/// </returns>
+	public bool RemoveDevice(long deviceId)
 	{
-		if (_devices.Remove(deviceId))
+		var state = _devices.Remove(deviceId);
+		
+		if (state)
 		{
 			ResetAllStates();
 		}
+
+		return state;
 	}
 
 	/// <summary>

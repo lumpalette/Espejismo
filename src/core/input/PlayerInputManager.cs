@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Espejismo.Core.Input;
 
@@ -9,6 +10,8 @@ namespace Espejismo.Core.Input;
 internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 {
 	private readonly Dictionary<int, PlayerInput> _players = [];
+
+	public event EventHandler<PlayerDisconnectionEventArgs>? DeviceDisconnected;
 
 	public IEnumerable<int> Indexes => _players.Keys;
 
@@ -29,6 +32,16 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 
 			return player;
 		}
+	}
+
+	public override void _EnterTree()
+	{
+		Godot.Input.JoyConnectionChanged += OnJoyConnectionChanged;
+	}
+
+	public override void _ExitTree()
+	{
+		Godot.Input.JoyConnectionChanged -= OnJoyConnectionChanged;
 	}
 
 	public override void _Input(InputEvent @event)
@@ -86,5 +99,23 @@ internal sealed partial class PlayerInputManager : Node, IPlayerInputManager
 	public bool Remove(int playerIndex)
 	{
 		return _players.Remove(playerIndex);
+	}
+
+	private void OnJoyConnectionChanged(long device, bool connected)
+	{
+		if (connected)
+		{
+			return;
+		}
+
+		foreach (var entry in _players)
+		{
+			if (entry.Value.RemoveDevice(device))
+			{
+				// We don't break here, as two or more players can share the same input device.
+				var args = new PlayerDisconnectionEventArgs(entry.Key, device, entry.Value.Devices.Count == 0);
+				DeviceDisconnected?.Invoke(this, args);
+			}
+		}
 	}
 }

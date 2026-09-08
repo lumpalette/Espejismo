@@ -11,6 +11,11 @@ namespace Espejismo.Core.Input;
 public interface IPlayerInputManager
 {
 	/// <summary>
+	///   Occurs when an input device assigned to a player is disconnected.
+	/// </summary>
+	event EventHandler<PlayerDisconnectionEventArgs> DeviceDisconnected;
+
+	/// <summary>
 	///   Gets a collection containing all the player indexes currently defined.
 	/// </summary>
 	IEnumerable<int> Indexes { get; }
