@@ -234,7 +234,7 @@ public sealed partial class Text : IDisposable
 	/// </exception>
 	public static Text Parse(string richText, TextStyle style, int visibleChars = -1)
 	{
-		ArgumentNullException.ThrowIfNull(richText, nameof(richText));
+		ArgumentNullException.ThrowIfNull(richText);
 
 		if (richText.Length == 0 || visibleChars == 0)
 		{

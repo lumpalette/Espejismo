@@ -25,7 +25,7 @@ public partial class TextRenderer : Control
 		get;
 		set
 		{
-			ArgumentNullException.ThrowIfNull(value, nameof(value));
+			ArgumentNullException.ThrowIfNull(value);
 
 			if (field != value)
 			{

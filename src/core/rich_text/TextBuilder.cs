@@ -178,7 +178,7 @@ public class TextBuilder
 	/// </exception>
 	public TextBuilder AppendText(string text)
 	{
-		ArgumentNullException.ThrowIfNull(text, nameof(text));
+		ArgumentNullException.ThrowIfNull(text);
 
 		if (text.Length == 0 || IsExhausted)
 		{
@@ -230,7 +230,7 @@ public class TextBuilder
 	/// </exception>
 	public TextBuilder AppendIcon(Texture2D texture, InlineAlignment alignment, Vector2 size)
 	{
-		ArgumentNullException.ThrowIfNull(texture, nameof(texture));
+		ArgumentNullException.ThrowIfNull(texture);
 
 		if (size.X < 0 || size.Y < 0)
 		{
@@ -268,7 +268,7 @@ public class TextBuilder
 	/// </exception>
 	public TextBuilder AppendMarker(string name, ReadOnlySpan<TagAttribute> attributes)
 	{
-		ArgumentNullException.ThrowIfNull(name, nameof(name));
+		ArgumentNullException.ThrowIfNull(name);
 
 		_items.Add(new(new ItemMarker(name, attributes.ToArray())));
 		return this;

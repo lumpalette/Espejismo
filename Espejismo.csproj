@@ -20,5 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\battle\" />
+    <Folder Include="src\core\input\serialization\" />
   </ItemGroup>
 </Project>
