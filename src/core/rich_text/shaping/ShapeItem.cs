@@ -15,27 +15,27 @@ internal readonly record struct ItemAlign(HorizontalAlignment? Alignment);
 // Union-like struct that holds every type of data associated to a shape item used by the shaping engine.
 internal readonly struct ShapeItem
 {
-	private ShapeItem(ShapeItemType type) => Type = type;
+    private ShapeItem(ShapeItemType type) => Type = type;
 
-	public ShapeItem(ItemRun run) : this(ShapeItemType.Run) => Run = run;
+    public ShapeItem(ItemRun run) : this(ShapeItemType.Run) => Run = run;
 
-	public ShapeItem(ItemIcon icon) : this(ShapeItemType.Icon) => Icon = icon;
+    public ShapeItem(ItemIcon icon) : this(ShapeItemType.Icon) => Icon = icon;
 
-	public ShapeItem(ItemMarker marker) : this(ShapeItemType.Marker) => Marker = marker;
+    public ShapeItem(ItemMarker marker) : this(ShapeItemType.Marker) => Marker = marker;
 
-	public ShapeItem(ItemBreak br) : this(ShapeItemType.Break) => Break = br;
+    public ShapeItem(ItemBreak br) : this(ShapeItemType.Break) => Break = br;
 
-	public ShapeItem(ItemAlign align) : this(ShapeItemType.Align) => Align = align;
+    public ShapeItem(ItemAlign align) : this(ShapeItemType.Align) => Align = align;
 
-	public ShapeItemType Type { get; }
+    public ShapeItemType Type { get; }
 
-	public ItemRun? Run { get; }
+    public ItemRun? Run { get; }
 
-	public ItemIcon? Icon { get; }
+    public ItemIcon? Icon { get; }
 
-	public ItemMarker? Marker { get; }
+    public ItemMarker? Marker { get; }
 
-	public ItemBreak? Break { get; }
+    public ItemBreak? Break { get; }
 
-	public ItemAlign? Align { get; }
+    public ItemAlign? Align { get; }
 }

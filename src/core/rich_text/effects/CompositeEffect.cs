@@ -4,116 +4,110 @@ using System;
 namespace Espejismo.Core.RichText.Effects;
 
 /// <summary>
-///   A text effect that applies a sequence of <see cref="TextEffect"/> instances to a <see cref="Glyph"/>.
+/// A text effect that applies a sequence of <see cref="TextEffect"/> instances to a <see cref="Glyph"/>.
 /// </summary>
 [GlobalClass, Tool]
 public sealed partial class CompositeEffect : TextEffect
 {
-	[Export]
-	private TextEffect?[] _effects = [];
+    [Export]
+    private TextEffect?[] _effects = [];
 
-	/// <summary>
-	///   Initializes a new instance of the <see cref="CompositeEffect"/> class that is empty.
-	/// </summary>
-	public CompositeEffect()
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CompositeEffect"/> class that is empty.
+    /// </summary>
+    public CompositeEffect()
+    {
+    }
 
-	/// <summary>
-	///   Initializes a new instance of the <see cref="CompositeEffect"/> class using the specified sequence of
-	///   <see cref="TextEffect"/> instances.
-	/// </summary>
-	/// <param name="effects">
-	///   The effects to merge together.
-	/// </param>
-	public CompositeEffect(params ReadOnlySpan<TextEffect?> effects)
-	{
-		_effects = effects.ToArray();
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CompositeEffect"/> class using the specified sequence of
+    /// <see cref="TextEffect"/> instances.
+    /// </summary>
+    /// <param name="effects">The effects to merge together.</param>
+    public CompositeEffect(params ReadOnlySpan<TextEffect?> effects)
+    {
+        _effects = effects.ToArray();
+    }
 
-	/// <summary>
-	///   Gets the <see cref="TextEffect"/> instances that make up this effect.
-	/// </summary>
-	public ReadOnlySpan<TextEffect?> Effects => _effects;
+    /// <summary>
+    /// Gets the <see cref="TextEffect"/> instances that make up this effect.
+    /// </summary>
+    public ReadOnlySpan<TextEffect?> Effects => _effects;
 
-	/// <summary>
-	///   Combines two <see cref="TextEffect"/> instances as a single effect.
-	/// </summary>
-	/// <param name="a">
-	///   The first effect to combine.
-	/// </param>
-	/// <param name="b">
-	///   The second effect to combine.
-	/// </param>
-	/// <returns>
-	///   A new <see cref="CompositeEffect"/>, flattening any nested composite. If either <paramref name="a"/> or
-	///   <paramref name="b"/> are <see langword="null"/>, the other one is returned. If both are not specified,
-	///   returns <see langword="null"/>.
-	/// </returns>
-	public static TextEffect? Combine(TextEffect? a, TextEffect? b)
-	{
-		// Return the same effect if the other one is null.
-		if (a is null)
-		{
-			return b;
-		}
+    /// <summary>
+    /// Combines two <see cref="TextEffect"/> instances as a single effect.
+    /// </summary>
+    /// <param name="a">The first effect to combine.</param>
+    /// <param name="b">The second effect to combine.</param>
+    /// <returns>
+    /// A new <see cref="CompositeEffect"/>, flattening any nested composite. If either <paramref name="a"/> or
+    /// <paramref name="b"/> are <see langword="null"/>, the other one is returned. If both are not specified, returns
+    /// <see langword="null"/>.
+    /// </returns>
+    public static TextEffect? Combine(TextEffect? a, TextEffect? b)
+    {
+        // Return the same effect if the other one is null.
+        if (a is null)
+        {
+            return b;
+        }
 
-		if (b is null)
-		{
-			return a;
-		}
+        if (b is null)
+        {
+            return a;
+        }
 
-		// Both effects are not null, so we need to merge them.
-		var compA = a as CompositeEffect;
-		var compB = b as CompositeEffect;
-		
-		if (compA is not null && compB is not null)
-		{
-			return new CompositeEffect([.. compA.Effects, ..compB.Effects]);
-		}
+        // Both effects are not null, so we need to merge them.
+        var compA = a as CompositeEffect;
+        var compB = b as CompositeEffect;
 
-		if (compA is not null)
-		{
-			return new CompositeEffect([.. compA.Effects, b]);
-		}
-		
-		if (compB is not null)
-		{
-			return new CompositeEffect([a, .. compB.Effects]);
-		}
-		
-		return new CompositeEffect(a, b);
-	}
+        if (compA is not null && compB is not null)
+        {
+            return new CompositeEffect([.. compA.Effects, .. compB.Effects]);
+        }
 
-	/// <inheritdoc/>
-	public override bool Process(ref GlyphTransform trans)
-	{
-		var status = true;
+        if (compA is not null)
+        {
+            return new CompositeEffect([.. compA.Effects, b]);
+        }
 
-		foreach (var effect in Effects)
-		{
-			if (effect is not null)
-			{
-				status &= effect.Process(ref trans);
-			}
-		}
+        if (compB is not null)
+        {
+            return new CompositeEffect([a, .. compB.Effects]);
+        }
 
-		return status;
-	}
+        return new CompositeEffect(a, b);
+    }
 
-	/// <inheritdoc/>
-	public override TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
-	{
-		// I optimized the parsing layer so I could do shit like this without consecuences.
-		var effects = new TextEffect?[_effects.Length];
-		var changed = false;
+    /// <inheritdoc/>
+    public override bool Process(ref GlyphTransform trans)
+    {
+        var status = true;
 
-		for (var i = 0; i < effects.Length; i++)
-		{
-			effects[i] = _effects[i]?.Setup(attributes);
-			changed |= !ReferenceEquals(effects[i], _effects[i]);
-		}
+        foreach (var effect in Effects)
+        {
+            if (effect is not null)
+            {
+                status &= effect.Process(ref trans);
+            }
+        }
 
-		return changed ? new CompositeEffect(effects) : this;
-	}
+        return status;
+    }
+
+    /// <inheritdoc/>
+    public override TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
+    {
+        // I optimized the parsing layer so I could do shit like this without consecuences.
+        var effects = new TextEffect?[_effects.Length];
+        var changed = false;
+
+        for (var i = 0; i < effects.Length; i++)
+        {
+            effects[i] = _effects[i]?.Setup(attributes);
+            changed |= !ReferenceEquals(effects[i], _effects[i]);
+        }
+
+        return changed ? new CompositeEffect(effects) : this;
+    }
 }

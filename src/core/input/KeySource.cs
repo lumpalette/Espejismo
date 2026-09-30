@@ -16,39 +16,39 @@ namespace Espejismo.Core.Input;
 /// </param>
 public class KeySource(Key key, bool isVirtual) : InputSource<KeySource>
 {
-	/// <summary>
-	///   Gets the key identifier.
-	/// </summary>
-	public Key Key { get; } = key;
+    /// <summary>
+    ///   Gets the key identifier.
+    /// </summary>
+    public Key Key { get; } = key;
 
-	/// <summary>
-	///   Gets a value indicating whether the key position is based on the user's current layout or based on a standard
-	///   US QWERTY layout.
-	/// </summary>
-	public bool IsVirtual { get; } = isVirtual;
+    /// <summary>
+    ///   Gets a value indicating whether the key position is based on the user's current layout or based on a standard
+    ///   US QWERTY layout.
+    /// </summary>
+    public bool IsVirtual { get; } = isVirtual;
 
-	/// <inheritdoc/>
-	public override bool TryParseEvent(InputEvent? e, float deadzone, out float value)
-	{
-		if (e is not InputEventKey key || Key != (IsVirtual ? key.Keycode : key.PhysicalKeycode))
-		{
-			value = 0f;
-			return false;
-		}
+    /// <inheritdoc/>
+    public override bool TryParseEvent(InputEvent? e, float deadzone, out float value)
+    {
+        if (e is not InputEventKey key || Key != (IsVirtual ? key.Keycode : key.PhysicalKeycode))
+        {
+            value = 0f;
+            return false;
+        }
 
-		value = key.Pressed ? 1f : 0f;
-		return true;
-	}
+        value = key.Pressed ? 1f : 0f;
+        return true;
+    }
 
-	/// <inheritdoc/>
-	public override bool Equals([NotNullWhen(true)] KeySource? other)
-	{
-		return other is not null && Key == other.Key && IsVirtual == other.IsVirtual;
-	}
+    /// <inheritdoc/>
+    public override bool Equals([NotNullWhen(true)] KeySource? other)
+    {
+        return other is not null && Key == other.Key && IsVirtual == other.IsVirtual;
+    }
 
-	/// <inheritdoc/>
-	public override int GetHashCode()
-	{
-		return HashCode.Combine(Key, IsVirtual);
-	}
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Key, IsVirtual);
+    }
 }

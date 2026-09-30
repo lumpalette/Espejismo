@@ -4,55 +4,53 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-///   A self-closing text tag that inserts an icon at the tag's position.
+/// A self-closing text tag that inserts an icon at the tag's position.
 /// </summary>
 /// <remarks>
-///   <b>Attributes:</b>
-///   <list type="bullet">
+/// <b>Attributes:</b>
+/// <list type="bullet">
 ///     <item>
-///       <term><c>&lt;main&gt;</c></term>
-///       <description>
-///         Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="TextConfig"/>.
-///       </description>
+///         <term><c>&lt;main&gt;</c></term>
+///         <description>
+///             Identifier for the <see cref="Texture2D"/> to insert, as defined in <see cref="TextConfig"/>.
+///         </description>
 ///     </item>
 ///     <item>
-///       <term><c>[align]</c></term>
-///       <description>
-///         One of the values in the <see cref="InlineAlignment"/> enum, case-insensitive.
-///       </description>
+///         <term><c>[align]</c></term>
+///         <description>One of the values in the <see cref="InlineAlignment"/> enum, case-insensitive.</description>
 ///     </item>
 ///     <item>
-///       <term><c>[size]</c></term>
-///       <description>The dimensions of the texture rect, formatted as <c>WxH</c>.</description>
+///         <term><c>[size]</c></term>
+///         <description>The dimensions of the texture rect, formatted as <c>WxH</c>.</description>
 ///     </item>
-///   </list>
+/// </list>
 /// </remarks>
 [GlobalClass, Tool]
 public sealed partial class IconTag : TextTag
 {
-	/// <inheritdoc/>
-	public override bool IsVoid => true;
+    /// <inheritdoc/>
+    public override bool IsVoid => true;
 
-	/// <inheritdoc/>
-	public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
-	{
-		if (!attributes.TryFind("<main>", out var idAttr)
-			|| !TextConfig.Icons.TryGetResource(idAttr.Value, out var tex))
-		{
-			return false;
-		}
-		
-		if (!attributes.TryGetValue("align", ignoreCase: true, out InlineAlignment align))
-		{
-			align = InlineAlignment.Center;
-		}
+    /// <inheritdoc/>
+    public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
+    {
+        if (!attributes.TryFind("<main>", out var main)
+            || !TextConfig.Icons.TryGetResource(main.Value, out var tex))
+        {
+            return false;
+        }
 
-		if (!attributes.TryGetValue("size", sep: 'x', out Vector2 size))
-		{
-			size = tex.GetSize();
-		}
+        if (!attributes.TryGetValue("align", ignoreCase: true, out InlineAlignment align))
+        {
+            align = InlineAlignment.Center;
+        }
 
-		builder.AppendIcon(tex, align, size);
-		return true;
-	}
+        if (!attributes.TryGetValue("size", sep: 'x', out Vector2 size))
+        {
+            size = tex.GetSize();
+        }
+
+        _ = builder.AppendIcon(tex, align, size);
+        return true;
+    }
 }
