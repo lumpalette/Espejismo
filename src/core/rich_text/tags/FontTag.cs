@@ -11,7 +11,9 @@ namespace Espejismo.Core.RichText.Tags;
 /// <list type="bullet">
 ///     <item>
 ///         <term><c>[&lt;main&gt;]</c></term>
-///         <description>Identifier for the new <see cref="FontFamily"/>, as defined in <see cref="TextConfig"/>.</description>
+///         <description>
+///             Identifier for the new <see cref="FontFamily"/>, as defined in <see cref="TextConfig"/>.
+///         </description>
 ///     </item>
 ///     <item>
 ///         <term><c>[size]</c></term>

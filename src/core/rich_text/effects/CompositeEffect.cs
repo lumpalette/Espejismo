@@ -13,15 +13,14 @@ public sealed partial class CompositeEffect : TextEffect
     private TextEffect?[] _effects = [];
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompositeEffect"/> class that is empty.
+    /// Creates a new <see cref="CompositeEffect"/> instance with no effects.
     /// </summary>
     public CompositeEffect()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CompositeEffect"/> class using the specified sequence of
-    /// <see cref="TextEffect"/> instances.
+    /// Creates a new <see cref="CompositeEffect"/> instance with the specified <see cref="TextEffect"/> instances.
     /// </summary>
     /// <param name="effects">The effects to merge together.</param>
     public CompositeEffect(params ReadOnlySpan<TextEffect?> effects)

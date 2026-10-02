@@ -77,9 +77,7 @@ public readonly record struct TextStyle
     /// Creates a new <see cref="TextStyle"/> by combining the properties of this style with another.
     /// </summary>
     /// <param name="other">The fallback style to merge with when the properties of this style are unset.</param>
-    /// <returns>
-    /// The <see cref="TextStyle"/> merged with <paramref name="other"/>.
-    /// </returns>
+    /// <returns>The <see cref="TextStyle"/> merged with <paramref name="other"/>.</returns>
     public TextStyle MergedWith(in TextStyle other)
     {
         return new TextStyle

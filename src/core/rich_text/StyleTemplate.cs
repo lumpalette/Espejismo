@@ -212,12 +212,8 @@ public partial class StyleTemplate : TextResource
     /// <summary>
     /// Creates a new <see cref="TextStyle"/> based on the data of this template.
     /// </summary>
-    /// <returns>
-    /// The created <see cref="TextStyle"/>, fully set.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if <see cref="Font"/> is <see langword="null"/>.
-    /// </exception>
+    /// <returns>The created <see cref="TextStyle"/>, fully set.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="Font"/> is <see langword="null"/>.</exception>
     public TextStyle Create()
     {
         return CreateFrom(default);
@@ -230,12 +226,8 @@ public partial class StyleTemplate : TextResource
     /// <param name="style">
     /// The style to copy; its properties will take precedence over the ones defined by the template.
     /// </param>
-    /// <returns>
-    /// The created <see cref="TextStyle"/>, fully set.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if <see cref="Font"/> is <see langword="null"/>.
-    /// </exception>
+    /// <returns>The created <see cref="TextStyle"/>, fully set.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="Font"/> is <see langword="null"/>.</exception>
     public TextStyle CreateFrom(in TextStyle style)
     {
         if (Font is null)

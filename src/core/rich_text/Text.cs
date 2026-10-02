@@ -220,7 +220,9 @@ public sealed partial class Text : IDisposable
     /// <param name="style">The style to apply to the resulting text.</param>
     /// <param name="visibleChars">The maximum number of glyphs to generate. If set to -1, no limit is applied.</param>
     /// <returns>The <see cref="Text"/> representation of <paramref name="richText"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="richText"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="richText"/> is <see langword="null"/>.
+    /// </exception>
     public static Text Parse(string richText, TextStyle style, int visibleChars = -1)
     {
         ArgumentNullException.ThrowIfNull(richText);

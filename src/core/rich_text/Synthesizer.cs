@@ -36,13 +36,13 @@ internal struct Synthesizer(Document document, TextBuilder builder)
                     break;
 
                 case NodeType.Text:
-                    _accumulatedText.Append(document.Source, child.ValueStart, child.ValueLength);
+                    _ = _accumulatedText.Append(document.Source, child.ValueStart, child.ValueLength);
                     break;
 
                 case NodeType.CharacterEntity:
                     if (child.Entity.TryEncodeToUtf16(entityBuffer, out var charsWritten))
                     {
-                        _accumulatedText.Append(entityBuffer[..charsWritten]);
+                        _ = _accumulatedText.Append(entityBuffer[..charsWritten]);
                     }
                     break;
             }
@@ -66,13 +66,13 @@ internal struct Synthesizer(Document document, TextBuilder builder)
         {
             if (i > 0)
             {
-                builder.AppendBreak();
+                _ = builder.AppendBreak();
             }
 
-            builder.AppendText(lines[i]);
+            _ = builder.AppendText(lines[i]);
         }
 
-        _accumulatedText.Clear();
+        _ = _accumulatedText.Clear();
     }
 
     private void WalkChildren(in Node node, int nodeIndex)

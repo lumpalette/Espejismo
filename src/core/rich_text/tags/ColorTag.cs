@@ -12,8 +12,9 @@ namespace Espejismo.Core.RichText.Tags;
 ///     <item>
 ///         <term><c>&lt;main&gt;</c></term>
 ///         <description>
-///             The color to apply, which can be either the name of one of the colors in the <see cref="Colors"/> class,
-///             case-insensitive, or a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
+///             The color to apply, which can be either the name of one of the colors in the <see cref="Colors"/>
+///             class case-insensitive, or a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#'
+///             character.
 ///         </description>
 ///     </item>
 /// </list>

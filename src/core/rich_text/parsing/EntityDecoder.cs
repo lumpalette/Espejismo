@@ -201,7 +201,7 @@ internal static class EntityDecoder
     private static Rune ResolveCharacterReferenceCode(int code)
     {
         // Either the code is null, outside the unicode range or a unicode surrogate.
-        if (code == 0x00 || code > 0x10FFFF || (code is >= 0xD800 and <= 0xDFFF))
+        if (code is 0x00 or > 0x10FFFF or (>= 0xD800 and <= 0xDFFF))
         {
             return new Rune('\uFFFD');
         }

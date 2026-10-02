@@ -15,8 +15,7 @@ public class ResourceMap<T> where T : Resource
     private readonly Dictionary<string, T>.AlternateLookup<ReadOnlySpan<char>> _alt;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResourceMap{T}"/> class by copying the entries of the specified
-    /// collection.
+    /// Creates a new <see cref="ResourceMap{T}"/> instance by copying the entries from the specified collection.
     /// </summary>
     /// <param name="collection">The collection of key-value pair of resources to copy to the map.</param>
     public ResourceMap(IEnumerable<KeyValuePair<string, T>> collection)
@@ -33,9 +32,7 @@ public class ResourceMap<T> where T : Resource
     /// When this method returns, contains the resource associated with <paramref name="name"/>, if found; otherwise,
     /// <see langword="false"/>.
     /// </param>
-    /// <returns>
-    /// <see langword="true"/> if the resource was found; otherwise, <see langword="false"/>.
-    /// </returns>
+    /// <returns><see langword="true"/> if the resource was found; otherwise, <see langword="false"/>.</returns>
     public bool TryGetResource(ReadOnlySpan<char> name, [NotNullWhen(true)] out T? res)
     {
         return _alt.TryGetValue(name, out res);

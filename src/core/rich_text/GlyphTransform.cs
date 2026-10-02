@@ -10,7 +10,7 @@ public ref struct GlyphTransform
     private readonly ref readonly Glyph _glyph;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GlyphTransform"/> struct.
+    /// Creates a new <see cref="GlyphTransform"/> instance.
     /// </summary>
     /// <param name="glyph">The glyph being transformed.</param>
     /// <param name="elapsedTime">Time elapsed since the glyph rendering started.</param>
@@ -37,7 +37,9 @@ public ref struct GlyphTransform
     /// <summary>
     /// Gets the index of the glyph within the source line.
     /// </summary>
-    /// <value>A 32-bit signed integer in the range [0,<see cref="LineLength"/>].</value>
+    /// <value>
+    /// A 32-bit signed integer in the range [0,<see cref="LineLength"/>].
+    /// </value>
     public readonly int LinePosition { get; }
 
     /// <summary>

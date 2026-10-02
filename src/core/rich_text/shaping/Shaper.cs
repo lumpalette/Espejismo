@@ -8,15 +8,15 @@ namespace Espejismo.Core.RichText.Shaping;
 internal readonly struct Shaper()
 {
     /* Nunca suelo escribir acerca de mis experiencias diseñando un sistema cuando programo, y mucho menos hacerlo
-	 * dentro del código fuente, pero la sensación que tuve al escribir esto se puede resumir con la frase aquella
-	 * mística y poderosa señora, intentando deducir cómo se opera una cámara de teléfono móvil
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * no puedo martha
-	 */
+     * dentro del código fuente, pero la sensación que tuve al escribir esto se puede resumir con la frase aquella
+     * mística y poderosa señora, intentando deducir cómo se opera una cámara de teléfono móvil
+     * 
+     * 
+     * 
+     * 
+     * 
+     * no puedo martha
+     */
 
     private readonly List<Paragraph> _paragraphs = [];
 
@@ -86,17 +86,17 @@ internal readonly struct Shaper()
                     var fonts = resolved.Font.GetRids();
                     var fontSize = resolved.FontSize;
 
-                    TS.ShapedTextAddString(Shaped, run.Text, fonts, fontSize, meta: i);
+                    _ = TS.ShapedTextAddString(Shaped, run.Text, fonts, fontSize, meta: i);
                     paragraph.Length += CountCodepoints(run.Text);
                     break;
 
                 case ShapeItemType.Icon:
-                    TS.ShapedTextAddObject(Shaped, i, item.Icon!.Value.Size, item.Icon!.Value.Alignment);
+                    _ = TS.ShapedTextAddObject(Shaped, i, item.Icon!.Value.Size, item.Icon!.Value.Alignment);
                     paragraph.Length++;
                     break;
 
                 case ShapeItemType.Marker:
-                    TS.ShapedTextAddObject(Shaped, i, Vector2.Zero);
+                    _ = TS.ShapedTextAddObject(Shaped, i, Vector2.Zero);
                     paragraph.Length++;
                     break;
 
@@ -144,15 +144,15 @@ internal readonly struct Shaper()
         }
 
         /* There is a bug in TextServerAdvance::shaped_text_get_line_breaks that assumes that the passed shaped cannot
-		 * be a substr buffer. The method internally calls shaped_text_update_breaks, which is responsible for setting
-		 * the grapheme flags used by BREAK_WORD_BOUND. It does it by directly reading the text data from the passed
-		 * shaped, but substr buffers does not contain any actual data, but a pointer to the source shaped. Because of
-		 * this, those flags are not set, and it makes that shaped_text_get_line_breaks returns incorrect results.
-		 * 
-		 * By calling this method on the source shaped, we make sure that the grapheme flags are set, making every
-		 * subsequent substr have the correct data.
-		 */
-        TS.ShapedTextGetLineBreaks(Shaped, float.MaxValue, 0, TextServer.LineBreakFlag.WordBound);
+         * be a substr buffer. The method internally calls shaped_text_update_breaks, which is responsible for setting
+         * the grapheme flags used by BREAK_WORD_BOUND. It does it by directly reading the text data from the passed
+         * shaped, but substr buffers does not contain any actual data, but a pointer to the source shaped. Because of
+         * this, those flags are not set, and it makes that shaped_text_get_line_breaks returns incorrect results.
+         * 
+         * By calling this method on the source shaped, we make sure that the grapheme flags are set, making every
+         * subsequent substr have the correct data.
+         */
+        _ = TS.ShapedTextGetLineBreaks(Shaped, float.MaxValue, 0, TextServer.LineBreakFlag.WordBound);
     }
 
     private void WriteLines()
@@ -174,7 +174,7 @@ internal readonly struct Shaper()
 
                 if (paragraph.Alignment == HorizontalAlignment.Fill && MaxWidth > 0)
                 {
-                    TS.ShapedTextFitToWidth(lineShaped, MaxWidth);
+                    _ = TS.ShapedTextFitToWidth(lineShaped, MaxWidth);
                 }
 
                 InsertLine(lineShaped, paragraph.Alignment);
@@ -256,15 +256,12 @@ internal readonly struct Shaper()
 
         var item = Items[itemIndex];
 
-        switch (item.Type)
+        return item.Type switch
         {
-            case ShapeItemType.Run:
-                return AppendChar(gl, item.Run!.Value);
-            case ShapeItemType.Icon:
-                return AppendIcon(gl, item.Icon!.Value, itemIndex, lineShaped);
-            default:
-                return AppendMarker(item.Marker!.Value);
-        }
+            ShapeItemType.Run => AppendChar(gl, item.Run!.Value),
+            ShapeItemType.Icon => AppendIcon(gl, item.Icon!.Value, itemIndex, lineShaped),
+            _ => AppendMarker(item.Marker!.Value),
+        };
     }
 
     private float AppendChar(Godot.Collections.Dictionary gl, in ItemRun item)

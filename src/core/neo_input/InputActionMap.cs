@@ -31,8 +31,12 @@ public sealed class InputActionMap
     /// </summary>
     /// <param name="actionName">The name of the action to get.</param>
     /// <returns>The <see cref="InputAction"/> associated with <paramref name="actionName"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="actionName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="KeyNotFoundException">Thrown if an action with the specified name does not exist in the map.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="actionName"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="KeyNotFoundException">
+    /// Thrown if an action with the specified name does not exist in the map.
+    /// </exception>
     public InputAction this[string actionName]
     {
         get
@@ -53,15 +57,20 @@ public sealed class InputActionMap
     /// </summary>
     /// <param name="actionName">The name of the action to add. Must be unique within the map.</param>
     /// <param name="action">The action to add.</param>
-    /// <exception cref="ArgumentException">Thrown if an action with the same name already exists in the map.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="actionName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if an action with the same name already exists in the map.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="actionName"/> is <see langword="null"/>.
+    /// </exception>
     public void Add(string actionName, InputAction action)
     {
         ArgumentNullException.ThrowIfNull(actionName);
 
         if (!_actions.TryAdd(actionName, action))
         {
-            throw new ArgumentException("An action with the specified name already exists in the map.", nameof(actionName));
+            throw new ArgumentException("An action with the specified name already exists in the map.",
+                nameof(actionName));
         }
     }
 
@@ -72,7 +81,9 @@ public sealed class InputActionMap
     /// <returns>
     /// <see langword="true"/> if the action is successfully found and removed; otherwise, <see langword="false"/>.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="actionName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="actionName"/> is <see langword="null"/>.
+    /// </exception>
     public bool Remove(string actionName)
     {
         ArgumentNullException.ThrowIfNull(actionName);
@@ -100,13 +111,16 @@ public sealed class InputActionMap
     /// </summary>
     /// <param name="actionName">The name of the action to get.</param>
     /// <param name="action">
-    /// When this method returns, contains the action with the specified name, if exists; otherwise, <see langword="false"/>.
+    /// When this method returns, contains the action with the specified name, if exists; otherwise,
+    /// <see langword="false"/>.
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the map contains an <see cref="InputAction"/> with the specified name; otherwise,
     /// <see langword="false"/>.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="actionName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="actionName"/> is <see langword="null"/>.
+    /// </exception>
     public bool TryGetAction(string actionName, [NotNullWhen(true)] out InputAction? action)
     {
         ArgumentNullException.ThrowIfNull(actionName);

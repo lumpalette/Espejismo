@@ -96,7 +96,9 @@ public partial class TextRenderer : Control
     /// <summary>
     /// Gets or sets the number of characters to render. If set to -1, all characters are rendered.
     /// </summary>
-    /// <value>A 32-bit signed integer in the range [-1,128000].</value>
+    /// <value>
+    /// A 32-bit signed integer in the range [-1,128000].
+    /// </value>
     [ExportGroup("Displayed text")]
     [Export(PropertyHint.Range, "-1,128000,suffix:chrs")]
     public int VisibleCharacters
@@ -349,9 +351,7 @@ public partial class TextRenderer : Control
                 OutlineColor = oColor
             };
 
-            g.Style.Effect.Process(ref trans);
-
-            if (trans.Visibility != GlyphVisibility.Visible)
+            if (!g.Style.Effect.Process(ref trans) || trans.Visibility != GlyphVisibility.Visible)
             {
                 return trans.Visibility;
             }

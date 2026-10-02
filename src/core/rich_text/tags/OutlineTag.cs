@@ -16,8 +16,9 @@ namespace Espejismo.Core.RichText.Tags;
 ///     <item>
 ///         <term><c>[color]</c></term>
 ///         <description>
-///             The color of the text outline, which can be either the name of one of the colors in the <see cref="Colors"/>
-///             class, case-insensitive, or a 3, 4, 6 or 8-digit HTML color code, optionally prefixed by a '#' character.
+///             The color of the text outline, which can be either the name of one of the colors in the
+///             <see cref="Colors"/> class, case-insensitive, or a 3, 4, 6 or 8-digit HTML color code, optionally
+///             prefixed by a '#' character.
 ///         </description>
 ///     </item>
 /// </list>

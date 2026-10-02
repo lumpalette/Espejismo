@@ -60,8 +60,8 @@ public partial class TextConfig : TextResource
 #if TOOLS
             return new ResourceMap<TextTag>(Active._tags);
 #else
-			field ??= new ResourceMap<TextTag>(Active._tags);
-			return field;
+            field ??= new ResourceMap<TextTag>(Active._tags);
+            return field;
 #endif
         }
     }
@@ -76,8 +76,8 @@ public partial class TextConfig : TextResource
 #if TOOLS
             return new ResourceMap<StyleTemplate>(Active._styles);
 #else
-			field ??= new ResourceMap<StyleTemplate>(Active._styles);
-			return field;
+            field ??= new ResourceMap<StyleTemplate>(Active._styles);
+            return field;
 #endif
         }
     }
@@ -92,8 +92,8 @@ public partial class TextConfig : TextResource
 #if TOOLS
             return new ResourceMap<FontFamily>(Active._fonts);
 #else
-			field ??= new ResourceMap<FontFamily>(Active._fonts);
-			return field;
+            field ??= new ResourceMap<FontFamily>(Active._fonts);
+            return field;
 #endif
         }
     }
@@ -108,8 +108,8 @@ public partial class TextConfig : TextResource
 #if TOOLS
             return new ResourceMap<Texture2D>(Active._icons);
 #else
-			field ??= new ResourceMap<Texture2D>(Active._icons);
-			return field;
+            field ??= new ResourceMap<Texture2D>(Active._icons);
+            return field;
 #endif
         }
     }
@@ -121,8 +121,8 @@ public partial class TextConfig : TextResource
 #if TOOLS
             return LoadFromPath();
 #else
-			field ??= LoadFromPath();
-			return field;
+            field ??= LoadFromPath();
+            return field;
 #endif
         }
     }

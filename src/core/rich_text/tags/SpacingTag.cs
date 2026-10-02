@@ -12,14 +12,15 @@ namespace Espejismo.Core.RichText.Tags;
 ///     <item>
 ///         <term><c>[&lt;main&gt;]</c></term>
 ///         <description>
-///             The spacing to apply, formatted as <c>X,Y</c>. Takes precedence before the <c>x</c> and <c>y</c> attributes.
+///             The spacing to apply, formatted as <c>X,Y</c>. Takes precedence before the <c>x</c> and <c>y</c>
+///             attributes.
 ///         </description>
 ///     </item>
 ///     <item>
 ///         <term><c>[x]</c></term>
 ///         <description>
-///             Extra space added between letters, in pixels, and can be negative. Only applied when the <c>&lt;main&gt;</c>
-///             attribute is not specified.
+///             Extra space added between letters, in pixels, and can be negative. Only applied when the
+///             <c>&lt;main&gt;</c> attribute is not specified.
 ///         </description>
 ///     </item>
 ///     <item>

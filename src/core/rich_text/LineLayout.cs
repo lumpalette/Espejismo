@@ -64,7 +64,9 @@ public readonly struct LineLayout
     /// <summary>
     /// Gets the total height of the line, including the line gap, in pixels.
     /// </summary>
-    /// <value>The sum of <see cref="Ascent"/>, <see cref="Descent"/>, and <see cref="Leading"/>.</value>
+    /// <value>
+    /// The sum of <see cref="Ascent"/>, <see cref="Descent"/>, and <see cref="Leading"/>.
+    /// </value>
     public float Height => Ascent + Descent + Leading;
 
     /// <summary>

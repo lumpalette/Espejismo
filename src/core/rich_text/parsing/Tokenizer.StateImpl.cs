@@ -3,7 +3,7 @@ using System.Text;
 namespace Espejismo.Core.RichText.Parsing;
 
 // The implementation of the tokenizer, based on the HTML tokenizer specification.
-partial struct Tokenizer
+internal partial struct Tokenizer
 {
     private TokenType ExecData()
     {

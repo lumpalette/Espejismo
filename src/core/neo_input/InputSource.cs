@@ -44,9 +44,7 @@ public abstract class InputSource : IEquatable<InputSource>
     /// <summary>
     /// Computes the hash code of the source.
     /// </summary>
-    /// <returns>
-    /// The hash code for this <see cref="InputSource"/>.
-    /// </returns>
+    /// <returns>The hash code for this <see cref="InputSource"/>.</returns>
     public abstract override int GetHashCode();
 
     /// <summary>
@@ -72,7 +70,9 @@ public abstract class InputSource : IEquatable<InputSource>
     /// <see langword="false"/>.
     /// </returns>
     public static bool operator ==(InputSource? a, InputSource? b)
-        => ReferenceEquals(a, b) || ((a is null) ? b is null : a.Equals(b));
+    {
+        return ReferenceEquals(a, b) || ((a is null) ? b is null : a.Equals(b));
+    }
 
     /// <summary>
     /// Determines whether two specified <see cref="InputSource"/> instances are not equal.
@@ -83,7 +83,10 @@ public abstract class InputSource : IEquatable<InputSource>
     /// <see langword="true"/> if <paramref name="a"/> is not equal to <paramref name="b"/>; otherwise,
     /// <see langword="false"/>.
     /// </returns>
-    public static bool operator !=(InputSource? a, InputSource? b) => !(a == b);
+    public static bool operator !=(InputSource? a, InputSource? b)
+    {
+        return !(a == b);
+    }
 }
 
 /// <summary>

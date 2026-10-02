@@ -137,7 +137,7 @@ internal ref partial struct Tokenizer(string source)
         _attributeStarted = false;
     }
 
-    private TokenType GetCurrentTagType()
+    private readonly TokenType GetCurrentTagType()
     {
         return _isEndTag ? TokenType.EndTag : TokenType.StartTag;
     }

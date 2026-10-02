@@ -22,21 +22,21 @@ public class InputAction
     private float _currentStrength;
 
     /// <summary>
-    /// Creates a new <see cref="InputAction"/> with no bound sources.
+    /// Creates a new <see cref="InputAction"/> instance with no bound sources.
     /// </summary>
     public InputAction()
     {
     }
 
     /// <summary>
-    /// Creates a new <see cref="InputAction"/> bound to the specified <see cref="InputSource"/> instances.
+    /// Creates a new <see cref="InputAction"/> instance bound to the specified <see cref="InputSource"/> instances.
     /// </summary>
     /// <param name="sources">The sources to bind.</param>
     public InputAction(params ReadOnlySpan<InputSource> sources)
     {
         foreach (var source in sources)
         {
-            _sources.Add(source);
+            _ = _sources.Add(source);
         }
     }
 
@@ -48,8 +48,8 @@ public class InputAction
     /// The value is always clamped to the range [0,1]. Setting it outside this range will automatically clamp it.
     /// </para>
     /// <para>
-    /// Setting this value updates the press/release timestamps, which, along with this property, are used to compute the
-    /// current <see cref="State"/>.
+    /// Setting this value updates the press/release timestamps, which, along with this property, are used to compute
+    /// the current <see cref="State"/>.
     /// </para>
     /// </remarks>
     /// <value>
@@ -60,8 +60,8 @@ public class InputAction
         get => _currentStrength;
         set
         {
-            value = Math.Clamp(value, 0f, 1f);
-
+            _sourceStrengths.Clear();
+            UpdateStrength(Math.Clamp(value, 0f, 1f));
         }
     }
 
@@ -198,19 +198,31 @@ public class InputAction
 
             if (strength > 0)
             {
-                _sourceStrengths[source] = strength;
+                _ = _sourceStrengths[source] = strength;
             }
             else
             {
-                _sourceStrengths.Remove(source);
+                _ = _sourceStrengths.Remove(source);
             }
 
             UpdateStrength(GetCurrentMaxStrength());
-
             return true;
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Clears the state of the action, which bypasses setting the press/release timestamps.
+    /// </summary>
+    public void ResetState()
+    {
+        Strength = 0f;
+
+        _pressedProcessFrame = ulong.MaxValue;
+        _pressedPhysicsFrame = ulong.MaxValue;
+        _releasedProcessFrame = ulong.MaxValue;
+        _releasedPhysicsFrame = ulong.MaxValue;
     }
 
     private void UpdateStrength(float strength)

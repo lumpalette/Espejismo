@@ -83,9 +83,7 @@ public partial class FontFamily : TextResource
     /// variant if the dedicated resource is not available.
     /// </summary>
     /// <param name="style">Identifier for the font variant to get.</param>
-    /// <returns>
-    /// The matching <see cref="Font"/> resource.
-    /// </returns>
+    /// <returns>The matching <see cref="Font"/> resource.</returns>
     public Font GetVariant(FontStyle style)
     {
         if (Regular is null)
