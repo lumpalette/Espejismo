@@ -21,6 +21,7 @@ public sealed partial class Text : IDisposable
     private readonly ShapeItem[] _items;
     private readonly Rid _shaped;
 
+    private bool _disposed;
     private Font? _fallbackFont;
     private ushort _fallbackFontSize;
     private int _fallbackLeading;
@@ -51,6 +52,9 @@ public sealed partial class Text : IDisposable
     /// <remarks>
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </remarks>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the <see cref="Text"/> has already been disposed.
+    /// </exception>
     public ReadOnlySpan<Glyph> Glyphs
     {
         get
@@ -66,6 +70,9 @@ public sealed partial class Text : IDisposable
     /// <remarks>
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </remarks>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the <see cref="Text"/> has already been disposed.
+    /// </exception>
     public int Length
     {
         get
@@ -86,6 +93,9 @@ public sealed partial class Text : IDisposable
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </para>
     /// </remarks>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the <see cref="Text"/> has already been disposed.
+    /// </exception>
     public ReadOnlySpan<LineLayout> Lines
     {
         get
@@ -101,6 +111,9 @@ public sealed partial class Text : IDisposable
     /// <remarks>
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </remarks>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the <see cref="Text"/> has already been disposed.
+    /// </exception>
     public ReadOnlySpan<TextMarker> Markers
     {
         get
@@ -123,11 +136,16 @@ public sealed partial class Text : IDisposable
     /// <summary>
     /// Gets or sets the base style applied to all the text.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if setting the property after the <see cref="Text"/> has been disposed.
+    /// </exception>
     public TextStyle Style
     {
         get;
         set
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+
             if (field != value)
             {
                 field = value;
@@ -140,11 +158,16 @@ public sealed partial class Text : IDisposable
     /// <summary>
     /// Gets or sets the maximum width allowed for a text line, in pixels.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if setting the property after the <see cref="Text"/> has been disposed.
+    /// </exception>
     public float Width
     {
         get;
         set
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+
             if (field != value)
             {
                 field = value;
@@ -169,6 +192,9 @@ public sealed partial class Text : IDisposable
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </para>
     /// </remarks>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the <see cref="Text"/> has already been disposed.
+    /// </exception>
     public Vector2 ContentSize
     {
         get
@@ -200,11 +226,16 @@ public sealed partial class Text : IDisposable
     /// <summary>
     /// Gets or sets the horizontal alignment of the text.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if setting the property after the <see cref="Text"/> has been disposed.
+    /// </exception>
     public HorizontalAlignment Alignment
     {
         get;
         set
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+
             if (field != value)
             {
                 field = value;
@@ -244,8 +275,13 @@ public sealed partial class Text : IDisposable
     /// <summary>
     /// Shapes the stored shape items into a sequence of <see cref="Glyph"/> instances.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the <see cref="Text"/> has already been disposed.
+    /// </exception>
     public void Shape()
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         if (!IsDirty)
         {
             return;
@@ -278,22 +314,29 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
-    /// Frees the memory from the internal <see cref="TextServer"/> shaped buffer.
+    /// Releases unmanaged <see cref="TextServer"/> resources used by the text.
     /// </summary>
     public void Dispose()
     {
-        _TS.FreeRid(_shaped);
-        GC.SuppressFinalize(this);
+        if (!_disposed)
+        {
+            Clear();
+            _TS.FreeRid(_shaped);
+            _disposed = true;
+        }
     }
 
-    private void Invalidate()
+    private void Clear()
     {
         _glyphs.Clear();
         _lines.Clear();
         _markers.Clear();
+    }
 
+    private void Invalidate()
+    {
+        Clear();
         _TS.ShapedTextClear(_shaped);
-
         IsDirty = true;
     }
 
@@ -304,7 +347,7 @@ public sealed partial class Text : IDisposable
 
         // The base style is fully resolved here, because an exception is thrown at soon as the config file is loaded
         // the first time if it isn't.
-        var baseStyle = TextConfig.DefaultStyle.CreateFrom(Style);
+        var baseStyle = TextConfig.DefaultStyle.Create(Style);
 
         _fallbackFont = baseStyle.Font!.GetVariant(baseStyle.FontStyle!.Value);
         _fallbackFontSize = baseStyle.FontSize!.Value;

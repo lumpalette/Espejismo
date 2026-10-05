@@ -61,15 +61,16 @@ public sealed class InputActionMap
     /// Thrown if an action with the same name already exists in the map.
     /// </exception>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="actionName"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="actionName"/> or <paramref name="action"/> is <see langword="null"/>.
     /// </exception>
     public void Add(string actionName, InputAction action)
     {
         ArgumentNullException.ThrowIfNull(actionName);
+        ArgumentNullException.ThrowIfNull(action);
 
         if (!_actions.TryAdd(actionName, action))
         {
-            throw new ArgumentException("An action with the specified name already exists in the map.",
+            throw new ArgumentException($"An action with the name '{actionName}' already exists in the map.",
                 nameof(actionName));
         }
     }
@@ -101,8 +102,16 @@ public sealed class InputActionMap
     /// <summary>
     /// Removes all <see cref="InputAction"/> instances from the map.
     /// </summary>
+    /// <remarks>
+    /// The method resets the strength of all actions in the map.
+    /// </remarks>
     public void Clear()
     {
+        foreach (var action in Actions)
+        {
+            action.Strength = 0f;
+        }
+
         _actions.Clear();
     }
 

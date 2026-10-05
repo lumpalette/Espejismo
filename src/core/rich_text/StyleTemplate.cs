@@ -216,19 +216,17 @@ public partial class StyleTemplate : TextResource
     /// <exception cref="InvalidOperationException">Thrown if <see cref="Font"/> is <see langword="null"/>.</exception>
     public TextStyle Create()
     {
-        return CreateFrom(default);
+        return Create(default);
     }
 
     /// <summary>
     /// Creates a copy of the specified <see cref="TextStyle"/>, replacing any unset property with the data from this
     /// template.
     /// </summary>
-    /// <param name="style">
-    /// The style to copy; its properties will take precedence over the ones defined by the template.
-    /// </param>
+    /// <param name="from">The style to copy; it takes precedence over the template's properties, if set.</param>
     /// <returns>The created <see cref="TextStyle"/>, fully set.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <see cref="Font"/> is <see langword="null"/>.</exception>
-    public TextStyle CreateFrom(in TextStyle style)
+    public TextStyle Create(in TextStyle from)
     {
         if (Font is null)
         {
@@ -237,17 +235,17 @@ public partial class StyleTemplate : TextResource
 
         return new TextStyle
         {
-            Font = style.Font ?? Font,
-            FontSize = style.FontSize ?? FontSize,
-            FontStyle = style.FontStyle ?? FontStyle,
-            Color = style.Color ?? Color,
-            Effect = style.Effect ?? Effect,
-            Spacing = style.Spacing ?? Spacing,
-            ShadowSize = style.ShadowSize ?? ShadowSize,
-            ShadowColor = style.ShadowColor ?? ShadowColor,
-            ShadowOffset = style.ShadowOffset ?? ShadowOffset,
-            OutlineSize = style.OutlineSize ?? OutlineSize,
-            OutlineColor = style.OutlineColor ?? OutlineColor
+            Font = from.Font ?? Font,
+            FontSize = from.FontSize ?? FontSize,
+            FontStyle = from.FontStyle ?? FontStyle,
+            Color = from.Color ?? Color,
+            Effect = from.Effect ?? Effect,
+            Spacing = from.Spacing ?? Spacing,
+            ShadowSize = from.ShadowSize ?? ShadowSize,
+            ShadowColor = from.ShadowColor ?? ShadowColor,
+            ShadowOffset = from.ShadowOffset ?? ShadowOffset,
+            OutlineSize = from.OutlineSize ?? OutlineSize,
+            OutlineColor = from.OutlineColor ?? OutlineColor
         };
     }
 }

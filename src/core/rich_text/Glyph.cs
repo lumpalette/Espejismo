@@ -29,10 +29,10 @@ public readonly struct Glyph // 64 bytes pesa la marranota
     public byte Repeat { get; private init; }
 
     /// <summary>
-    /// Gets a value describing the category or characteristics of this glyph, only set in the first glyph of the
-    /// grapheme cluster.
+    /// Gets a <see cref="TextServer.GraphemeFlag"/> value describing the category or characteristics of this glyph,
+    /// only set in the first glyph of the grapheme cluster.
     /// </summary>
-    public ushort Flags { get; private init; } // This is a TextServer.GraphemeFlag value.
+    public ushort Flags { get; private init; }
 
     /// <summary>
     /// Gets the offset to the glyph's origin from the baseline.

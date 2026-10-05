@@ -9,8 +9,6 @@ namespace Espejismo.Core.NeoInput;
 /// </summary>
 public class InputAction
 {
-    private const float Epsilon = 0.001f;
-
     private readonly HashSet<InputSource> _sources = [];
     private readonly Dictionary<InputSource, float> _sourceStrengths = [];
 
@@ -43,18 +41,18 @@ public class InputAction
     /// <summary>
     /// Gets or sets the current strength or intensity of the action.
     /// </summary>
+    /// <value>
+    /// A single-precision floating-point number in the range [0,1].
+    /// </value>
     /// <remarks>
     /// <para>
     /// The value is always clamped to the range [0,1]. Setting it outside this range will automatically clamp it.
     /// </para>
     /// <para>
     /// Setting this value updates the press/release timestamps, which, along with this property, are used to compute
-    /// the current <see cref="State"/>.
+    /// the current <see cref="Phase"/>.
     /// </para>
     /// </remarks>
-    /// <value>
-    /// A single-precision floating-point number in the range [0,1].
-    /// </value>
     public float Strength
     {
         get => _currentStrength;
@@ -66,13 +64,9 @@ public class InputAction
     }
 
     /// <summary>
-    /// Gets the state of the action in the current frame.
+    /// Gets the current state of the action in this frame.
     /// </summary>
-    /// <remarks>
-    /// The value of this property is based on the current <see cref="Strength"/> value and press/release timestamps,
-    /// which are set when the aforementioned property is written.
-    /// </remarks>
-    public InputActionState State
+    public InputActionPhase Phase
     {
         get
         {
@@ -81,25 +75,25 @@ public class InputAction
                 if (Strength > 0f)
                 {
                     return (Engine.GetPhysicsFrames() == _pressedPhysicsFrame)
-                        ? InputActionState.JustPressed
-                        : InputActionState.Pressed;
+                        ? InputActionPhase.JustPressed
+                        : InputActionPhase.Pressed;
                 }
 
                 return (Engine.GetPhysicsFrames() == _releasedPhysicsFrame)
-                    ? InputActionState.JustReleased
-                    : InputActionState.Released;
+                    ? InputActionPhase.JustReleased
+                    : InputActionPhase.Released;
             }
 
             if (Strength > 0f)
             {
                 return (Engine.GetProcessFrames() == _pressedProcessFrame)
-                    ? InputActionState.JustPressed
-                    : InputActionState.Pressed;
+                    ? InputActionPhase.JustPressed
+                    : InputActionPhase.Pressed;
             }
 
             return (Engine.GetProcessFrames() == _releasedProcessFrame)
-                ? InputActionState.JustReleased
-                : InputActionState.Released;
+                ? InputActionPhase.JustReleased
+                : InputActionPhase.Released;
         }
     }
 
@@ -125,16 +119,15 @@ public class InputAction
     /// <summary>
     /// Unbinds an <see cref="InputSource"/> to the action.
     /// </summary>
-    /// <remarks>
-    /// The method recomputes the <see cref="Strength"/> value in case the unbound source was the strongest one, which
-    /// is set to 0 if <paramref name="source"/> was the last one; this does not update the press/release timestamps,
-    /// however.
-    /// </remarks>
     /// <param name="source">The source to unbind.</param>
     /// <returns>
     /// <see langword="true"/> if the <paramref name="source"/> is successfully unbound; <see langword="false"/> if it
     /// was already unbound.
     /// </returns>
+    /// <remarks>
+    /// The method recomputes the <see cref="Strength"/> value in case the unbound source was the strongest one, which
+    /// is set to 0 if <paramref name="source"/> was the last one.
+    /// </remarks>
     public bool Unbind(InputSource source)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -145,7 +138,7 @@ public class InputAction
         if (strengthRemoved)
         {
             // Recalculate max strength in case the removed source was the strongest one.
-            _currentStrength = GetCurrentMaxStrength();
+            UpdateStrength(GetCurrentMaxStrength());
         }
 
         return sourceRemoved;
@@ -155,23 +148,18 @@ public class InputAction
     /// Unbinds every <see cref="InputSource"/> associated with the action.
     /// </summary>
     /// <remarks>
-    /// The method sets the <see cref="Strength"/> value to 0 without updating the press/release timestamps.
+    /// The method sets the <see cref="Strength"/> value to 0.
     /// </remarks>
     public void UnbindAll()
     {
         _sources.Clear();
-        _sourceStrengths.Clear();
-        _currentStrength = 0f;
+        Strength = 0f;
     }
 
     /// <summary>
     /// Searches for a bound <see cref="InputSource"/> that matches the specified <see cref="InputEvent"/>, and if
     /// found, updates the state of the action based on the event's data.
     /// </summary>
-    /// <remarks>
-    /// The event is matched against each bound <see cref="InputSource"/>. If two or more sources match, the strongest
-    /// source takes precedence.
-    /// </remarks>
     /// <param name="e">
     /// The event to match. If <see langword="null"/>, the method returns <see langword="false"/>.
     /// </param>
@@ -180,12 +168,18 @@ public class InputAction
     /// <see langword="true"/> if a matching source is found for <paramref name="e"/>; otherwise,
     /// <see langword="false"/>.
     /// </returns>
+    /// <remarks>
+    /// The event is matched against each bound <see cref="InputSource"/>. The action's strength is then the highest
+    /// strength among all sources that are currently active, including those not matched by <paramref name="e"/>.
+    /// </remarks>
     public bool TryUpdateFromEvent(InputEvent? e, float deadzone)
     {
         if (e is null)
         {
             return false;
         }
+
+        var match = false;
 
         foreach (var source in _sources)
         {
@@ -205,24 +199,15 @@ public class InputAction
                 _ = _sourceStrengths.Remove(source);
             }
 
-            UpdateStrength(GetCurrentMaxStrength());
-            return true;
+            match = true;
         }
 
-        return false;
-    }
+        if (match)
+        {
+            UpdateStrength(GetCurrentMaxStrength());
+        }
 
-    /// <summary>
-    /// Clears the state of the action, which bypasses setting the press/release timestamps.
-    /// </summary>
-    public void ResetState()
-    {
-        Strength = 0f;
-
-        _pressedProcessFrame = ulong.MaxValue;
-        _pressedPhysicsFrame = ulong.MaxValue;
-        _releasedProcessFrame = ulong.MaxValue;
-        _releasedPhysicsFrame = ulong.MaxValue;
+        return match;
     }
 
     private void UpdateStrength(float strength)
@@ -252,7 +237,7 @@ public class InputAction
     // strength is expected to be normalized.
     private static float ApplyDeadzone(float strength, float deadzone)
     {
-        if (strength < Epsilon || strength <= deadzone)
+        if (strength <= deadzone)
         {
             return 0f;
         }

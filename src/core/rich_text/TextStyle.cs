@@ -12,7 +12,7 @@ namespace Espejismo.Core.RichText;
 public readonly record struct TextStyle
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TextStyle"/> struct fully unset.
+    /// Creates a new <see cref="TextStyle"/> instance with all properties set to <see langword="null"/>.
     /// </summary>
     public TextStyle()
     {

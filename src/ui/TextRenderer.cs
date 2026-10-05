@@ -229,8 +229,8 @@ public partial class TextRenderer : Control
         {
             case NotificationPredelete:
                 _shaped?.Dispose();
+                _shaped = null;
                 break;
-
             case NotificationResized:
                 UpdateShaped(parse: false);
                 break;
