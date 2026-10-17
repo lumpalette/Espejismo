@@ -7,7 +7,7 @@ namespace Espejismo.Core.RichText.Tags;
 /// A self-closing text tag that inserts a <see cref="TextMarker"/> at the tag's position.
 /// </summary>
 /// <remarks>
-/// <b>Attributes:</b> Varies (depends on the marker's purpose).
+/// <b>Attributes:</b> Varies (depends on the marker definition).
 /// </remarks>
 [GlobalClass, Tool]
 public sealed partial class MarkerTag : TextTag

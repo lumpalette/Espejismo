@@ -96,9 +96,7 @@ public partial class TextRenderer : Control
     /// <summary>
     /// Gets or sets the number of characters to render. If set to -1, all characters are rendered.
     /// </summary>
-    /// <value>
-    /// A 32-bit signed integer in the range [-1,128000].
-    /// </value>
+    /// <value>The default is -1.</value>
     [ExportGroup("Displayed text")]
     [Export(PropertyHint.Range, "-1,128000,suffix:chrs")]
     public int VisibleCharacters
@@ -106,16 +104,8 @@ public partial class TextRenderer : Control
         get;
         set
         {
-            if (value < -1)
-            {
-                value = -1;
-            }
-
             // Apparently, 128,000 is the maximum number of chars allowed in one shaped text.
-            if (value > 128_000)
-            {
-                value = 128_000;
-            }
+            value = Math.Clamp(value, -1, 128_000);
 
             if (field == value)
             {
@@ -164,7 +154,7 @@ public partial class TextRenderer : Control
     }
 
     /// <summary>
-    /// Gets the <see cref="TextMarker"/> instances embedded into the text.
+    /// Gets the markers embedded into the text.
     /// </summary>
     public ReadOnlySpan<TextMarker> Markers
     {
@@ -343,15 +333,9 @@ public partial class TextRenderer : Control
         if (g.Style.Effect is not null)
         {
             // los efectos de texto enriquecido son clave.
-            var trans = new GlyphTransform(g, _elapsedTime, linePosition, lineLength)
-            {
-                Index = index,
-                Color = color,
-                ShadowColor = sColor,
-                OutlineColor = oColor
-            };
+            var trans = new GlyphTransform(g, _elapsedTime, linePosition, lineLength);
 
-            if (!g.Style.Effect.Process(ref trans) || trans.Visibility != GlyphVisibility.Visible)
+            if (!g.Style.Effect.TryApply(ref trans) || trans.Visibility != GlyphVisibility.Visible)
             {
                 return trans.Visibility;
             }
@@ -382,15 +366,15 @@ public partial class TextRenderer : Control
                 // Non-whitespace character.
                 if (g.Style.ShadowSize > 0 && sColor.A > 0f)
                 {
-                    _TS.FontDrawGlyph(g.Font, canvas, g.FontSize, position + g.Style.ShadowOffset, index, sColor);
+                    _TS.FontDrawGlyph(g.FontRid, canvas, g.FontSize, position + g.Style.ShadowOffset, index, sColor);
                 }
 
                 if (g.Style.OutlineSize > 0 && oColor.A > 0f)
                 {
-                    _TS.FontDrawGlyphOutline(g.Font, canvas, g.FontSize, g.Style.OutlineSize, position, index, oColor);
+                    _TS.FontDrawGlyphOutline(g.FontRid, canvas, g.FontSize, g.Style.OutlineSize, position, index, oColor);
                 }
 
-                _TS.FontDrawGlyph(g.Font, canvas, g.FontSize, position, index, color);
+                _TS.FontDrawGlyph(g.FontRid, canvas, g.FontSize, position, index, color);
             }
 
             position.X += g.Advance;

@@ -4,7 +4,7 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// A self-closing text tag that inserts an icon at the tag's position.
+/// A self-closing text tag that inserts a text icon at the tag's position.
 /// </summary>
 /// <remarks>
 /// <b>Attributes:</b>
@@ -21,7 +21,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///     </item>
 ///     <item>
 ///         <term><c>[size]</c></term>
-///         <description>The dimensions of the texture rect, formatted as <c>WxH</c>.</description>
+///         <description>The dimensions of the texture rect, formatted as <c>"WxH"</c>.</description>
 ///     </item>
 /// </list>
 /// </remarks>

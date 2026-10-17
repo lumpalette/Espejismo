@@ -22,7 +22,7 @@ public sealed partial class ShakeEffect : TextEffect
     private float _intensity = 1;
 
     /// <inheritdoc/>
-    public override bool Process(ref GlyphTransform trans)
+    public override bool TryApply(ref GlyphTransform trans)
     {
         trans.Offset += new Vector2
         {

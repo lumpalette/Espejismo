@@ -14,11 +14,17 @@ public ref struct GlyphTransform
     /// </summary>
     /// <param name="glyph">The glyph being transformed.</param>
     /// <param name="elapsedTime">Time elapsed since the glyph rendering started.</param>
-    /// <param name="linePosition">The position of the glyph relative to the source line.</param>
+    /// <param name="linePosition">The index of the glyph within to the source line.</param>
     /// <param name="lineLength">The number of glyphs in the source line.</param>
     public GlyphTransform(in Glyph glyph, double elapsedTime, int linePosition, int lineLength)
     {
         _glyph = ref glyph;
+
+        Index = glyph.Index;
+        Color = glyph.Style.Color;
+        ShadowColor = glyph.Style.ShadowColor;
+        OutlineColor = glyph.Style.OutlineColor;
+
         ElapsedTime = elapsedTime;
         LinePosition = linePosition;
         LineLength = lineLength;
@@ -32,27 +38,24 @@ public ref struct GlyphTransform
     /// <summary>
     /// Gets the number of seconds since the text started rendering.
     /// </summary>
-    public readonly double ElapsedTime { get; }
+    public double ElapsedTime { get; }
 
     /// <summary>
     /// Gets the index of the glyph within the source line.
     /// </summary>
-    /// <value>
-    /// A 32-bit signed integer in the range [0,<see cref="LineLength"/>].
-    /// </value>
-    public readonly int LinePosition { get; }
+    public int LinePosition { get; }
 
     /// <summary>
     /// Gets the number of glyphs in the source line.
     /// </summary>
-    public readonly int LineLength { get; }
+    public int LineLength { get; }
 
     /// <summary>
-    /// Gets or sets the glyph index, specific to <see cref="Glyph.Font"/>.
+    /// Gets or sets the index of the glyph in the font, used when drawing.
     /// </summary>
     /// <remarks>
     /// You can change this property by using <see cref="TextServer.FontGetGlyphIndex"/> along with
-    /// <see cref="Glyph.Font"/> and <see cref="Glyph.FontSize"/> to generate a new, valid index.
+    /// <see cref="Glyph.FontRid"/> and <see cref="Glyph.FontSize"/> to generate a new, valid index.
     /// </remarks>
     public int Index { get; set; }
 
@@ -66,7 +69,7 @@ public ref struct GlyphTransform
     /// </summary>
     /// <remarks>
     /// The shadow effect will not be rendered if <see cref="GlyphStyle.ShadowSize"/> is set to 0; you can change the
-    /// shadow size by either changing the source <see cref="TextStyle"/> or by using an <c>&lt;outline&gt;</c> tag.
+    /// shadow size by either changing the source <see cref="TextStyle"/> or by using a <see cref="Tags.ShadowTag"/>.
     /// </remarks>
     public Color ShadowColor { get; set; }
 
@@ -75,7 +78,8 @@ public ref struct GlyphTransform
     /// </summary>
     /// <remarks>
     /// The outline will not be rendered if <see cref="GlyphStyle.OutlineSize"/> is set to 0; you can change the
-    /// outline size by either changing the source <see cref="TextStyle"/> or by using a <c>&lt;shadow&gt;</c> tag.
+    /// outline size by either changing the source <see cref="TextStyle"/> or by using an
+    /// <see cref="Tags.OutlineTag"/>.
     /// </remarks>
     public Color OutlineColor { get; set; }
 

@@ -4,19 +4,19 @@ using System;
 namespace Espejismo.Core.RichText;
 
 /// <summary>
-/// Serves as the base class for implementing custom visual effects applied to <see cref="Glyph"/> instances.
+/// Serves as the base class for implementing custom visual effects applied to individual glyphs.
 /// </summary>
 [GlobalClass, Tool]
 public abstract partial class TextEffect : TextResource
 {
     /// <summary>
-    /// Computes the visual transformation applied to a single <see cref="Glyph"/>.
+    /// Computes the visual transformation of the effect and applies it to a glyph.
     /// </summary>
-    /// <param name="trans">The mutable state of the glyph to process.</param>
+    /// <param name="trans">The mutable state of the glyph to transform.</param>
     /// <returns>
-    /// <see langword="true"/> if the effect was successfully applied; otherwise, <see langword="false"/>.
+    /// <see langword="true"/> if the effect is successfully applied; otherwise, <see langword="false"/>.
     /// </returns>
-    public abstract bool Process(ref GlyphTransform trans); // inguesumaiz
+    public abstract bool TryApply(ref GlyphTransform trans); // inguesumaiz
 
     /// <summary>
     /// Returns a <see cref="TextEffect"/> initialized according to the specified attributes.
@@ -25,6 +25,10 @@ public abstract partial class TextEffect : TextResource
     /// <returns>
     /// A <see cref="TextEffect"/> of the same type as this instance, reflecting <paramref name="attributes"/>.
     /// </returns>
+    /// <remarks>
+    /// The default implementation returns the current instance. Override it to return a new, configured instance
+    /// instead of modifying the shared resource.
+    /// </remarks>
     public virtual TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
     {
         return this;

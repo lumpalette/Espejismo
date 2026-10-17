@@ -15,8 +15,12 @@ public partial class StyleTemplate : TextResource
     }
 
     /// <summary>
-    /// Gets the font family used for the text.
+    /// Gets the font family used for the text. This property is required.
     /// </summary>
+    /// <value>The default is <see langword="null"/>.</value>
+    /// <remarks>
+    /// The actual <see cref="Godot.Font"/> used for the text is determined by <see cref="FontStyle"/>.
+    /// </remarks>
     [ExportGroup("Typography")]
     [Export, NotNull]
     public FontFamily? Font
@@ -36,216 +40,124 @@ public partial class StyleTemplate : TextResource
     }
 
     /// <summary>
-    /// Gets the style variant applied to the text. Defaults to <see cref="FontStyle.Regular"/>.
+    /// Gets the style variant used to select the font from the family.
     /// </summary>
+    /// <value>The default is <see cref="FontStyle.None"/>.</value>
     [Export]
-    public FontStyle FontStyle
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    public FontStyle FontStyle { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
-    /// Gets the size of the text, in pixels. Defaults to 8px.
+    /// Gets the size of the text, in pixels.
     /// </summary>
+    /// <value>The default is 8px.</value>
     [Export(PropertyHint.Range, "1,512,suffix:px")]
-    public ushort FontSize
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    } = 8;
+    public ushort FontSize { get; private set => SetAndNotify(ref field, value); } = 8;
 
     /// <summary>
-    /// Gets the color tint of the text. Defaults to white.
+    /// Gets the color tint of the text.
     /// </summary>
+    /// <value>The default is white.</value>
     [Export]
-    public Color Color
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    } = Colors.White;
+    public Color Color { get; private set => SetAndNotify(ref field, value); } = Colors.White;
 
     /// <summary>
-    /// Gets the additional space added between letters and lines of text, represented as a 2D vector. Defaults to
-    /// <c>(0,8)</c>.
+    /// Gets the additional space added between letters (X) and lines of text (Y), in pixels.
     /// </summary>
-    [Export]
-    public Vector2I Spacing
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    } = new(0, 8);
+    /// <value>The default is <c>(0px,0px)</c>.</value>
+    [Export(hintString: "suffix:px")]
+    public Vector2I Spacing { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
     /// Gets the visual effect applied to the text.
     /// </summary>
+    /// <value>The default is <see langword="null"/> (no effect).</value>
     [ExportGroup("Effects")]
     [Export]
-    public TextEffect? Effect
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    public TextEffect? Effect { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
-    /// Gets the size for the shadow effect, in pixels. Defaults to 0px.
+    /// Gets the size for the shadow effect, in pixels.
     /// </summary>
+    /// <value>The default is 0px.</value>
     [ExportGroup("Shadow", prefix: "Shadow")]
-    [Export]
-    public ushort ShadowSize
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    [Export(PropertyHint.Range, "0,512,suffix:px")]
+    public ushort ShadowSize { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
-    /// Gets the color for the shadow effect. Defaults to black.
+    /// Gets the color for the shadow effect.
     /// </summary>
+    /// <value>The default is black.</value>
     [Export]
-    public Color ShadowColor
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    } = Colors.Black;
+    public Color ShadowColor { get; private set => SetAndNotify(ref field, value); } = Colors.Black;
 
     /// <summary>
-    /// Gets the displacement for the shadow effect. relative to the main text. Defaults to <c>(1,1)</c>.
+    /// Gets the displacement for the shadow effect, relative to the main text, in pixels.
     /// </summary>
-    [Export]
-    public Vector2 ShadowOffset
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    } = Vector2.One;
+    /// <value>The default is <c>(1px,1px)</c>.</value>
+    [Export(hintString: "suffix:px")]
+    public Vector2 ShadowOffset { get; private set => SetAndNotify(ref field, value); } = Vector2.One;
 
     /// <summary>
-    /// Gets the size for the text outline, in pixels. Defaults to 0px.
+    /// Gets the size for the text outline, in pixels.
     /// </summary>
+    /// <value>The default is 0px.</value>
     [ExportGroup("Outline", prefix: "Outline")]
-    [Export]
-    public ushort OutlineSize
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    [Export(PropertyHint.Range, "0,512,suffix:px")]
+    public ushort OutlineSize { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
-    /// Gets the color for the text outline. Defaults to black.
+    /// Gets the color for the text outline.
     /// </summary>
+    /// <value>The default is black.</value>
     [Export]
-    public Color OutlineColor
-    {
-        get;
-        private set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    } = Colors.Black;
+    public Color OutlineColor { get; private set => SetAndNotify(ref field, value); } = Colors.Black;
 
     /// <summary>
-    /// Creates a new <see cref="TextStyle"/> based on the data of this template.
+    /// Creates a new <see cref="TextStyle"/> based on the data from this template.
     /// </summary>
-    /// <returns>The created <see cref="TextStyle"/>, fully set.</returns>
+    /// <returns>A <see cref="TextStyle"/> with every property set.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <see cref="Font"/> is <see langword="null"/>.</exception>
     public TextStyle Create()
     {
-        return Create(default);
+        ValidateState();
+
+        return new TextStyle
+        {
+            Font = Font,
+            FontSize = FontSize,
+            FontStyle = FontStyle,
+            Color = Color,
+            Effect = Effect,
+            Spacing = Spacing,
+            ShadowSize = ShadowSize,
+            ShadowColor = ShadowColor,
+            ShadowOffset = ShadowOffset,
+            OutlineSize = OutlineSize,
+            OutlineColor = OutlineColor
+        };
     }
 
     /// <summary>
-    /// Creates a copy of the specified <see cref="TextStyle"/>, replacing any unset property with the data from this
-    /// template.
+    /// Creates a new <see cref="TextStyle"/> by filling the unset properties of the specified style with those from
+    /// this template.
     /// </summary>
-    /// <param name="from">The style to copy; it takes precedence over the template's properties, if set.</param>
-    /// <returns>The created <see cref="TextStyle"/>, fully set.</returns>
+    /// <param name="overrides">The style whose set properties take precedence over the template's.</param>
+    /// <returns>
+    /// A <see cref="TextStyle"/> that takes each property from <paramref name="overrides"/> if it is set, otherwise,
+    /// from this template.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Thrown if <see cref="Font"/> is <see langword="null"/>.</exception>
-    public TextStyle Create(in TextStyle from)
+    public TextStyle Create(in TextStyle overrides)
+    {
+        var style = Create();
+        return overrides.MergedWith(style);
+    }
+
+    private void ValidateState()
     {
         if (Font is null)
         {
             throw new InvalidOperationException("Template's font was not specified from the editor");
         }
-
-        return new TextStyle
-        {
-            Font = from.Font ?? Font,
-            FontSize = from.FontSize ?? FontSize,
-            FontStyle = from.FontStyle ?? FontStyle,
-            Color = from.Color ?? Color,
-            Effect = from.Effect ?? Effect,
-            Spacing = from.Spacing ?? Spacing,
-            ShadowSize = from.ShadowSize ?? ShadowSize,
-            ShadowColor = from.ShadowColor ?? ShadowColor,
-            ShadowOffset = from.ShadowOffset ?? ShadowOffset,
-            OutlineSize = from.OutlineSize ?? OutlineSize,
-            OutlineColor = from.OutlineColor ?? OutlineColor
-        };
     }
 }

@@ -13,7 +13,7 @@ public sealed partial class CompositeEffect : TextEffect
     private TextEffect?[] _effects = [];
 
     /// <summary>
-    /// Creates a new <see cref="CompositeEffect"/> instance with no effects.
+    /// Creates a new <see cref="CompositeEffect"/> instance with no <see cref="TextEffect"/> instances assigned.
     /// </summary>
     public CompositeEffect()
     {
@@ -22,10 +22,29 @@ public sealed partial class CompositeEffect : TextEffect
     /// <summary>
     /// Creates a new <see cref="CompositeEffect"/> instance with the specified <see cref="TextEffect"/> instances.
     /// </summary>
-    /// <param name="effects">The effects to merge together.</param>
+    /// <param name="effects">The effects to apply, in order. <see langword="null"/> entries are ignored.</param>
     public CompositeEffect(params ReadOnlySpan<TextEffect?> effects)
     {
-        _effects = effects.ToArray();
+        var count = 0;
+
+        foreach (var effect in effects)
+        {
+            if (effect is not null)
+            {
+                count++;
+            }
+        }
+
+        _effects = new TextEffect?[count];
+        count = 0;
+
+        foreach (var effect in effects)
+        {
+            if (effect is not null)
+            {
+                _effects[count++] = effect;
+            }
+        }
     }
 
     /// <summary>
@@ -39,7 +58,7 @@ public sealed partial class CompositeEffect : TextEffect
     /// <param name="a">The first effect to combine.</param>
     /// <param name="b">The second effect to combine.</param>
     /// <returns>
-    /// A new <see cref="CompositeEffect"/>, flattening any nested composite. If either <paramref name="a"/> or
+    /// A new combined <see cref="TextEffect"/>, flattening any nested composite. If either <paramref name="a"/> or
     /// <paramref name="b"/> are <see langword="null"/>, the other one is returned. If both are not specified, returns
     /// <see langword="null"/>.
     /// </returns>
@@ -78,22 +97,32 @@ public sealed partial class CompositeEffect : TextEffect
         return new CompositeEffect(a, b);
     }
 
+    /// <summary>
+    /// Computes and applies the visual transformations of every effect.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if all effects are applied successfully; otherwise, <see langword="false"/>.
+    /// </returns>
     /// <inheritdoc/>
-    public override bool Process(ref GlyphTransform trans)
+    public override bool TryApply(ref GlyphTransform trans)
     {
         var status = true;
 
         foreach (var effect in Effects)
         {
+            // This can happen for editor-made tags.
             if (effect is not null)
             {
-                status &= effect.Process(ref trans);
+                status &= effect.TryApply(ref trans);
             }
         }
 
         return status;
     }
 
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if one of the nested effects directly contains the same instance, creating a cyclic reference.
+    /// </exception>
     /// <inheritdoc/>
     public override TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
     {
@@ -104,6 +133,15 @@ public sealed partial class CompositeEffect : TextEffect
         for (var i = 0; i < effects.Length; i++)
         {
             effects[i] = _effects[i]?.Setup(attributes);
+
+            // I don't know why the fuck would you do this, but this check avoids nesting the same composite effect
+            // into itself, which would provoke an infinite loop.
+            if (ReferenceEquals(effects[i], this))
+            {
+                throw new InvalidOperationException(
+                    "Cyclical nesting is not supported for CompositeEffect instances.");
+            }
+
             changed |= !ReferenceEquals(effects[i], _effects[i]);
         }
 

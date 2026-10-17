@@ -5,7 +5,7 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// A text tag that changes the visual effect of a specific segment of text.
+/// A text tag that changes the <see cref="TextEffect"/> of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <b>Attributes:</b> Varies (depends on the specific effect).

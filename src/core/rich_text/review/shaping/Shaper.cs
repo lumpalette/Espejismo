@@ -107,7 +107,7 @@ internal readonly struct Shaper()
 
                         paragraph = new Paragraph
                         {
-                            Start = (int)TS.ShapedTextGetGlyphCount(Shaped),
+                            Start = paragraph.Start + paragraph.Length,
                             Alignment = paragraph.Alignment
                         };
                     }
@@ -124,7 +124,7 @@ internal readonly struct Shaper()
 
                         paragraph = new Paragraph
                         {
-                            Start = (int)TS.ShapedTextGetGlyphCount(Shaped),
+                            Start = paragraph.Start + paragraph.Length,
                             Alignment = itemAlignment
                         };
                     }
@@ -133,8 +133,13 @@ internal readonly struct Shaper()
                         paragraph.Alignment = itemAlignment;
                     }
 
-                    independent = false; // stupid
+                    independent = false;
                     break;
+            }
+
+            if (item.Type is ShapeItemType.Run or ShapeItemType.Icon or ShapeItemType.Marker)
+            {
+                independent = true;
             }
         }
 
@@ -201,14 +206,19 @@ internal readonly struct Shaper()
             }
         }
 
+        if (maxLeading == float.MinValue)
+        {
+            maxLeading = FallbackLeading;
+        }
+
         Lines.Add(new LineLayout(
             start: initialGlyphCount,
             length: Glyphs.Count - initialGlyphCount,
             width: (float)TS.ShapedTextGetWidth(lineShaped),
             ascent: (float)TS.ShapedTextGetAscent(lineShaped),
             descent: (float)TS.ShapedTextGetDescent(lineShaped),
-            maxLeading,
-            alignment));
+            leading: maxLeading,
+            alignment: alignment));
     }
 
     private void InsertEmptyLine(HorizontalAlignment alignment)
@@ -296,7 +306,7 @@ internal readonly struct Shaper()
     private float AppendMarker(in ItemMarker marker)
     {
         Markers.Add(new TextMarker(marker.Name, marker.Attributes, Glyphs.Count));
-        return 0f;
+        return float.MinValue;
     }
 
     private int[] CalculateLineBreaks(Rid shaped)

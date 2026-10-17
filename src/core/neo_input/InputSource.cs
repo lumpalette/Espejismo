@@ -22,14 +22,13 @@ public abstract class InputSource : IEquatable<InputSource>
     /// The event to match. If <see langword="null"/>, the method returns <see langword="false"/>.
     /// </param>
     /// <param name="strength">
-    /// When this method returns, contains the strength of the event in the range [-1,1], if it matches; otherwise,
-    /// 0.0.
+    /// When this method returns, contains the strength of the event in the range [0,1], if it matches; otherwise, 0.0.
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the type of <paramref name="e"/> matches the source type; otherwise,
     /// <see langword="false"/>.
     /// </returns>
-    public abstract bool TryParseEvent(InputEvent? e, out float strength);
+    public abstract bool TryParseEvent(InputEvent? e, out double strength);
 
     /// <summary>
     /// Determines whether the source is equal to the specified <see cref="InputSource"/>.

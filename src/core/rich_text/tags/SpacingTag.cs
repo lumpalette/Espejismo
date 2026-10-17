@@ -10,24 +10,24 @@ namespace Espejismo.Core.RichText.Tags;
 /// <b>Attributes:</b>
 /// <list type="bullet">
 ///     <item>
-///         <term><c>[&lt;main&gt;]</c></term>
+///         <term><c>[<c>&lt;main&gt;</c>]</c></term>
 ///         <description>
-///             The spacing to apply, formatted as <c>X,Y</c>. Takes precedence before the <c>x</c> and <c>y</c>
+///             The spacing to apply, formatted as <c>"X,Y"</c>. Takes precedence before the <c>x</c> and <c>y</c>
 ///             attributes.
 ///         </description>
 ///     </item>
 ///     <item>
 ///         <term><c>[x]</c></term>
 ///         <description>
-///             Extra space added between letters, in pixels, and can be negative. Only applied when the
-///             <c>&lt;main&gt;</c> attribute is not specified.
+///             Extra space added between letters, in pixels, and can be negative. Only applied when the main attribute
+///             is not specified.
 ///         </description>
 ///     </item>
 ///     <item>
 ///         <term><c>[y]</c></term>
 ///         <description>
 ///             Extra space added between lines of text, in pixels, and can be negative. Only applied when the
-///             <c>&lt;main&gt;</c> attribute is not specified.
+///             <c>main</c> attribute is not specified.
 ///         </description>
 ///     </item>
 /// </list>

@@ -30,7 +30,7 @@ public sealed partial class GradientEffect : TextEffect
     private float _speed = 0.4f;
 
     /// <inheritdoc/>
-    public override bool Process(ref GlyphTransform trans)
+    public override bool TryApply(ref GlyphTransform trans)
     {
         if (_gradient is null)
         {

@@ -13,82 +13,42 @@ public partial class FontFamily : TextResource
     /// <summary>
     /// Gets the regular (upright, normal weight) font resource of the family.
     /// </summary>
+    /// <remarks>
+    /// This font is required, and it is used as the base when synthesizing missing styles.
+    /// </remarks>
     [Export, NotNull]
-    public Font? Regular
-    {
-        get;
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    public Font? Regular { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
     /// Gets the bold font resource of the family, if provided.
     /// </summary>
     [Export]
-    public Font? Bold
-    {
-        get;
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    public Font? Bold { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
     /// Gets the italic font resource of the family, if provided.
     /// </summary>
     [Export]
-    public Font? Italic
-    {
-        get;
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    public Font? Italic { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
     /// Gets the bold-italic font resource of the family, if provided.
     /// </summary>
     [Export]
-    public Font? BoldItalic
-    {
-        get;
-        set
-        {
-            if (field != value)
-            {
-                field = value;
-                EmitChanged();
-            }
-        }
-    }
+    public Font? BoldItalic { get; private set => SetAndNotify(ref field, value); }
 
     /// <summary>
-    /// Gets the <see cref="Font"/> that best matches the specified <see cref="FontStyle"/>, synthesizing a faux
-    /// variant if the dedicated resource is not available.
+    /// Gets the <see cref="Font"/> that best matches the specified style, synthesizing a faux variant if the dedicated
+    /// resource is not available.
     /// </summary>
     /// <param name="style">Identifier for the font variant to get.</param>
-    /// <returns>The matching <see cref="Font"/> resource.</returns>
+    /// <returns>The matching <see cref="Font"/>, or a faux variant if that style is undefined.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="Regular"/> is not set.</exception>
     public Font GetVariant(FontStyle style)
     {
         if (Regular is null)
         {
-            throw new InvalidOperationException("Base regular font is missing");
+            throw new InvalidOperationException($"The FontFamily at path '{ResourcePath}' is missing a regular font.");
         }
 
         var bold = style.HasFlag(FontStyle.Bold);

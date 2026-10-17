@@ -1,11 +1,10 @@
-using Espejismo.Core.RichText.Parsing;
 using Espejismo.Core.RichText.Shaping;
 using Godot;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Espejismo.Core.RichText;
+namespace Espejismo.Core.RichText.Preview;
 
 /// <summary>
 /// Represents a rich-text string that can be shaped into renderable glyphs.
@@ -42,19 +41,25 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
+    /// Releases unmanaged <see cref="TextServer"/> resources used by the text.
+    /// </summary>
+    ~Text()
+    {
+        _TS.FreeRid(_shaped);
+    }
+
+    /// <summary>
     /// Gets a value indicating whether text's attributes have been changed and needs reshaping.
     /// </summary>
     public bool IsDirty { get; private set; } = true;
 
     /// <summary>
-    /// Gets the shaped <see cref="Glyph"/> instances, in visual order (LTR).
+    /// Gets the shaped glyphs, in visual order (LTR).
     /// </summary>
     /// <remarks>
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </remarks>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if the <see cref="Text"/> has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public ReadOnlySpan<Glyph> Glyphs
     {
         get
@@ -65,14 +70,12 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
-    /// Gets the total number of shaped <see cref="Glyph"/> instances.
+    /// Gets the total number of shaped glyphs.
     /// </summary>
     /// <remarks>
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </remarks>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if the <see cref="Text"/> has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public int Length
     {
         get
@@ -93,9 +96,7 @@ public sealed partial class Text : IDisposable
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </para>
     /// </remarks>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if the <see cref="Text"/> has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public ReadOnlySpan<LineLayout> Lines
     {
         get
@@ -106,14 +107,12 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
-    /// Gets the <see cref="TextMarker"/> instances embedded into the text.
+    /// Gets the markers embedded into the text.
     /// </summary>
     /// <remarks>
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </remarks>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if the <see cref="Text"/> has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public ReadOnlySpan<TextMarker> Markers
     {
         get
@@ -124,21 +123,18 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
-    /// Gets a value indicating whether the text has at least one assigned <see cref="TextEffect"/> instance.
+    /// Gets a value indicating whether the text has at least one assigned <see cref="TextEffect"/>.
     /// </summary>
     /// <remarks>
-    /// You can use this property to determine whether the text needs to be continuously redrawn to avoid any
-    /// unnecessary redraws for static text. The value of this property is recalculated whenever <see cref="Style"/>
-    /// changes.
+    /// Use this property to skip continuous redraws of static text. The value of this property is recalculated
+    /// whenever <see cref="Style"/> changes.
     /// </remarks>
     public bool HasEffects { get; private set; }
 
     /// <summary>
     /// Gets or sets the base style applied to all the text.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if setting the property after the <see cref="Text"/> has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public TextStyle Style
     {
         get;
@@ -158,9 +154,7 @@ public sealed partial class Text : IDisposable
     /// <summary>
     /// Gets or sets the maximum width allowed for a text line, in pixels.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if setting the property after the <see cref="Text"/> has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public float Width
     {
         get;
@@ -192,9 +186,7 @@ public sealed partial class Text : IDisposable
     /// A text reshape is triggered when accessing this property and <see cref="IsDirty"/> is <see langword="true"/>.
     /// </para>
     /// </remarks>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if the <see cref="Text"/> has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public Vector2 ContentSize
     {
         get
@@ -224,11 +216,9 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
-    /// Gets or sets the horizontal alignment of the text.
+    /// Gets or sets the base horizontal alignment of the text.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if setting the property after the <see cref="Text"/> has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public HorizontalAlignment Alignment
     {
         get;
@@ -245,39 +235,9 @@ public sealed partial class Text : IDisposable
     }
 
     /// <summary>
-    /// Parses a rich-text string into a <see cref="Text"/> with the specified <see cref="TextStyle"/> applied.
+    /// Shapes the stored shape items into a sequence of glyphs.
     /// </summary>
-    /// <param name="richText">The rich-text formatted string to parse.</param>
-    /// <param name="style">The style to apply to the resulting text.</param>
-    /// <param name="visibleChars">The maximum number of glyphs to generate. If set to -1, no limit is applied.</param>
-    /// <returns>The <see cref="Text"/> representation of <paramref name="richText"/>.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="richText"/> is <see langword="null"/>.
-    /// </exception>
-    public static Text Parse(string richText, TextStyle style, int visibleChars = -1)
-    {
-        ArgumentNullException.ThrowIfNull(richText);
-
-        if (richText.Length == 0 || visibleChars == 0)
-        {
-            return new Text([], style);
-        }
-
-        var document = new Document(richText);
-        var builder = new TextBuilder(visibleChars);
-
-        // Looks cursed somehow, but whatever, it works.
-        new Synthesizer(document, builder).Read();
-
-        return builder.Build(style);
-    }
-
-    /// <summary>
-    /// Shapes the stored shape items into a sequence of <see cref="Glyph"/> instances.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown if the <see cref="Text"/> has already been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown if the text has already been disposed.</exception>
     public void Shape()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -322,6 +282,9 @@ public sealed partial class Text : IDisposable
         {
             Clear();
             _TS.FreeRid(_shaped);
+
+            GC.SuppressFinalize(this);
+
             _disposed = true;
         }
     }
@@ -345,8 +308,6 @@ public sealed partial class Text : IDisposable
         _styleMap.Clear();
         HasEffects = false;
 
-        // The base style is fully resolved here, because an exception is thrown at soon as the config file is loaded
-        // the first time if it isn't.
         var baseStyle = TextConfig.DefaultStyle.Create(Style);
 
         _fallbackFont = baseStyle.Font!.GetVariant(baseStyle.FontStyle!.Value);
@@ -368,7 +329,11 @@ public sealed partial class Text : IDisposable
             }
 
             // We don't pass the line spacing to the font, as it is stored inside the LineSpan.Leading separately.
-            var mergedStyle = itemStyle.MergedWith(baseStyle);
+            var mergedStyle = itemStyle.MergedWith(baseStyle) with
+            {
+                FontStyle = (baseStyle.FontStyle ?? FontStyle.None) | (itemStyle.FontStyle ?? FontStyle.None),
+                Effect = Effects.CompositeEffect.Combine(baseStyle.Effect, itemStyle.Effect)
+            };
 
             var font = mergedStyle.Font!.GetVariant(mergedStyle.FontStyle!.Value);
             var spacing = mergedStyle.Spacing!.Value;

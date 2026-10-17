@@ -7,6 +7,10 @@ namespace Espejismo.Core.RichText;
 /// <summary>
 /// Provides static, read-only access to the global configuration used by the rich-text system.
 /// </summary>
+/// <remarks>
+/// The configuration is loaded from <see cref="Path"/> on first access. Accessing any static member throws an
+/// exception if the file is missing, the default style is not set, or no regular font is assigned.
+/// </remarks>
 [GlobalClass, Tool]
 public partial class TextConfig : TextResource
 {
@@ -36,7 +40,7 @@ public partial class TextConfig : TextResource
     private Godot.Collections.Dictionary<string, Texture2D> _icons = [];
 
     /// <summary>
-    /// Gets the style template used as a last fallback for unset <see cref="TextStyle"/> properties.
+    /// Gets the style template used as a last fallback for unset style properties.
     /// </summary>
     public static StyleTemplate DefaultStyle => Active._defaultStyle!;
 
@@ -46,7 +50,7 @@ public partial class TextConfig : TextResource
     public static float FauxBoldThickness => Active._fauxBoldThickness;
 
     /// <summary>
-    /// Gets the shear angle used to synthesize italic text when a font lacks a dedicated italic variant, in radians.
+    /// Gets the horizontal skew factor used to synthesize italic text when a font lacks a dedicated italic variant.
     /// </summary>
     public static float FauxItalicSlant => Active._fauxItalicSlant;
 
@@ -67,7 +71,7 @@ public partial class TextConfig : TextResource
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="StyleTemplate"/> resources defined through the editor.
+    /// Gets a map containing the <see cref="StyleTemplate"/> instances defined in the project.
     /// </summary>
     public static ResourceMap<StyleTemplate> Styles
     {
@@ -83,7 +87,7 @@ public partial class TextConfig : TextResource
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="FontFamily"/> resources defined through the editor.
+    /// Gets a map containing the <see cref="FontFamily"/> instances defined in the project.
     /// </summary>
     public static ResourceMap<FontFamily> Fonts
     {
@@ -99,7 +103,7 @@ public partial class TextConfig : TextResource
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="Texture2D"/> resources defined through the editor.
+    /// Gets a map containing the <see cref="Texture2D"/> instances that can be used as text icons in the system.
     /// </summary>
     public static ResourceMap<Texture2D> Icons
     {
@@ -131,19 +135,21 @@ public partial class TextConfig : TextResource
     {
         if (!ResourceLoader.Exists(Path))
         {
-            throw new FileNotFoundException($"TextConfig file at path '{Path}' was not found");
+            throw new FileNotFoundException($"The {nameof(TextConfig)} file at path '{Path}' is missing.");
         }
 
         var config = GD.Load<TextConfig>(Path);
 
         if (config._defaultStyle is null)
         {
-            throw new InvalidOperationException($"Default style template is missing. TextConfig file path: '{Path}'");
+            throw new InvalidOperationException(
+                $"The {nameof(TextConfig)} file at path '{Path}' does not have a default style assigned.");
         }
 
         if (config._defaultStyle.Font is null)
         {
-            throw new InvalidOperationException($"Font from the default style template is missing. TextConfig file path: '{Path}'");
+            throw new InvalidOperationException(
+                $"The default style from the {nameof(TextConfig)} file at path '{Path}' does not have a font family assigned.");
         }
 
         return config;

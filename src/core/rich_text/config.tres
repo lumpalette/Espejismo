@@ -98,13 +98,13 @@ metadata/_custom_type_script = "uid://c6avliqwl0rue"
 script = ExtResource("11_8f6p3")
 metadata/_custom_type_script = "uid://cjwm1veyo2eva"
 
-[sub_resource type="Resource" id="Resource_5imrv"]
+[sub_resource type="Resource" id="Resource_rknj5"]
 script = ExtResource("18_wre4d")
 metadata/_custom_type_script = "uid://cltvb5woimgqd"
 
 [sub_resource type="Resource" id="Resource_22ly1"]
 script = ExtResource("16_rknj5")
-Effect = SubResource("Resource_5imrv")
+Effect = SubResource("Resource_rknj5")
 metadata/_custom_type_script = "uid://c3aax21xncwwh"
 
 [resource]

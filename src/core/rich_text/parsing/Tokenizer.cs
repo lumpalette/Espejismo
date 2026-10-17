@@ -69,7 +69,7 @@ internal ref partial struct Tokenizer(string source)
                 State.AfterAttributeValueQuoted => ExecAfterAttributeValueQuoted(),
                 State.SelfClosingStartTag => ExecSelfClosingStartTag(),
                 State.CharacterReference => ExecCharacterReference(),
-                _ => throw new UnreachableException($"Invalid state reached ({_state})")
+                _ => throw new UnreachableException($"An invalid state has been reached. State ID = '{_state}'.")
             };
         }
 

@@ -1,10 +1,10 @@
 using Godot;
 using System;
 
-namespace Espejismo.Core.RichText;
+namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// A text tag that changes the font style of a specific segment of text.
+/// A text tag that changes the <see cref="RichText.FontStyle"/> of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <b>Attributes:</b> None.
@@ -26,7 +26,7 @@ public sealed partial class FontStyleTag : TextTag
     {
         var style = builder.TopStyle;
 
-        _ = builder.PushStyle(style with { FontStyle = (style.FontStyle ?? FontStyle.Regular) | FontStyle });
+        _ = builder.PushStyle(style with { FontStyle = (style.FontStyle ?? FontStyle.None) | FontStyle });
         return true;
     }
 

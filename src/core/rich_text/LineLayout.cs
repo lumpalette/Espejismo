@@ -6,8 +6,9 @@ namespace Espejismo.Core.RichText;
 /// Represents a single laid-out line of text, defined as a range of glyphs from a source <see cref="Text"/>.
 /// </summary>
 /// <remarks>
-/// This struct only contains the line's boundaries and metrics; use <see cref="Text.Glyphs"/> along with
-/// <see cref="Start"/> and <see cref="Length"/> to access the glyphs in the line.
+/// This struct describes the boundaries and metrics of a line of text; it does not contain itself data about any
+/// <see cref="Glyph"/>. You can use <see cref="Start"/> and <see cref="Length"/>, along with the source
+/// <see cref="Text"/> to access the glyphs in the line.
 /// </remarks>
 public readonly struct LineLayout
 {
@@ -32,7 +33,7 @@ public readonly struct LineLayout
     }
 
     /// <summary>
-    /// Gets the index of the first glyph on the line within the source <see cref="Text.Glyphs"/>.
+    /// Gets the index of the first glyph on the line within <see cref="Text.Glyphs"/> of the source text.
     /// </summary>
     public int Start { get; }
 
@@ -57,16 +58,13 @@ public readonly struct LineLayout
     public float Descent { get; }
 
     /// <summary>
-    /// Gets the extra vertical added between lines of text, from the bottom of the line.
+    /// Gets the extra vertical added between lines of text, from the bottom of the line, in pixels.
     /// </summary>
     public float Leading { get; }
 
     /// <summary>
-    /// Gets the total height of the line, including the line gap, in pixels.
+    /// Gets the sum of the ascent, descent and leading of the line, in pixels.
     /// </summary>
-    /// <value>
-    /// The sum of <see cref="Ascent"/>, <see cref="Descent"/>, and <see cref="Leading"/>.
-    /// </value>
     public float Height => Ascent + Descent + Leading;
 
     /// <summary>

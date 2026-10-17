@@ -9,19 +9,17 @@ namespace Espejismo.Core.RichText;
 public enum FontStyle
 {
     /// <summary>
-    /// Normal text.
+    /// No style applied.
     /// </summary>
-#pragma warning disable CA1008 // Enums should have zero value
-    Regular = 0,
-#pragma warning restore CA1008 // Enums should have zero value
+    None = 0,
 
     /// <summary>
     /// Bold text.
     /// </summary>
-    Bold = 1,
+    Bold = 1 << 0,
 
     /// <summary>
     /// Italic text.
     /// </summary>
-    Italic = 2
+    Italic = 1 << 1
 }

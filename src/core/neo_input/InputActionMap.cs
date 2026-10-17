@@ -12,14 +12,27 @@ public sealed class InputActionMap
     private readonly Dictionary<string, InputAction> _actions = new(StringComparer.Ordinal);
 
     /// <summary>
+    /// Gets or sets the threshold value used for analog input sources, such as joysticks or triggers. The default
+    /// value is 0.2.
+    /// </summary>
+    /// <remarks>
+    /// The value is always clamped to the range [0,1]. Setting it outside this range will automatically clamp it.
+    /// </remarks>
+    public double Deadzone
+    {
+        get;
+        set => field = Math.Clamp(value, 0d, 1d);
+    } = 0.2d;
+
+    /// <summary>
     /// Gets a collection of the names of all <see cref="InputAction"/> instances contained in the map.
     /// </summary>
-    public IEnumerable<string> Names => _actions.Keys;
+    public Dictionary<string, InputAction>.KeyCollection Names => _actions.Keys;
 
     /// <summary>
     /// Gets a collection of the <see cref="InputAction"/> instances contained in the map.
     /// </summary>
-    public IEnumerable<InputAction> Actions => _actions.Values;
+    public Dictionary<string, InputAction>.ValueCollection Actions => _actions.Values;
 
     /// <summary>
     /// Gets the number of <see cref="InputAction"/> instances contained in the map.
@@ -88,40 +101,24 @@ public sealed class InputActionMap
     public bool Remove(string actionName)
     {
         ArgumentNullException.ThrowIfNull(actionName);
-
-        var success = _actions.Remove(actionName, out var action);
-
-        if (success)
-        {
-            action!.Strength = 0f;
-        }
-
-        return success;
+        return _actions.Remove(actionName);
     }
 
     /// <summary>
     /// Removes all <see cref="InputAction"/> instances from the map.
     /// </summary>
-    /// <remarks>
-    /// The method resets the strength of all actions in the map.
-    /// </remarks>
     public void Clear()
     {
-        foreach (var action in Actions)
-        {
-            action.Strength = 0f;
-        }
-
         _actions.Clear();
     }
 
     /// <summary>
-    /// Gets the <see cref="InputAction"/> with the specified name, if exists.
+    /// Gets the <see cref="InputAction"/> with the specified name, if it exists.
     /// </summary>
     /// <param name="actionName">The name of the action to get.</param>
     /// <param name="action">
-    /// When this method returns, contains the action with the specified name, if exists; otherwise,
-    /// <see langword="false"/>.
+    /// When this method returns, contains the action with the specified name, if it exists; otherwise,
+    /// <see langword="null"/>.
     /// </param>
     /// <returns>
     /// <see langword="true"/> if the map contains an <see cref="InputAction"/> with the specified name; otherwise,
@@ -134,5 +131,18 @@ public sealed class InputActionMap
     {
         ArgumentNullException.ThrowIfNull(actionName);
         return _actions.TryGetValue(actionName, out action);
+    }
+
+    /// <summary>
+    /// Returns an enumerator that iterates through the <see cref="InputAction"/> instances in the map as name/action
+    /// pairs.
+    /// </summary>
+    /// <returns>An enumerator for the <see cref="InputActionMap"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if an action is added or removed while iterating through the map.
+    /// </exception>
+    public Dictionary<string, InputAction>.Enumerator GetEnumerator()
+    {
+        return _actions.GetEnumerator();
     }
 }

@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Espejismo.Core;
 
 /// <summary>
-/// Represents a read-only collection of <see cref="Resource"/> instances identified by string keys.
+/// Represents a read-only collection of resources identified by string keys.
 /// </summary>
 /// <typeparam name="T">The type of <see cref="Resource"/> contained in the map.</typeparam>
 public class ResourceMap<T> where T : Resource
@@ -25,12 +25,12 @@ public class ResourceMap<T> where T : Resource
     }
 
     /// <summary>
-    /// Gets the <typeparamref name="T"/> resource associated to the specified name.
+    /// Gets the resource associated to the specified name.
     /// </summary>
     /// <param name="name">The name of the resource to get.</param>
     /// <param name="res">
     /// When this method returns, contains the resource associated with <paramref name="name"/>, if found; otherwise,
-    /// <see langword="false"/>.
+    /// <see langword="null"/>.
     /// </param>
     /// <returns><see langword="true"/> if the resource was found; otherwise, <see langword="false"/>.</returns>
     public bool TryGetResource(ReadOnlySpan<char> name, [NotNullWhen(true)] out T? res)

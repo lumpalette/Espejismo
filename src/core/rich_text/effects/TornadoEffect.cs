@@ -10,7 +10,7 @@ namespace Espejismo.Core.RichText.Effects;
 /// <b>Parameters:</b>
 /// <list type="bullet">
 ///     <item>
-///         <term>Radius (<c>radius</c>)</term>
+///         <term>Radius (<c>rad</c>)</term>
 ///         <description>The distance the text is displaced from its origin, in pixels.</description>
 ///     </item>
 ///     <item>
@@ -27,14 +27,14 @@ namespace Espejismo.Core.RichText.Effects;
 public sealed partial class TornadoEffect : TextEffect
 {
     [Export]
-    private float _radius = 3.5f;
+    private float _radius = 3f;
     [Export]
     private float _frequency = 4f;
     [Export]
     private float _spacing = 0.4f;
 
     /// <inheritdoc/>
-    public override bool Process(ref GlyphTransform trans)
+    public override bool TryApply(ref GlyphTransform trans)
     {
         var angle = (trans.ElapsedTime * _frequency) + (trans.LinePosition * _spacing);
 
@@ -49,7 +49,7 @@ public sealed partial class TornadoEffect : TextEffect
     /// <inheritdoc/>
     public override TextEffect Setup(ReadOnlySpan<TagAttribute> attributes)
     {
-        if (!attributes.TryGetValue("radius", out float radius))
+        if (!attributes.TryGetValue("rad", out float radius))
         {
             radius = _radius;
         }

@@ -1,4 +1,3 @@
-using Espejismo.Core.RichText.Shaping;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Espejismo.Core.RichText;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A rich-text string is composed by five types of items, known as <b>shape items</b>:
+/// A rich-text string is composed of five types of items, known as <b>shape items</b>:
 /// <list type="bullet">
 ///     <item>
 ///         <term>Runs</term>
@@ -23,11 +22,11 @@ namespace Espejismo.Core.RichText;
 ///     </item>
 ///     <item>
 ///         <term>Markers</term>
-///         <description>Named container of tag attributes, inserted at a specific glyph index.</description>
+///         <description>A named container of tag attributes, inserted at a specific glyph index.</description>
 ///     </item>
 ///     <item>
 ///         <term>Line breaks</term>
-///         <description>Indicates the position of a explicit line break.</description>
+///         <description>The position of an explicit line break.</description>
 ///     </item>
 ///     <item>
 ///         <term>Alignment</term>
@@ -41,12 +40,13 @@ namespace Espejismo.Core.RichText;
 /// builder.
 /// </para>
 /// <para>
-/// The class also maintains a stack of styles overrides and alignments, which you can modify using the
-/// <c>Push/Pop*</c> methods, which allows complex nesting if required.
+/// The class also maintains a stack of style overrides and alignments, which you can modify using the <c>Push/Pop*</c>
+/// methods, allowing for complex nesting if required.
 /// </para>
 /// <para>
-/// At construction, you can specify the maximum number of characters and/or icons that can be appended to the builder.
-/// This mechanism can be used to perform typewritter effects naturally before shaping.
+/// At construction, you can specify the maximum number of characters (grapheme clusters) that can be appended to the
+/// builder. This mechanism can be used to perform typewriter effects naturally before shaping. Only text and icons
+/// consume this limit.
 /// </para>
 /// </remarks>
 public class TextBuilder
@@ -55,34 +55,39 @@ public class TextBuilder
     private readonly Stack<TextStyle> _styleStack = [];
     private readonly Stack<HorizontalAlignment> _alignmentStack = [];
 
+    private readonly int _initialChars;
+
     private int _remainingChars;
 
     /// <summary>
-    /// Creates a new <see cref="TextBuilder"/> instance.
+    /// Creates a new <see cref="TextBuilder"/> instance with no character limit imposed.
     /// </summary>
-    public TextBuilder() => _remainingChars = -1;
+    public TextBuilder() : this(-1)
+    {
+    }
 
     /// <summary>
-    /// Creates a new <see cref="TextBuilder"/> instance by specifying a limit on how many characters or icons can be
-    /// appended.
+    /// Creates a new <see cref="TextBuilder"/> instance by specifying its character limit.
     /// </summary>
-    /// <param name="visibleChars">
-    /// The number of individual glyphs that can be appended. If set to -1, no limit is applied.
+    /// <param name="charLimit">
+    /// The number of characters that can be appended. If set to -1, no limit is applied.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="visibleChars"/> is less than -1.
+    /// Thrown if <paramref name="charLimit"/> is less than -1.
     /// </exception>
-    public TextBuilder(int visibleChars)
+    public TextBuilder(int charLimit)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(visibleChars, -1);
-        _remainingChars = visibleChars;
+        ArgumentOutOfRangeException.ThrowIfLessThan(charLimit, -1);
+
+        _initialChars = charLimit;
+        _remainingChars = charLimit;
     }
 
     /// <summary>
     /// Gets the style override currently at the top of the style stack.
     /// </summary>
     /// <remarks>
-    /// Returns a <see langword="default"/> style if the style stack is empty.
+    /// Returns an empty (default) style if the style stack is empty.
     /// </remarks>
     public TextStyle TopStyle
     {
@@ -94,7 +99,7 @@ public class TextBuilder
     }
 
     /// <summary>
-    /// Gets the alignment currently at the top of the style stack.
+    /// Gets the alignment currently at the top of the alignment stack.
     /// </summary>
     /// <remarks>
     /// Returns <see langword="null"/> if the alignment stack is empty, which indicates that the base alignment should
@@ -114,20 +119,18 @@ public class TextBuilder
     }
 
     /// <summary>
-    /// Gets a value indicating whether the character append limit has been reached. Once it is reached, further calls
-    /// to <see cref="AppendText"/> or <see cref="AppendIcon"/> are ignored.
+    /// Gets a value indicating whether the character limit has been reached.
     /// </summary>
+    /// <remarks>
+    /// Once the character limit is reached, further attempts to append characters or line breaks will be ignored.
+    /// </remarks>
     public bool IsExhausted => _remainingChars == 0;
 
     /// <summary>
-    /// Inserts the specified <see cref="TextStyle"/> override at the top of the style stack.
+    /// Inserts the specified <see cref="TextStyle"/> at the top of the style stack.
     /// </summary>
     /// <param name="style">The style to push onto the stack.</param>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
-    /// <remarks>
-    /// This inserts a new, fresh <see cref="TextStyle"/> in the stack. To merge the properties from the current active
-    /// style, use the <see cref="TopStyle"/> property using the <c><see langword="with"/></c> expression syntax.
-    /// </remarks>
+    /// <returns>A reference to this instance.</returns>
     public TextBuilder PushStyle(TextStyle style)
     {
         _styleStack.Push(style);
@@ -135,9 +138,12 @@ public class TextBuilder
     }
 
     /// <summary>
-    /// Removes the style override currently at the top of the style stack.
+    /// Removes the <see cref="TextStyle"/> currently at the top of the style stack.
     /// </summary>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <returns>A reference to this instance.</returns>
+    /// <remarks>
+    /// If the stack is empty, the method does nothing.
+    /// </remarks>
     public TextBuilder PopStyle()
     {
         _ = _styleStack.TryPop(out _);
@@ -145,18 +151,18 @@ public class TextBuilder
     }
 
     /// <summary>
-    /// Appends a run of text using the <see cref="TopStyle"/>.
+    /// Appends a run of text using the current <see cref="TopStyle"/>.
     /// </summary>
     /// <param name="text">The text to append.</param>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <returns>A reference to this instance.</returns>
     /// <remarks>
     /// <para>
-    /// This method consumes a number of characters equivalent to the number of grapheme clusters in
-    /// <paramref name="text"/>.
+    /// This method consumes a number of characters from the character limit equivalent to the number of grapheme
+    /// clusters in <paramref name="text"/>. If the text contains more grapheme clusters than the remaining limit, it
+    /// is truncated.
     /// </para>
     /// <para>
-    /// If <paramref name="text"/> is empty or <see cref="IsExhausted"/> is <see langword="true"/>, the method call is
-    /// ignored.
+    /// If <paramref name="text"/> is empty or the character limit has been reached, the method does nothing.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">
@@ -181,27 +187,27 @@ public class TextBuilder
             }
         }
 
-        _items.Add(new(new ItemRun(text, TopStyle)));
+        _items.Add(new ShapeItem.Run(text, TopStyle));
         return this;
     }
 
     /// <summary>
-    /// Appends an icon associated to the specified <see cref="Texture2D"/>.
+    /// Appends a <see cref="Texture2D"/> as a text icon, specifying the properties of its bounding box.
     /// </summary>
-    /// <param name="texture">The texture associated to the icon.</param>
+    /// <param name="texture">The texture to append.</param>
     /// <param name="alignment">The vertical alignment of the icon relative to the surrounding text.</param>
     /// <param name="size">The size of the texture rect, in pixels.</param>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <returns>A reference to this instance.</returns>
     /// <remarks>
     /// <para>
-    /// This method consumes exactly one character from the visible character limit.
+    /// This method consumes exactly one character from the character limit.
     /// </para>
     /// <para>
-    /// If <see cref="IsExhausted"/> is <see langword="true"/>, the method call is ignored.
+    /// If the character limit has been reached, the method does nothing.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="size"/> is negative.
+    /// Thrown if <paramref name="size"/> has a negative component.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="texture"/> is <see langword="null"/>.
@@ -225,16 +231,19 @@ public class TextBuilder
             _remainingChars--;
         }
 
-        _items.Add(new(new ItemIcon(texture, alignment, size, TopStyle)));
+        _items.Add(new ShapeItem.Icon(texture, alignment, size, TopStyle));
         return this;
     }
 
     /// <summary>
-    /// Appends a marker with to the specified name and attributes.
+    /// Appends a marker with the specified name and the <see cref="TagAttribute"/> values associated with it.
     /// </summary>
     /// <param name="name">The name for the marker.</param>
-    /// <param name="attributes">The attributes associated to the marker.</param>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <param name="attributes">The attributes associated with the marker.</param>
+    /// <returns>A reference to this instance.</returns>
+    /// <remarks>
+    /// The method copies the elements of <paramref name="attributes"/> into the new marker.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
@@ -242,65 +251,75 @@ public class TextBuilder
     {
         ArgumentNullException.ThrowIfNull(name);
 
-        _items.Add(new(new ItemMarker(name, attributes.ToArray())));
+        _items.Add(new ShapeItem.Marker(name, attributes.ToArray()));
         return this;
     }
 
     /// <summary>
-    /// Appends a marker for a hard line break.
+    /// Appends a hard line break.
     /// </summary>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <returns>A reference to this instance.</returns>
+    /// <remarks>
+    /// The method does not consume any character from the character limit. However, if the visible character limit has
+    /// been reached, the method does nothing.
+    /// </remarks>
     public TextBuilder AppendBreak()
     {
-        _items.Add(new(new ItemBreak()));
+        _items.Add(new ShapeItem.LineBreak());
         return this;
     }
 
     /// <summary>
-    /// Inserts the specified <see cref="HorizontalAlignment"/> at the top of the alignment stack, which affects all
-    /// subsequent text runs and icons.
+    /// Inserts the specified alignment at the top of the alignment stack, affecting subsequent text runs and icons.
     /// </summary>
     /// <param name="alignment">The alignment to push onto the stack.</param>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <returns>A reference to this instance.</returns>
     public TextBuilder PushAlignment(HorizontalAlignment alignment)
     {
         _alignmentStack.Push(alignment);
-        _items.Add(new(new ItemAlign(alignment)));
+        _items.Add(new ShapeItem.Align(alignment));
         return this;
     }
 
     /// <summary>
-    /// Removes the alignment currently at the top of the alignment stack, reverting back to the previous alignment.
+    /// Removes the alignment currently at the top of the alignment stack, reverting to the previous alignment.
     /// </summary>
-    /// <returns>The same <see cref="TextBuilder"/> instance.</returns>
+    /// <returns>A reference to this instance.</returns>
+    /// <remarks>
+    /// If the stack is empty, the method does nothing.
+    /// </remarks>
     public TextBuilder PopAlignment()
     {
         if (_alignmentStack.TryPop(out _))
         {
-            _items.Add(new(new ItemAlign(TopAlignment)));
+            _items.Add(new ShapeItem.Align(TopAlignment));
         }
 
         return this;
     }
 
     /// <summary>
-    /// Creates a new <see cref="Text"/> instance based on the state of the builder.
+    /// Creates a new <see cref="Text"/> based on the state of the builder.
     /// </summary>
     /// <param name="style">The base style to apply to the text.</param>
-    /// <returns>The resulting <see cref="Text"/>.</returns>
+    /// <returns>A <see cref="Text"/> containing the shape items appended so far.</returns>
+    /// <remarks>
+    /// The builder is not cleared after calling this method.
+    /// </remarks>
     public Text Build(TextStyle style)
     {
         return new Text([.. _items], style);
     }
 
     /// <summary>
-    /// Clears the shape items appended to the builder.
+    /// Resets the state of the builder, clearing the list of shape items, stacks and restoring the character limit.
     /// </summary>
     public void Clear()
     {
         _items.Clear();
         _styleStack.Clear();
         _alignmentStack.Clear();
+        _remainingChars = _initialChars;
     }
 
     private string TakeFromRemaining(string text)

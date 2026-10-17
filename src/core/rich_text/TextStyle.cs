@@ -6,13 +6,13 @@ namespace Espejismo.Core.RichText;
 /// Represents a set of style properties that describe how text is rendered.
 /// </summary>
 /// <remarks>
-/// All properties in this struct are nullable. A <see langword="null"/> property indicates that the property must be
-/// resolved elsewhere. How a property is resolved depends on the context in which the style is used.
+/// All properties in this struct are nullable; a <see langword="null"/> value indicates that the property must be
+/// resolved elsewhere, following a cascade-type resolution of styles.
 /// </remarks>
 public readonly record struct TextStyle
 {
     /// <summary>
-    /// Creates a new <see cref="TextStyle"/> instance with all properties set to <see langword="null"/>.
+    /// Creates a new <see cref="TextStyle"/> instance with all properties unset.
     /// </summary>
     public TextStyle()
     {
@@ -21,10 +21,13 @@ public readonly record struct TextStyle
     /// <summary>
     /// Gets the font family used for the text.
     /// </summary>
+    /// <remarks>
+    /// The actual <see cref="Godot.Font"/> used for the text is determined by <see cref="FontStyle"/>.
+    /// </remarks>
     public FontFamily? Font { get; init; }
 
     /// <summary>
-    /// Gets the style variant applied to the text.
+    /// Gets the style variant used to select the font from the family.
     /// </summary>
     public FontStyle? FontStyle { get; init; }
 
@@ -39,7 +42,7 @@ public readonly record struct TextStyle
     public Color? Color { get; init; }
 
     /// <summary>
-    /// Gets the additional space added between letters and lines of text, represented as a 2D vector.
+    /// Gets the additional space added between letters (X) and lines of text (Y), in pixels.
     /// </summary>
     public Vector2I? Spacing { get; init; }
 
@@ -74,10 +77,13 @@ public readonly record struct TextStyle
     public Color? OutlineColor { get; init; }
 
     /// <summary>
-    /// Creates a new <see cref="TextStyle"/> by combining the properties of this style with another.
+    /// Creates a new <see cref="TextStyle"/> by filling the unset properties of this style with those of another.
     /// </summary>
-    /// <param name="other">The fallback style to merge with when the properties of this style are unset.</param>
-    /// <returns>The <see cref="TextStyle"/> merged with <paramref name="other"/>.</returns>
+    /// <param name="other">The style that supplies values for the unset properties.</param>
+    /// <returns>
+    /// A <see cref="TextStyle"/> that takes each property from this style if it is set, otherwise from
+    /// <paramref name="other"/>.
+    /// </returns>
     public TextStyle MergedWith(in TextStyle other)
     {
         return new TextStyle

@@ -4,13 +4,13 @@ using System;
 namespace Espejismo.Core.RichText.Tags;
 
 /// <summary>
-/// Represents a tag that changes the font family of a specific segment of text.
+/// Represents a tag that changes the <see cref="FontFamily"/> of a specific segment of text.
 /// </summary>
 /// <remarks>
 /// <b>Attributes:</b>
 /// <list type="bullet">
 ///     <item>
-///         <term><c>[&lt;main&gt;]</c></term>
+///         <term><c>&lt;main&gt;</c></term>
 ///         <description>
 ///             Identifier for the new <see cref="FontFamily"/>, as defined in <see cref="TextConfig"/>.
 ///         </description>
