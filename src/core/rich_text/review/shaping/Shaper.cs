@@ -1,9 +1,6 @@
-using Godot;
-using System;
-using System.Collections.Generic;
-
 namespace Espejismo.Core.RichText.Shaping;
 
+#if false
 // One-shot shaping engine that reads a sequence of shaped items and produces renderable glyphs.
 internal readonly struct Shaper()
 {
@@ -321,3 +318,4 @@ internal readonly struct Shaper()
         return TS.ShapedTextGetLineBreaks(shaped, width, start: 0, breakFlags);
     }
 }
+#endif

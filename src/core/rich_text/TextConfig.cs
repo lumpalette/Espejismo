@@ -21,7 +21,7 @@ public partial class TextConfig : TextResource
 
     [ExportGroup("Defaults")]
     [Export]
-    private StyleTemplate? _defaultStyle;
+    private TextStyle? _defaultStyle;
     [Export]
     private float _fauxBoldThickness;
     [Export]
@@ -33,16 +33,16 @@ public partial class TextConfig : TextResource
 
     [ExportGroup("Resources")]
     [Export]
-    private Godot.Collections.Dictionary<string, StyleTemplate> _styles = [];
+    private Godot.Collections.Dictionary<string, TextStyle> _styles = [];
     [Export]
     private Godot.Collections.Dictionary<string, FontFamily> _fonts = [];
     [Export]
     private Godot.Collections.Dictionary<string, Texture2D> _icons = [];
 
     /// <summary>
-    /// Gets the style template used as a last fallback for unset style properties.
+    /// Gets the style used as a last fallback for unset style properties.
     /// </summary>
-    public static StyleTemplate DefaultStyle => Active._defaultStyle!;
+    public static TextStyle DefaultStyle => Active._defaultStyle!;
 
     /// <summary>
     /// Gets the stroke thickness used to synthesize bold text when a font lacks a dedicated bold variant, in pixels.
@@ -71,16 +71,16 @@ public partial class TextConfig : TextResource
     }
 
     /// <summary>
-    /// Gets a map containing the <see cref="StyleTemplate"/> instances defined in the project.
+    /// Gets a map containing the <see cref="TextStyle"/> instances defined in the project.
     /// </summary>
-    public static ResourceMap<StyleTemplate> Styles
+    public static ResourceMap<TextStyle> Styles
     {
         get
         {
 #if TOOLS
-            return new ResourceMap<StyleTemplate>(Active._styles);
+            return new ResourceMap<TextStyle>(Active._styles);
 #else
-            field ??= new ResourceMap<StyleTemplate>(Active._styles);
+            field ??= new ResourceMap<TextStyle>(Active._styles);
             return field;
 #endif
         }
@@ -135,7 +135,8 @@ public partial class TextConfig : TextResource
     {
         if (!ResourceLoader.Exists(Path))
         {
-            throw new FileNotFoundException($"The {nameof(TextConfig)} file at path '{Path}' is missing.");
+            throw new FileNotFoundException(
+                $"Failed to load TextConfig: No resource found at path '{Path}'.", Path);
         }
 
         var config = GD.Load<TextConfig>(Path);
@@ -143,13 +144,13 @@ public partial class TextConfig : TextResource
         if (config._defaultStyle is null)
         {
             throw new InvalidOperationException(
-                $"The {nameof(TextConfig)} file at path '{Path}' does not have a default style assigned.");
+                $"Failed to load TextConfig at '{Path}': The 'Default Style' slot in the inspector is empty.");
         }
 
-        if (config._defaultStyle.Font is null)
+        if (!config._defaultStyle.IsComplete)
         {
             throw new InvalidOperationException(
-                $"The default style from the {nameof(TextConfig)} file at path '{Path}' does not have a font family assigned.");
+                $"Failed to load TextConfig at '{Path}': The assigned 'Default Style' has missing properties.");
         }
 
         return config;

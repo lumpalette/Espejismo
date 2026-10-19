@@ -14,7 +14,7 @@ namespace Espejismo.Core.RichText.Tags;
 ///         <description>The size of the text outline, in pixels.</description>
 ///     </item>
 ///     <item>
-///         <term><c>[color]</c></term>
+///         <term><c>[c]</c></term>
 ///         <description>
 ///             The color of the outline, in the same color formats that <see cref="Color.FromString(string, Color)"/>
 ///             accepts.
@@ -41,7 +41,7 @@ public sealed partial class OutlineTag : TextTag
             size = psize;
         }
 
-        if (attributes.TryGetValue("color", out Color pcolor))
+        if (attributes.TryGetValue("c", out Color pcolor))
         {
             color = pcolor;
         }

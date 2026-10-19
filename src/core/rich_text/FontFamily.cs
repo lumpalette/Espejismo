@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Espejismo.Core.RichText;
@@ -68,6 +69,15 @@ public partial class FontFamily : TextResource
         }
 
         return CreateFaux(bold, italic);
+    }
+
+    private void SetAndNotify<T>(ref T field, T value)
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, value))
+        {
+            field = value;
+            EmitChanged();
+        }
     }
 
     private FontVariation CreateFaux(bool bold, bool italic)

@@ -8,14 +8,14 @@ namespace Espejismo.Core.RichText;
 
 public sealed partial class Text
 {
-    // One-shot structure that walks through a rich-text document and stores its data into a TextBuilder.
-    private ref struct Synthesizer(Document document, TextBuilder builder)
+    // Walks through a rich-text document and stores its data into a TextBuilder.
+    private ref struct Synthesizer(Document document, TextBuilder builder, ResourceMap<TextTag> tags)
     {
         private readonly StringBuilder _accumulatedText = new();
 
         private AttributeArray _attributes;
 
-        public void Read()
+        public void Run()
         {
             WalkBranch(rootIndex: 0);
         }
@@ -80,14 +80,13 @@ public sealed partial class Text
         {
             var name = document.Source.AsSpan(node.ValueStart, node.ValueLength);
 
-            if (!TextConfig.Tags.TryGetResource(name, out var tag))
+            if (!tags.TryGetResource(name, out var tag))
             {
                 WalkBranch(nodeIndex);
                 return;
             }
 
-            var attrs = ConvertAttributeRange(node.AttributeStart, node.AttributeCount);
-            var success = tag.Begin(builder, attrs);
+            var success = tag.Begin(builder, ConvertAttributeRange(node.AttributeStart, node.AttributeCount));
 
             if (node.ChildIndex != -1 && !tag.IsVoid)
             {

@@ -25,7 +25,7 @@ public class ResourceMap<T> where T : Resource
     }
 
     /// <summary>
-    /// Gets the resource associated to the specified name.
+    /// Gets the resource associated with the specified name.
     /// </summary>
     /// <param name="name">The name of the resource to get.</param>
     /// <param name="res">

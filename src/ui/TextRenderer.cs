@@ -35,10 +35,10 @@ public partial class TextRenderer : Control
     } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the style template to apply to the text.
+    /// Gets or sets the style to apply to the text.
     /// </summary>
     [Export]
-    public StyleTemplate? StyleTemplate
+    public TextStyle? Style
     {
         get;
         set
@@ -232,17 +232,17 @@ public partial class TextRenderer : Control
     /// <inheritdoc/>
     public override string[] _GetConfigurationWarnings()
     {
-        if (StyleTemplate is null)
+        if (Style is null)
         {
             return [];
         }
 
-        if (StyleTemplate.Font is null)
+        if (Style.Font is null)
         {
             return ["The assigned style must have a font family configured!"];
         }
 
-        if (StyleTemplate.Font.Regular is null)
+        if (Style.Font.Regular is null)
         {
             return ["The assigned style must have a font family with a regular font configured!"];
         }
@@ -252,29 +252,29 @@ public partial class TextRenderer : Control
 
     private TextStyle GetStyle()
     {
-        if (StyleTemplate is null)
+        if (Style is null)
         {
-            return default;
+            return TextStyle.Default;
         }
 
-        if (StyleTemplate.Font is null || StyleTemplate.Font.Regular is null)
+        if (Style.Font is null || Style.Font.Regular is null)
         {
             return new TextStyle
             {
-                FontSize = StyleTemplate.FontSize,
-                FontStyle = StyleTemplate.FontStyle,
-                Color = StyleTemplate.Color,
-                Effect = StyleTemplate.Effect,
-                Spacing = StyleTemplate.Spacing,
-                ShadowSize = StyleTemplate.ShadowSize,
-                ShadowColor = StyleTemplate.ShadowColor,
-                ShadowOffset = StyleTemplate.ShadowOffset,
-                OutlineSize = StyleTemplate.OutlineSize,
-                OutlineColor = StyleTemplate.OutlineColor
+                FontSize = Style.FontSize,
+                FontStyle = Style.FontStyle,
+                Color = Style.Color,
+                Effect = Style.Effect,
+                Spacing = Style.Spacing,
+                ShadowSize = Style.ShadowSize,
+                ShadowColor = Style.ShadowColor,
+                ShadowOffset = Style.ShadowOffset,
+                OutlineSize = Style.OutlineSize,
+                OutlineColor = Style.OutlineColor
             };
         }
 
-        return StyleTemplate.Create();
+        return Style;
     }
 
     private void UpdateShaped(bool parse)
@@ -283,7 +283,6 @@ public partial class TextRenderer : Control
 
         if (parse || _shaped is null)
         {
-            _shaped?.Dispose();
             _shaped = Core.RichText.Text.Parse(Text, style, TrimBeforeShaping ? VisibleCharacters : -1);
         }
 

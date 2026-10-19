@@ -18,7 +18,7 @@ public abstract partial class TextTag : TextResource
     /// Called when an element begins, before its children are processed.
     /// </summary>
     /// <param name="builder">The working text state.</param>
-    /// <param name="attributes">The attributes associated to the tag.</param>
+    /// <param name="attributes">The attributes associated with the tag.</param>
     /// <returns>
     /// <see langword="true"/> if <see cref="End(TextBuilder)"/> should be called once the element's children have been
     /// processed; otherwise, <see langword="false"/>.

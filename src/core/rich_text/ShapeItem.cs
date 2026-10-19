@@ -21,5 +21,5 @@ internal abstract record class ShapeItem
     public sealed record class LineBreak : ShapeItem;
 
     // Marker indicating a change in the paragraph's alignment.
-    public sealed record class Align(HorizontalAlignment? Alignment) : ShapeItem;
+    public sealed record class Align(HorizontalAlignment Alignment) : ShapeItem;
 }

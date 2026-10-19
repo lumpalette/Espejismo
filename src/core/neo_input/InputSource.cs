@@ -41,9 +41,9 @@ public abstract class InputSource : IEquatable<InputSource>
     public abstract bool Equals([NotNullWhen(true)] InputSource? other);
 
     /// <summary>
-    /// Computes the hash code of the source.
+    /// Computes the hash code for this <see cref="InputSource"/> implementation.
     /// </summary>
-    /// <returns>The hash code for this <see cref="InputSource"/>.</returns>
+    /// <returns>The hash code for this source.</returns>
     public abstract override int GetHashCode();
 
     /// <summary>

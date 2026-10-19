@@ -94,7 +94,7 @@ public class TextBuilder
         get
         {
             _ = _styleStack.TryPeek(out var result);
-            return result;
+            return result ?? TextStyle.Default;
         }
     }
 
@@ -102,16 +102,15 @@ public class TextBuilder
     /// Gets the alignment currently at the top of the alignment stack.
     /// </summary>
     /// <remarks>
-    /// Returns <see langword="null"/> if the alignment stack is empty, which indicates that the base alignment should
-    /// be used instead.
+    /// Returns -1 if the alignment stack is empty, which indicates that the base alignment should be used instead.
     /// </remarks>
-    public HorizontalAlignment? TopAlignment
+    public HorizontalAlignment TopAlignment
     {
         get
         {
             if (!_alignmentStack.TryPeek(out var result))
             {
-                return null;
+                return (HorizontalAlignment)(-1);
             }
 
             return result;
