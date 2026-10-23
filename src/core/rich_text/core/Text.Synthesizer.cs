@@ -67,7 +67,7 @@ public sealed partial class Text
             {
                 if (i > 0)
                 {
-                    _ = builder.AppendBreak();
+                    _ = builder.AppendLineBreak();
                 }
 
                 _ = builder.AppendText(lines[i]);

@@ -1,5 +1,4 @@
 using Espejismo.Core.RichText;
-using Espejismo.Core.RichText.Effects;
 using Godot;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -10,6 +9,10 @@ namespace Espejismo.Core;
 public static partial class Extensions
 {
 #pragma warning disable CA1034 // Nested types should not be visible
+    /// <summary>
+    /// Extension methods for a span of <see cref="TagAttribute"/> values.
+    /// </summary>
+    /// <param name="attributes">The span of attributes to extend.</param>
     extension(ReadOnlySpan<TagAttribute> attributes)
     {
         /// <summary>
@@ -198,14 +201,6 @@ public static partial class Extensions
             }
 
             return true;
-        }
-    }
-
-    extension(TextEffect? effect)
-    {
-        public TextEffect? CombinedWith(TextEffect? other)
-        {
-            return CompositeEffect.Combine(effect, other);
         }
     }
 #pragma warning restore CA1034 // Nested types should not be visible

@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Espejismo.Core.RichText;
 
@@ -35,13 +36,13 @@ namespace Espejismo.Core.RichText;
 /// </list>
 /// </para>
 /// <para>
-/// To synthesize rich-text, use the methods provided by this class to sequentially append shape items to the output.
+/// To synthesize rich text, use the methods provided by this class to sequentially append shape items to the output.
 /// At the end, use <see cref="Build"/> to generate a <see cref="Text"/> instance based on the final state of the
 /// builder.
 /// </para>
 /// <para>
-/// The class also maintains a stack of style overrides and alignments, which you can modify using the <c>Push/Pop*</c>
-/// methods, allowing for complex nesting if required.
+/// The class also maintains a stack of style overrides and alignments along with a list of active effects, which you
+/// can modify using the <c>Push/Pop</c> methods to allow for complex nesting if required.
 /// </para>
 /// <para>
 /// At construction, you can specify the maximum number of characters (grapheme clusters) that can be appended to the
@@ -54,10 +55,12 @@ public class TextBuilder
     private readonly List<ShapeItem> _items = [];
     private readonly Stack<TextStyle> _styleStack = [];
     private readonly Stack<HorizontalAlignment> _alignmentStack = [];
+    private readonly List<TextEffect> _effects = [];
 
     private readonly int _initialChars;
 
     private int _remainingChars;
+    private TextEffect[]? _currentEffects;
 
     /// <summary>
     /// Creates a new <see cref="TextBuilder"/> instance with no character limit imposed.
@@ -94,7 +97,7 @@ public class TextBuilder
         get
         {
             _ = _styleStack.TryPeek(out var result);
-            return result ?? TextStyle.Default;
+            return result ?? TextStyle.Empty;
         }
     }
 
@@ -118,36 +121,17 @@ public class TextBuilder
     }
 
     /// <summary>
+    /// Gets the <see cref="TextEffect"/> instances in the current list of active effects. 
+    /// </summary>
+    public ReadOnlySpan<TextEffect> ActiveEffects => CollectionsMarshal.AsSpan(_effects);
+
+    /// <summary>
     /// Gets a value indicating whether the character limit has been reached.
     /// </summary>
     /// <remarks>
     /// Once the character limit is reached, further attempts to append characters or line breaks will be ignored.
     /// </remarks>
     public bool IsExhausted => _remainingChars == 0;
-
-    /// <summary>
-    /// Inserts the specified <see cref="TextStyle"/> at the top of the style stack.
-    /// </summary>
-    /// <param name="style">The style to push onto the stack.</param>
-    /// <returns>A reference to this instance.</returns>
-    public TextBuilder PushStyle(TextStyle style)
-    {
-        _styleStack.Push(style);
-        return this;
-    }
-
-    /// <summary>
-    /// Removes the <see cref="TextStyle"/> currently at the top of the style stack.
-    /// </summary>
-    /// <returns>A reference to this instance.</returns>
-    /// <remarks>
-    /// If the stack is empty, the method does nothing.
-    /// </remarks>
-    public TextBuilder PopStyle()
-    {
-        _ = _styleStack.TryPop(out _);
-        return this;
-    }
 
     /// <summary>
     /// Appends a run of text using the current <see cref="TopStyle"/>.
@@ -186,7 +170,7 @@ public class TextBuilder
             }
         }
 
-        _items.Add(new ShapeItem.Run(text, TopStyle));
+        _items.Add(new ShapeItem.Run(text, TopStyle, GetCurrentEffects()));
         return this;
     }
 
@@ -230,7 +214,8 @@ public class TextBuilder
             _remainingChars--;
         }
 
-        _items.Add(new ShapeItem.Icon(texture, alignment, size, TopStyle));
+        _items.Add(new ShapeItem.Icon(texture, alignment, size, TopStyle, GetCurrentEffects()));
+
         return this;
     }
 
@@ -251,6 +236,7 @@ public class TextBuilder
         ArgumentNullException.ThrowIfNull(name);
 
         _items.Add(new ShapeItem.Marker(name, attributes.ToArray()));
+
         return this;
     }
 
@@ -262,9 +248,33 @@ public class TextBuilder
     /// The method does not consume any character from the character limit. However, if the visible character limit has
     /// been reached, the method does nothing.
     /// </remarks>
-    public TextBuilder AppendBreak()
+    public TextBuilder AppendLineBreak()
     {
         _items.Add(new ShapeItem.LineBreak());
+        return this;
+    }
+
+    /// <summary>
+    /// Inserts the specified <see cref="TextStyle"/> at the top of the style stack.
+    /// </summary>
+    /// <param name="style">The style to push onto the stack.</param>
+    /// <returns>A reference to this instance.</returns>
+    public TextBuilder PushStyle(TextStyle style)
+    {
+        _styleStack.Push(style);
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the <see cref="TextStyle"/> currently at the top of the style stack.
+    /// </summary>
+    /// <returns>A reference to this instance.</returns>
+    /// <remarks>
+    /// If the stack is empty, the method does nothing.
+    /// </remarks>
+    public TextBuilder PopStyle()
+    {
+        _ = _styleStack.TryPop(out _);
         return this;
     }
 
@@ -277,6 +287,7 @@ public class TextBuilder
     {
         _alignmentStack.Push(alignment);
         _items.Add(new ShapeItem.Align(alignment));
+
         return this;
     }
 
@@ -298,16 +309,51 @@ public class TextBuilder
     }
 
     /// <summary>
+    /// Inserts the specified <see cref="TextEffect"/> at the end of the list of active effects.
+    /// </summary>
+    /// <param name="effect">The effect to append.</param>
+    /// <returns>A reference to this instance.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="effect"/> is <see langword="null"/>.
+    /// </exception>
+    public TextBuilder PushEffect(TextEffect effect)
+    {
+        ArgumentNullException.ThrowIfNull(effect);
+
+        _effects.Add(effect);
+        _currentEffects = null;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the <see cref="TextEffect"/> at the end of the list of active effects.
+    /// </summary>
+    /// <returns>A reference to this instance.</returns>
+    /// <remarks>
+    /// If the list is empty, the method does nothing.
+    /// </remarks>
+    public TextBuilder PopEffect()
+    {
+        if (_effects.Count > 0)
+        {
+            _effects.RemoveAt(_effects.Count - 1);
+            _currentEffects = null;
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Creates a new <see cref="Text"/> based on the state of the builder.
     /// </summary>
-    /// <param name="style">The base style to apply to the text.</param>
     /// <returns>A <see cref="Text"/> containing the shape items appended so far.</returns>
     /// <remarks>
     /// The builder is not cleared after calling this method.
     /// </remarks>
-    public Text Build(TextStyle style)
+    public Text Build()
     {
-        return new Text([.. _items], style);
+        return new Text([.. _items]);
     }
 
     /// <summary>
@@ -318,6 +364,8 @@ public class TextBuilder
         _items.Clear();
         _styleStack.Clear();
         _alignmentStack.Clear();
+        _effects.Clear();
+        _currentEffects = null;
         _remainingChars = _initialChars;
     }
 
@@ -339,5 +387,12 @@ public class TextBuilder
         }
 
         return text;
+    }
+
+    private TextEffect[] GetCurrentEffects()
+    {
+        // This does not allocate memory if _effects is empty.
+        _currentEffects ??= [.. _effects];
+        return _currentEffects;
     }
 }

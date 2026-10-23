@@ -29,7 +29,7 @@ public sealed partial class StyleTag : TextTag
         if (attributes.TryGetValue("<main>", out ReadOnlySpan<char> main)
             && TextConfig.Styles.TryGetResource(main, out var style))
         {
-            _ = builder.PushStyle(style);
+            _ = builder.PushStyle(style.Value);
             return true;
         }
 

@@ -1,4 +1,3 @@
-using Espejismo.Core.RichText.Effects;
 using Godot;
 using System;
 
@@ -25,16 +24,13 @@ public sealed partial class EffectTag : TextTag
     /// <inheritdoc/>
     public override bool Begin(TextBuilder builder, ReadOnlySpan<TagAttribute> attributes)
     {
-        if (Effect is null)
+        if (Effect is not null)
         {
-            return false;
+            _ = builder.PushEffect(Effect.Setup(attributes));
+            return true;
         }
 
-        var current = builder.TopStyle.Effect;
-        var setup = (attributes.Length > 0) ? Effect.Setup(attributes) : Effect;
-
-        _ = builder.PushStyle(builder.TopStyle with { Effect = CompositeEffect.Combine(current, setup) });
-        return true;
+        return false;
     }
 
     /// <inheritdoc/>

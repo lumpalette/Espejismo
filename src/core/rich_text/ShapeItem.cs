@@ -9,10 +9,10 @@ internal abstract record class ShapeItem
     }
 
     // Segment of text that shares the same style.
-    public sealed record class Run(string Text, TextStyle Style) : ShapeItem;
+    public sealed record class Run(string Text, TextStyle Style, TextEffect[] Effects) : ShapeItem;
 
-    // Embedded object containing a reference to a texture.
-    public sealed record class Icon(Texture2D Texture, InlineAlignment Alignment, Vector2 Size, TextStyle Style) : ShapeItem;
+    // Embedded object containing a reference of a texture.
+    public sealed record class Icon(Texture2D Texture, InlineAlignment Alignment, Vector2 Size, TextStyle Style, TextEffect[] Effects) : ShapeItem;
 
     // Embedded object containing arbitrary payload, described as a name/attributes pair.
     public sealed record class Marker(string Name, TagAttribute[] Attributes) : ShapeItem;

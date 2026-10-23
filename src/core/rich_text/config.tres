@@ -4,9 +4,9 @@
 [ext_resource type="Resource" uid="uid://dfv12ht3lhlji" path="res://src/core/rich_text/default_style.tres" id="1_rc6x3"]
 [ext_resource type="Script" uid="uid://b8t3chmblayme" path="res://src/core/rich_text/FontFamily.cs" id="2_c7gbv"]
 [ext_resource type="Resource" uid="uid://ctpfdjd5q6wpf" path="res://src/core/rich_text/default_fonts.tres" id="3_c7gbv"]
-[ext_resource type="Script" uid="uid://dqv8xe0vejoqk" path="res://src/core/rich_text/StyleTemplate.cs" id="3_imxfu"]
 [ext_resource type="Script" uid="uid://bdo4uu1en1fwn" path="res://src/core/rich_text/TextTag.cs" id="4_ieadk"]
 [ext_resource type="Texture2D" uid="uid://caeunh06m4daj" path="res://shared/icons/icon.png" id="4_imxfu"]
+[ext_resource type="Script" uid="uid://ddwax3ld7ob7h" path="res://src/core/rich_text/TextStyleTemplate.cs" id="5_rknj5"]
 [ext_resource type="Script" uid="uid://c7qa3sldws3gd" path="res://src/core/rich_text/tags/ColorTag.cs" id="7_5gef2"]
 [ext_resource type="Script" uid="uid://cs3odg278xwhh" path="res://src/core/rich_text/tags/AlignmentTag.cs" id="8_q3go3"]
 [ext_resource type="Script" uid="uid://cqgt54sy0g1t6" path="res://src/core/rich_text/tags/FontTag.cs" id="9_u6yl1"]
@@ -109,7 +109,7 @@ metadata/_custom_type_script = "uid://c3aax21xncwwh"
 
 [resource]
 script = ExtResource("1_ar6lo")
-_defaultStyle = ExtResource("1_rc6x3")
+_fallbackStyle = ExtResource("1_rc6x3")
 _fauxBoldThickness = 1.2
 _fauxItalicSlant = 0.4
 _tags = Dictionary[String, ExtResource("4_ieadk")]({
@@ -130,7 +130,7 @@ _tags = Dictionary[String, ExtResource("4_ieadk")]({
 "style": SubResource("Resource_00cxe"),
 "tornado": SubResource("Resource_22ly1")
 })
-_styles = Dictionary[String, ExtResource("3_imxfu")]({
+_styles = Dictionary[String, ExtResource("5_rknj5")]({
 "default": ExtResource("1_rc6x3")
 })
 _fonts = Dictionary[String, ExtResource("2_c7gbv")]({

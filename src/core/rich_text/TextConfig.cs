@@ -21,7 +21,7 @@ public partial class TextConfig : TextResource
 
     [ExportGroup("Defaults")]
     [Export]
-    private TextStyle? _defaultStyle;
+    private TextStyleTemplate? _fallbackStyle;
     [Export]
     private float _fauxBoldThickness;
     [Export]
@@ -33,16 +33,16 @@ public partial class TextConfig : TextResource
 
     [ExportGroup("Resources")]
     [Export]
-    private Godot.Collections.Dictionary<string, TextStyle> _styles = [];
+    private Godot.Collections.Dictionary<string, TextStyleTemplate> _styles = [];
     [Export]
     private Godot.Collections.Dictionary<string, FontFamily> _fonts = [];
     [Export]
     private Godot.Collections.Dictionary<string, Texture2D> _icons = [];
 
     /// <summary>
-    /// Gets the style used as a last fallback for unset style properties.
+    /// Gets the style that provides the default values at the bottom of the cascade.
     /// </summary>
-    public static TextStyle DefaultStyle => Active._defaultStyle!;
+    public static TextStyleTemplate FallbackStyle => Active._fallbackStyle!;
 
     /// <summary>
     /// Gets the stroke thickness used to synthesize bold text when a font lacks a dedicated bold variant, in pixels.
@@ -71,14 +71,14 @@ public partial class TextConfig : TextResource
     }
 
     /// <summary>
-    /// Gets a map containing the <see cref="TextStyle"/> instances defined in the project.
+    /// Gets a map containing the <see cref="TextStyleTemplate"/> instances defined in the project.
     /// </summary>
-    public static ResourceMap<TextStyle> Styles
+    public static ResourceMap<TextStyleTemplate> Styles
     {
         get
         {
 #if TOOLS
-            return new ResourceMap<TextStyle>(Active._styles);
+            return new ResourceMap<TextStyleTemplate>(Active._styles);
 #else
             field ??= new ResourceMap<TextStyle>(Active._styles);
             return field;
@@ -141,13 +141,13 @@ public partial class TextConfig : TextResource
 
         var config = GD.Load<TextConfig>(Path);
 
-        if (config._defaultStyle is null)
+        if (config._fallbackStyle is null)
         {
             throw new InvalidOperationException(
                 $"Failed to load TextConfig at '{Path}': The 'Default Style' slot in the inspector is empty.");
         }
 
-        if (!config._defaultStyle.IsComplete)
+        if (!config._fallbackStyle.Value.IsComplete)
         {
             throw new InvalidOperationException(
                 $"Failed to load TextConfig at '{Path}': The assigned 'Default Style' has missing properties.");

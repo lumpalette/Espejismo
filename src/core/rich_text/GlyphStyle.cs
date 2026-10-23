@@ -9,7 +9,6 @@ public class GlyphStyle
 {
     internal GlyphStyle(
         Color color,
-        TextEffect? effect,
         ushort shadowSize,
         Color shadowColor,
         Vector2 shadowOffset,
@@ -17,7 +16,6 @@ public class GlyphStyle
         Color outlineColor)
     {
         Color = color;
-        Effect = effect;
         ShadowSize = shadowSize;
         ShadowColor = shadowColor;
         ShadowOffset = shadowOffset;
@@ -29,11 +27,6 @@ public class GlyphStyle
     /// Gets the color tint applied to the glyphs.
     /// </summary>
     public Color Color { get; }
-
-    /// <summary>
-    /// Gets the visual effect applied to the glyphs.
-    /// </summary>
-    public TextEffect? Effect { get; }
 
     /// <summary>
     /// Gets the size of the shadow effect, in pixels.

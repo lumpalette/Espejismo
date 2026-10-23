@@ -1,9 +1,6 @@
-using Espejismo.Core.RichText;
-using Godot;
-using System;
-
 namespace Espejismo.UI;
 
+/*
 /// <summary>
 /// Represents a control for displaying formatted rich-text strings using HTML-like syntax.
 /// </summary>
@@ -38,7 +35,7 @@ public partial class TextRenderer : Control
     /// Gets or sets the style to apply to the text.
     /// </summary>
     [Export]
-    public TextStyle? Style
+    public TextStyleTemplate? Style
     {
         get;
         set
@@ -427,3 +424,4 @@ public partial class TextRenderer : Control
         UpdateShaped(parse: false);
     }
 }
+*/

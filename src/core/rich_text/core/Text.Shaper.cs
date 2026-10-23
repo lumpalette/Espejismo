@@ -1,10 +1,8 @@
-using Godot;
-using System.Collections.Generic;
-
 namespace Espejismo.Core.RichText;
 
 public sealed partial class Text
 {
+    /*
     private struct Shaper()
     {
         // Text data,
@@ -77,4 +75,5 @@ public sealed partial class Text
             public HorizontalAlignment Alignment;
         }
     }
+    */
 }
