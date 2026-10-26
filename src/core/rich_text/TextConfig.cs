@@ -9,7 +9,7 @@ namespace Espejismo.Core.RichText;
 /// </summary>
 /// <remarks>
 /// The configuration is loaded from <see cref="Path"/> on first access. Accessing any static member throws an
-/// exception if the file is missing, the default style is not set, or no regular font is assigned.
+/// exception if the file is missing, the fallback style is not set, or no regular font is assigned.
 /// </remarks>
 [GlobalClass, Tool]
 public partial class TextConfig : TextResource
@@ -40,7 +40,7 @@ public partial class TextConfig : TextResource
     private Godot.Collections.Dictionary<string, Texture2D> _icons = [];
 
     /// <summary>
-    /// Gets the style that provides the default values at the bottom of the cascade.
+    /// Gets the style that provides the default values at the bottom of the style cascade.
     /// </summary>
     public static TextStyleTemplate FallbackStyle => Active._fallbackStyle!;
 
@@ -135,22 +135,19 @@ public partial class TextConfig : TextResource
     {
         if (!ResourceLoader.Exists(Path))
         {
-            throw new FileNotFoundException(
-                $"Failed to load TextConfig: No resource found at path '{Path}'.", Path);
+            throw new FileNotFoundException($"No TextConfig resource found at path '{Path}'", Path);
         }
 
         var config = GD.Load<TextConfig>(Path);
 
         if (config._fallbackStyle is null)
         {
-            throw new InvalidOperationException(
-                $"Failed to load TextConfig at '{Path}': The 'Default Style' slot in the inspector is empty.");
+            throw new InvalidOperationException($"The TextConfig at '{Path}' must have a fallback style assigned.");
         }
 
         if (!config._fallbackStyle.Value.IsComplete)
         {
-            throw new InvalidOperationException(
-                $"Failed to load TextConfig at '{Path}': The assigned 'Default Style' has missing properties.");
+            throw new InvalidOperationException($"The fallback style from TextConfig at '{Path}' has missing properties.");
         }
 
         return config;

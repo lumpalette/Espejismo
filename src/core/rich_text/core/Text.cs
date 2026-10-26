@@ -1,5 +1,4 @@
 using Espejismo.Core.RichText.Parsing;
-using Godot;
 using System;
 using System.Collections.Generic;
 
@@ -10,16 +9,15 @@ namespace Espejismo.Core.RichText;
 /// </summary>
 public sealed partial class Text
 {
-    private readonly Dictionary<TextStyle, ComputedStyle> _styleMap = [];
-
     private readonly ShapeItem[] _items;
+    private readonly ComputedStyle[] _styles;
+
+    private bool _styleDirty;
 
     internal Text(ShapeItem[] items)
     {
         _items = items;
-
-        // Cannot be initialized in the class body the style map construction relies on _items.
-        Style = TextStyle.Empty;
+        _styles = new ComputedStyle[items.Length];
     }
 
     /// <summary>
@@ -27,36 +25,28 @@ public sealed partial class Text
     /// </summary>
     public bool IsDirty { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the current base style that is applied to all text.
+    /// </summary>
     public TextStyle Style
     {
         get;
         set
         {
-            if (field == value)
+            if (field != value)
             {
-                return;
-            }
+                field = value;
 
-            field = value;
-
-            foreach (var item in _items)
-            {
-                var itemStyle = item switch
-                {
-                    ShapeItem.Run run => run.Style,
-                    ShapeItem.Icon icon => icon.Style,
-                    _ => null
-                };
-
-                if (itemStyle is null)
-                {
-                    continue;
-                }
-
-
+                InvalidateStyle();
+                InvalidateShape();
             }
         }
-    }
+    } = TextStyle.Empty;
+
+    /// <summary>
+    /// Gets or sets the current base visual effect that is applied to all text.
+    /// </summary>
+    public TextEffect? Effect { get; set; }
 
     /// <summary>
     /// Parses a rich-text string into a shaped <see cref="Text"/>.
@@ -90,58 +80,58 @@ public sealed partial class Text
 
     public void Shape()
     {
+        if (!IsDirty)
+        {
+            return;
+        }
+
+        Restyle();
+
 
     }
 
-    private static ComputedStyle ComputeStyle(TextStyle itemStyle, TextStyle baseStyle, TextStyle fallbackStyle)
+    private void InvalidateShape()
     {
-        var fontStyle = itemStyle.FontStyle ?? baseStyle.FontStyle ?? fallbackStyle.FontStyle!.Value;
-        var font = (itemStyle.Font ?? baseStyle.Font ?? fallbackStyle.Font!).GetVariant(fontStyle);
+        IsDirty = true;
+    }
 
-        // The TextServer does not provide a way to change the spacing of a specific text span/run, so we have to use
-        // font variations for this.
-        var spacing = itemStyle.Spacing ?? baseStyle.Spacing ?? fallbackStyle.Spacing!.Value;
+    private void InvalidateStyle()
+    {
+        _styleDirty = true;
+    }
 
-        if (spacing.X != 0)
+    private void Restyle()
+    {
+        if (!_styleDirty)
         {
-            font = new FontVariation
+            return;
+        }
+
+        var uniqueStyles = new Dictionary<TextStyle, ComputedStyle>();
+
+        for (var i = 0; i < _items.Length; i++)
+        {
+            var style = _items[i] switch
             {
-                BaseFont = font,
-                SpacingGlyph = spacing.X
+                ShapeItem.Run run => run.Style,
+                ShapeItem.Icon icon => icon.Style,
+                _ => null
             };
+
+            // An item without a style; ignore it.
+            if (style is null)
+            {
+                continue;
+            }
+
+            if (!uniqueStyles.TryGetValue(style, out var computed))
+            {
+                uniqueStyles[style] = computed = ComputeStyle(style, Style, TextConfig.FallbackStyle.Value);
+            }
+
+            _styles[i] = computed;
         }
 
-        return new ComputedStyle
-        {
-            Font = font,
-            FontSize = itemStyle.FontSize ?? baseStyle.FontSize ?? fallbackStyle.FontSize!.Value,
-            Leading = spacing.Y,
-            SharedProperties = new GlyphStyle(
-                Pick(itemStyle.Color, baseStyle.Color, fallbackStyle.Color),
-                Pick(itemStyle.ShadowSize, baseStyle.ShadowSize, fallbackStyle.ShadowSize),
-                Pick(itemStyle.ShadowColor, baseStyle.ShadowColor, fallbackStyle.ShadowColor),
-                Pick(itemStyle.ShadowOffset, baseStyle.ShadowOffset, fallbackStyle.ShadowOffset),
-                Pick(itemStyle.OutlineSize, baseStyle.OutlineSize, fallbackStyle.OutlineSize),
-                Pick(itemStyle.OutlineColor, baseStyle.OutlineColor, fallbackStyle.OutlineColor))
-        };
-
-        static T Pick<T>(in T? item, in T? baseItem, in T? fallbackItem) where T : struct
-        {
-            return item ?? baseItem ?? fallbackItem!.Value;
-        }
-    }
-
-    // Resolved style properties of a group of glyphs, associated to a specific item style.
-    private readonly struct ComputedStyle
-    {
-        public Font Font { get; init; }
-
-        public ushort FontSize { get; init; }
-
-        // We store the leading separately from the font because storing it in FontVariation.spacing_top/bottom merges
-        // it with the line's ascent/descent, so we're left without a (cheap) way to differentiate between them.
-        public int Leading { get; init; }
-
-        public GlyphStyle SharedProperties { get; init; }
+        _styleDirty = false;
     }
 }

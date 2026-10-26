@@ -7,10 +7,10 @@ namespace Espejismo.Core.NeoInput;
 public partial class PlayerInput
 {
     // Helper struct to identify a source with its originating input device.
-    internal readonly record struct DeviceSource(long DeviceId, InputSource Source);
+    private readonly record struct DeviceSource(long DeviceId, InputSource Source);
 
     // Helper class for maintaining the state of an individual action.
-    internal sealed class ActionState(InputAction action)
+    private sealed class ActionState(InputAction action)
     {
         // Holds the strength corresponding to each source currently contributing to the action.
         private readonly Dictionary<DeviceSource, double> _contributors = [];

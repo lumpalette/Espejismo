@@ -28,7 +28,7 @@ public partial class Game : Node
         {
             if (s_instance?._input is null)
             {
-                throw new InvalidOperationException($"Trying to access Game.Input before the autoload is initialized");
+                throw new InvalidOperationException($"The Game autoload cannot be accessed before it initializes.");
             }
 
             return s_instance._input;
@@ -52,7 +52,7 @@ public partial class Game : Node
     {
         if (_input is null)
         {
-            throw new InvalidOperationException($"Input node is null");
+            throw new InvalidOperationException("The Game's input subsystem is missing.");
         }
     }
 

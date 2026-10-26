@@ -54,7 +54,7 @@ public sealed class InputActionMap
     {
         get
         {
-            ArgumentNullException.ThrowIfNull(actionName, nameof(actionName));
+            ArgumentNullException.ThrowIfNull(actionName);
 
             if (!_actions.TryGetValue(actionName, out var action))
             {

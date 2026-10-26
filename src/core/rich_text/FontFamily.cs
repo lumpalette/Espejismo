@@ -49,7 +49,7 @@ public partial class FontFamily : TextResource
     {
         if (Regular is null)
         {
-            throw new InvalidOperationException($"The FontFamily at path '{ResourcePath}' is missing a regular font.");
+            throw new InvalidOperationException($"The FontFamily at '{ResourcePath}' must have a regular font assigned.");
         }
 
         var bold = style.HasFlag(FontStyle.Bold);
@@ -71,15 +71,6 @@ public partial class FontFamily : TextResource
         return CreateFaux(bold, italic);
     }
 
-    private void SetAndNotify<T>(ref T field, T value)
-    {
-        if (!EqualityComparer<T>.Default.Equals(field, value))
-        {
-            field = value;
-            EmitChanged();
-        }
-    }
-
     private FontVariation CreateFaux(bool bold, bool italic)
     {
         var variation = new FontVariation
@@ -98,5 +89,14 @@ public partial class FontFamily : TextResource
         }
 
         return variation;
+    }
+
+    private void SetAndNotify<T>(ref T field, T value)
+    {
+        if (!EqualityComparer<T>.Default.Equals(field, value))
+        {
+            field = value;
+            EmitChanged();
+        }
     }
 }

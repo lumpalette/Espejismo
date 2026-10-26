@@ -201,7 +201,7 @@ public class TextBuilder
 
         if (size.X < 0 || size.Y < 0)
         {
-            throw new ArgumentException($"Icon size ({size}) cannot be negative");
+            throw new ArgumentException($"The icon size cannot be negative. Size = {size}.");
         }
 
         if (IsExhausted)
